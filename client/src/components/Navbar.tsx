@@ -12,10 +12,11 @@ function Navbar() {
 
   return (
     <nav>
-      <Link to="/">Home</Link> | 
+      <Link to="/dashboard">Dashboad</Link> | 
       {token ? (
         <>
-          <Link to="/dashboard">Dashboard</Link> | 
+          <Link to="/spill">🫖Social</Link> |
+          <Link to="/teatimer">⏲️Tea Timer</Link> |
           <Link to="/profile">Profile</Link> | 
           <button onClick={handleLogout}>Logout</button>
         </>

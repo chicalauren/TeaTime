@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 function Home() {
   return (
     <div>
-      <h1>🏠 Home Page</h1>
-      <p>Welcome to the home page!</p>
+      <h1>🍵 Tea Time🍵 </h1>
+      <p> Welcome to the Tea Time! </p>
       <Link to="/dashboard">Go to Dashboard</Link>
     </div>
   );

@@ -25,30 +25,156 @@ export const REGISTER_USER = gql`
     }
   }
 `;
+export const DELETE_TEA = gql`
+  mutation DeleteTea($id: ID!) {
+    deleteTea(id: $id) {
+      _id
+    }
+  }
+`;
+export const ADD_SPILL_POST = gql`
+  mutation AddSpillPost($title: String!, $content: String!) {
+    addSpillPost(title: $title, content: $content) {
+      _id
+      title
+      content
+      createdAt
+    }
+  }
+`;
+
+export const ADD_COMMENT = gql`
+  mutation AddComment($spillPostId: ID!, $content: String!) {
+    addComment(spillPostId: $spillPostId, content: $content) {
+      _id
+    }
+  }
+`;
+
+export const LIKE_SPILL_POST = gql`
+  mutation LikeSpillPost($spillPostId: ID!) {
+    likeSpillPost(spillPostId: $spillPostId) {
+      _id
+      likes
+    }
+  }
+`;
+
+export const DELETE_COMMENT = gql`
+  mutation DeleteComment($spillPostId: ID!, $commentId: ID!) {
+    deleteComment(spillPostId: $spillPostId, commentId: $commentId) {
+      _id
+    }
+  }
+`;
+
+export const DELETE_SPILL_POST = gql`
+  mutation DeleteSpillPost($spillPostId: ID!) {
+    deleteSpillPost(spillPostId: $spillPostId) {
+      _id
+    }
+  }
+`;
+export const LOGIN = gql`
+  mutation login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      token
+      user {
+        _id
+        username
+        email
+      }
+    }
+  }
+`;
+
+export const REGISTER = gql`
+  mutation register($username: String!, $email: String!, $password: String!) {
+    register(username: $username, email: $email, password: $password) {
+      token
+      user {
+        _id
+        username
+        email
+      }
+    }
+  }
+`;
 export const ADD_TEA = gql`
-  mutation AddTea(
-    $name: String!,
-    $brand: String!,
-    $type: String!,
-    $imageUrl: String,
-    $tastingNotes: String,
+  mutation addTea(
+    $name: String!
+    $brand: String!
+    $type: String!
+    $imageUrl: String
+    $tastingNotes: String
     $tags: [String]
+    $rating: Int
+    $favorite: Boolean
   ) {
     addTea(
-      name: $name,
-      brand: $brand,
-      type: $type,
-      imageUrl: $imageUrl,
-      tastingNotes: $tastingNotes,
+      name: $name
+      brand: $brand
+      type: $type
+      imageUrl: $imageUrl
+      tastingNotes: $tastingNotes
       tags: $tags
+      rating: $rating
+      favorite: $favorite
     ) {
       _id
       name
       brand
       type
-      imageUrl
-      tastingNotes
-      tags
+      rating
+      favorite
+      createdByUsername
     }
   }
 `;
+export const UPDATE_TEA = gql`
+  mutation updateTea(
+    $id: ID!
+    $name: String!
+    $brand: String!
+    $type: String!
+    $rating: Int
+    $tags: [String]
+    $favorite: Boolean
+    $imageUrl: String
+  ) {
+    updateTea(
+      id: $id
+      name: $name
+      brand: $brand
+      type: $type
+      rating: $rating
+      tags: $tags
+      favorite: $favorite
+      imageUrl: $imageUrl
+    ) {
+      _id
+      name
+      brand
+      type
+      rating
+      tags
+      favorite
+      imageUrl
+    }
+  }
+`;
+export const GET_TEA = gql`
+  query getTea($id: ID!) {
+    tea(id: $id) {
+      _id
+      name
+      brand
+      type
+      rating
+      tags
+      favorite
+      imageUrl
+    }
+  }
+`;
+

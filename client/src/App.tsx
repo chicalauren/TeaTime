@@ -11,6 +11,11 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AddTeaForm from './pages/AddTeaForm';
 import TeaList from './pages/TeaList';
+import TeaDetail from './pages/TeaDetail';
+import EditTeaForm from './pages/EditTeaForm';
+import SpillTheTea from './pages/SpillTheTea';
+import TeaTimer from './pages/TeaTimer';
+
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:4000/graphql',
@@ -41,7 +46,13 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/add-tea" element={<ProtectedRoute><AddTeaForm /></ProtectedRoute>} />
-<Route path="/teas" element={<TeaList />} />
+          <Route path="/teas/:id" element={<TeaDetail />} />
+          <Route path="/teas" element={<TeaList />} />
+          <Route path="/teas/:id" element={<TeaDetail />} />
+          <Route path="/edit-tea/:id" element={<EditTeaForm />} />
+          <Route path="/spill" element={<SpillTheTea />} />
+          <Route path="/teatimer" element={<TeaTimer />} />
+
           <Route
             path="/dashboard"
             element={
