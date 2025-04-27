@@ -24,7 +24,6 @@ async function startApolloServer() {
   app.use(cors());
   app.use(express.json());
 
-  // ✅ CORRECT: Attach auth context through Apollo's middleware
   app.use(
     '/graphql',
     expressMiddleware(server, {
@@ -35,7 +34,7 @@ async function startApolloServer() {
   await connectDB();
 
   app.listen(PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${PORT}/graphql`);
+    console.log(` Server running at http://localhost:${PORT}/graphql`);
   });
 }
 

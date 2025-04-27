@@ -66,9 +66,10 @@ const typeDefs = gql`
       name: String
       brand: String
       type: String
-      imageUrl: String
-      tastingNotes: String
-      tags: [String]
+       rating: Int
+    tags: [String]
+    favorite: Boolean
+    imageUrl: String
     ): TeaCategory
 
     deleteTea(id: ID!): TeaCategory

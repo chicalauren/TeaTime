@@ -160,6 +160,7 @@ export const UPDATE_TEA = gql`
       tags
       favorite
       imageUrl
+      createdByUsername
     }
   }
 `;

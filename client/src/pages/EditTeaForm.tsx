@@ -58,6 +58,16 @@ function EditTeaForm() {
     try {
       const imageUrl = await handleImageUpload();
 
+      console.log("Sending Update Variables:", {
+        id,
+        name,
+        brand,
+        type,
+        rating,
+        tags: tags.split(',').map((tag) => tag.trim()),
+        favorite,
+        imageUrl,
+      });
       await updateTea({
         variables: {
           id,
