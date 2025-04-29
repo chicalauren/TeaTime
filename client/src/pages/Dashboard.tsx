@@ -176,9 +176,9 @@ function Dashboard() {
                 </div>
               )}
 
-              <h3>{tea.name}</h3>
-              <p><strong>Brand:</strong> {tea.brand}</p>
-              <p><strong>Type:</strong> {tea.type}</p>
+              <h3 style={{color: 'black'}}>{tea.name}</h3>
+              <p style={{color: 'black'}}><strong>Brand:</strong> {tea.brand}</p>
+              <p style={{color: 'black'}}><strong>Type:</strong> {tea.type}</p>
 
               {/* Buttons */}
               <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
