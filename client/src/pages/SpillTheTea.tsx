@@ -7,20 +7,21 @@ function SpillTheTea() {
   const { loading, error, data } = useQuery(GET_SPILL_POSTS);
   const [addSpillPost] = useMutation(ADD_SPILL_POST, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
   const [addComment] = useMutation(ADD_COMMENT, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
-  const [likeSpillPost] = useMutation(LIKE_SPILL_POST, {
-    update(cache, { data: { likeSpillPost } }) {
-      const existingData: any = cache.readQuery({ query: GET_SPILL_POSTS });
-      cache.writeQuery({
-        query: GET_SPILL_POSTS,
-        data: {
-          ...existingData,
-          spillPosts: existingData.spillPosts.map((post: any) =>
-            post._id === likeSpillPost._id ? { ...post, likes: likeSpillPost.likes } : post
-          ),
-        },
-      });
-    },
-  });
+  // const [likeSpillPost] = useMutation(LIKE_SPILL_POST, {
+  //   update(cache, { data: { likeSpillPost } }) {
+  //     const existingData: any = cache.readQuery({ query: GET_SPILL_POSTS });
+  //     cache.writeQuery({
+  //       query: GET_SPILL_POSTS,
+  //       data: {
+  //         ...existingData,
+  //         spillPosts: existingData.spillPosts.map((post: any) =>
+  //           post._id === likeSpillPost._id ? { ...post, likes: likeSpillPost.likes } : post
+  //         ),
+  //       },
+  //     });
+  //   },
+  // });
+  const [likeSpillPost] = useMutation(LIKE_SPILL_POST, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
   const [deleteComment] = useMutation(DELETE_COMMENT, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
 
   const [title, setTitle] = useState('');
@@ -164,12 +165,17 @@ function SpillTheTea() {
             {/* ➕ Add Comment Form */}
             {commentingOn === post._id ? (
               <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  addComment({ variables: { spillPostId: post._id, content: commentContent } });
+              onSubmit={async (e) => {
+                e.preventDefault();
+                try {
+                  await addComment({ variables: { spillPostId: post._id, content: commentContent } });
                   setCommentContent('');
                   setCommentingOn(null);
-                }}
+                } catch (err) {
+                  console.log('Adding comment with variables:', { spillPostId: post._id, content: commentContent });
+                  console.error('Failed to add comment:', err);
+                }
+              }}
                 style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
               >
                 <input

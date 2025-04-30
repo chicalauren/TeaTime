@@ -1,46 +1,46 @@
 import { Schema, model } from 'mongoose';
 
 const commentSchema = new Schema(
-    {
-      content: {
-        type: String,
-        required: true,
-      },
-      createdByUsername: {
-        type: String,
-        required: true,
-      },
-      createdAt: {
-        type: Date,
-        default: Date.now,
-      },
-    }
-  );  
-
-  const spillPostSchema = new Schema(
-    {
-      title: {
-        type: String,
-        required: true,
-      },
-      content: {
-        type: String,
-        required: true,
-      },
-      createdBy: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-      },
-      likes: {
-        type: Number,
-        default: 0, // Ensure likes defaults to 0
-      },
+  {
+    content: {
+      type: String,
+      required: true,
     },
-    {
-      timestamps: true,
-    }
-  );
+    createdByUsername: {
+      type: String,
+      required: true,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+  }
+);
+
+const spillPostSchema = new Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    content: {
+      type: String,
+      required: true,
+    },
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    comments: [commentSchema], // Ensure this is defined correctly
+    likes: {
+      type: Number,
+      default: 0,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const SpillPost = model('SpillPost', spillPostSchema);
-
 export default SpillPost;

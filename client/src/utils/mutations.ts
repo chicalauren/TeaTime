@@ -48,6 +48,12 @@ export const ADD_COMMENT = gql`
   mutation AddComment($spillPostId: ID!, $content: String!) {
     addComment(spillPostId: $spillPostId, content: $content) {
       _id
+      comments {
+        _id
+        content
+        createdByUsername
+        createdAt
+      }
     }
   }
 `;

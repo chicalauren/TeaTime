@@ -85,30 +85,33 @@ const resolvers = {
       const newPost = await SpillPost.create({
         title,
         content,
-        createdBy: context.req.user._id,
-        createdByUsername: context.req.user.username,
+        createdBy: context.req.user._id, // ✅ context.req.user._id
+        createdByUsername: context.req.user.username, // ✅ context.req.user.username
       });
     
-      return newPost; 
+      return newPost;
     },
 
     addComment: async (_: any, { spillPostId, content }: any, context: any) => {
+      console.log('Context user:', context.user); // Debugging
       if (!context.user) {
         throw new AuthenticationError('Authentication required');
       }
     
       const newComment = {
         content,
-        createdByUsername: context.user.username,
+        createdByUsername: context.user.username || 'Anonymous', // Ensure this is not null
         createdAt: new Date(),
       };
     
-      // Add the comment and return the updated SpillPost
-      return SpillPost.findByIdAndUpdate(
+      const updatedPost = await SpillPost.findByIdAndUpdate(
         spillPostId,
         { $push: { comments: newComment } },
         { new: true } // Return the updated document
       );
+    
+      console.log('Updated post:', updatedPost); // Debugging
+      return updatedPost;
     },
 
     likeSpillPost: async (_: any, { spillPostId }: any) => {
