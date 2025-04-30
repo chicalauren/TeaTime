@@ -85,11 +85,11 @@ const resolvers = {
       const newPost = await SpillPost.create({
         title,
         content,
-        createdBy: context.req.user._id, // ✅ context.req.user._id
-        createdByUsername: context.req.user.username, // ✅ context.req.user.username
+        createdBy: context.req.user._id,
+        createdByUsername: context.req.user.username,
       });
     
-      return newPost;
+      return newPost; 
     },
 
     addComment: async (_: any, { spillPostId, content }: any, context: any) => {
@@ -103,10 +103,11 @@ const resolvers = {
         createdAt: new Date(),
       };
     
+      // Add the comment and return the updated SpillPost
       return SpillPost.findByIdAndUpdate(
         spillPostId,
         { $push: { comments: newComment } },
-        { new: true }
+        { new: true } // Return the updated document
       );
     },
 

@@ -7,7 +7,20 @@ function SpillTheTea() {
   const { loading, error, data } = useQuery(GET_SPILL_POSTS);
   const [addSpillPost] = useMutation(ADD_SPILL_POST, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
   const [addComment] = useMutation(ADD_COMMENT, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
-  const [likeSpillPost] = useMutation(LIKE_SPILL_POST, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
+  const [likeSpillPost] = useMutation(LIKE_SPILL_POST, {
+    update(cache, { data: { likeSpillPost } }) {
+      const existingData: any = cache.readQuery({ query: GET_SPILL_POSTS });
+      cache.writeQuery({
+        query: GET_SPILL_POSTS,
+        data: {
+          ...existingData,
+          spillPosts: existingData.spillPosts.map((post: any) =>
+            post._id === likeSpillPost._id ? { ...post, likes: likeSpillPost.likes } : post
+          ),
+        },
+      });
+    },
+  });
   const [deleteComment] = useMutation(DELETE_COMMENT, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
 
   const [title, setTitle] = useState('');
@@ -67,13 +80,13 @@ function SpillTheTea() {
               border: '1px solid #ccc',
               borderRadius: '8px',
               padding: '1rem',
-              backgroundColor: '#fafafa',
+              backgroundColor: '#fafafa', // TESTING: changed from #fafafa to #72a85a
               boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
               transition: 'transform 0.2s ease-in',
             }}
           >
             <h3>{post.title}</h3>
-            <p style={{ fontStyle: 'italic', color: '#555' }}>
+            <p style={{ fontStyle: 'italic', color: '#72a85a' }}> 
               by {post.createdByUsername || 'Anonymous'}
             </p>
             <p>{post.content}</p>
@@ -83,7 +96,16 @@ function SpillTheTea() {
 
             {/* ❤️ Like Button */}
             <button
-              onClick={() => likeSpillPost({ variables: { spillPostId: post._id } })}
+              onClick={() => {
+                console.log('Post liked:', post._id);
+                console.log('Post likes:', post.likes);
+                console.log('Post comments:', post.comments);
+                console.log('Post createdByUsername:', post.createdByUsername);
+                console.log('Post createdAt:', post.createdAt);
+                console.log('Post content:', post.content);
+                console.log('Post title:', post.title);
+                likeSpillPost({ variables: { spillPostId: post._id } });
+              }}
               style={{ marginTop: '0.5rem', padding: '5px 10px' }}
             >
               ❤️ {post.likes || 0} Likes
