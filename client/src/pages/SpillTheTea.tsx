@@ -86,11 +86,11 @@ function SpillTheTea() {
               transition: 'transform 0.2s ease-in',
             }}
           >
-            <h3>{post.title}</h3>
-            <p style={{ fontStyle: 'italic', color: '#72a85a' }}> 
+            <h3 style={{ color: '#72a85a', fontWeight: 'bold'}}>{post.title}</h3>
+            <p style={{ fontStyle: 'italic', color: '#000000' }}> 
               by {post.createdByUsername || 'Anonymous'}
             </p>
-            <p>{post.content}</p>
+            <p style={{ color: '#72a85a', fontWeight: 'bold'}}>{post.content}</p>
             <p style={{ fontSize: '0.8rem', color: '#777' }}>
               Posted on {new Date(post.createdAt).toLocaleString()}
             </p>
@@ -114,7 +114,7 @@ function SpillTheTea() {
 
             {/* 🗣 Comments Section */}
             <div style={{ marginTop: '1rem' }}>
-              <h4 style={{ marginBottom: '0.5rem' }}>Comments:</h4>
+              <h4 style={{ marginBottom: '0.5rem', color: '#72a85a', fontWeight: 'bold' }}>Comments:</h4>
               {post.comments?.length > 0 ? (
                 post.comments.map((comment: any, index: number) => (
                   <div
