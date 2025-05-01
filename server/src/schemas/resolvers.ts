@@ -88,7 +88,14 @@ const resolvers = {
         createdBy: context.req.user._id, // ✅ context.req.user._id
         createdByUsername: context.req.user.username, // ✅ context.req.user.username
       });
-    
+      
+      console.log('New post created:', newPost); // Debugging
+      console.log('Context user:', context.user); // Debugging
+      console.log('Context req user:', context.req.user); // Debugging
+      console.log('Context req user ID:', context.req.user._id); // Debugging
+      console.log('Context req user username:', context.req.user.username); // Debugging
+      console.log('Context req user email:', context.req.user.email); // Debugging
+      console.log('Context req user password:', context.req.user.password); // Debugging
       return newPost;
     },
 

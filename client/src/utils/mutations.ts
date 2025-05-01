@@ -38,6 +38,7 @@ export const ADD_SPILL_POST = gql`
       _id
       title
       content
+      createdByUsername
       likes
       createdAt
     }

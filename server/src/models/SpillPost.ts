@@ -31,6 +31,10 @@ const spillPostSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
+    createdByUsername: {
+      type: String,
+      required: true,
+    },
     comments: [commentSchema], // Ensure this is defined correctly
     likes: {
       type: Number,
