@@ -176,6 +176,7 @@ function Dashboard() {
                 </div>
               )}
 
+
               <h3 style={{color: 'black'}}>{tea.name}</h3>
               <p style={{color: 'black'}}><strong>Brand:</strong> {tea.brand}</p>
               <p style={{color: 'black'}}><strong>Type:</strong> {tea.type}</p>
