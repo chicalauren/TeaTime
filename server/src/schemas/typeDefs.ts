@@ -34,7 +34,7 @@ type SpillPost {
   createdByUsername: String
   comments: [Comment] 
   likes: Int
-  createdAt: String
+  createdAt: String!
 }
 
   type Auth {

@@ -57,7 +57,7 @@ const resolvers = {
         imageUrl,
         tastingNotes,
         tags,
-        createdBy: context.req.user._id,
+        createdBy: context.req.user._id, // ✅ context.req.user._id
       });
     
       return tea;

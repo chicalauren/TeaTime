@@ -116,8 +116,6 @@ export const ADD_TEA = gql`
     $imageUrl: String
     $tastingNotes: String
     $tags: [String]
-    $rating: Int
-    $favorite: Boolean
   ) {
     addTea(
       name: $name
@@ -126,16 +124,16 @@ export const ADD_TEA = gql`
       imageUrl: $imageUrl
       tastingNotes: $tastingNotes
       tags: $tags
-      rating: $rating
-      favorite: $favorite
     ) {
       _id
       name
       brand
       type
-      rating
-      favorite
-      createdByUsername
+      imageUrl
+      tastingNotes
+      tags
+      createdBy
+      createdAt
     }
   }
 `;
