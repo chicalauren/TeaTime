@@ -1,12 +1,12 @@
-import express from 'express';
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import connectDB from './config/connection';
-import typeDefs from './schemas/typeDefs';
-import resolvers from './schemas/resolvers';
-import { authMiddleware } from './utils/auth';
+import express from "express";
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
+import dotenv from "dotenv";
+import cors from "cors";
+import connectDB from "./config/connection";
+import typeDefs from "./schemas/typeDefs";
+import resolvers from "./schemas/resolvers";
+import { authMiddleware } from "./utils/auth";
 
 dotenv.config();
 
@@ -25,7 +25,7 @@ async function startApolloServer() {
   app.use(express.json());
 
   app.use(
-    '/graphql',
+    "/graphql",
     expressMiddleware(server, {
       context: async ({ req }) => authMiddleware({ req }),
     })
