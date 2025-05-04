@@ -1,21 +1,21 @@
 import { Schema, model } from 'mongoose';
 
 const commentSchema = new Schema(
-    {
-      content: {
-        type: String,
-        required: true,
-      },
-      createdByUsername: {
-        type: String,
-        required: true,
-      },
-      createdAt: {
-        type: Date,
-        default: Date.now,
-      },
-    }
-  );  
+  {
+    content: {
+      type: String,
+      required: true,
+    },
+    createdByUsername: {
+      type: String,
+      required: true,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+  }
+);
 
 const spillPostSchema = new Schema(
   {
@@ -31,6 +31,19 @@ const spillPostSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
+    createdByUsername: {
+      type: String,
+      required: true,
+    },
+    comments: [commentSchema], // Ensure this is defined correctly
+    likes: {
+      type: Number,
+      default: 0,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     timestamps: true,
@@ -38,5 +51,4 @@ const spillPostSchema = new Schema(
 );
 
 const SpillPost = model('SpillPost', spillPostSchema);
-
 export default SpillPost;

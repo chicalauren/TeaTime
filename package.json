@@ -15,6 +15,7 @@
   "dependencies": {
     "@vitejs/plugin-react": "^4.4.1",
     "apollo-server": "^3.13.0",
+    "axios": "^1.9.0",
     "react-circular-progressbar": "^2.2.0",
     "react-confetti": "^6.4.0",
     "react-hot-toast": "^2.5.2"

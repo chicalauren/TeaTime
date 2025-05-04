@@ -20,21 +20,22 @@ const typeDefs = gql`
   }
 
   type Comment {
-    content: String!
+  _id: ID!
+  content: String!
   createdByUsername: String!
-  createdAt: String
-  }
+  createdAt: String!
+}
 
-  type SpillPost {
-    _id: ID!
+type SpillPost {
+  _id: ID!
   title: String!
   content: String!
   createdBy: ID
   createdByUsername: String
-  comments: [Comment]
+  comments: [Comment] 
   likes: Int
-  createdAt: String
-  }
+  createdAt: String!
+}
 
   type Auth {
     token: ID!

@@ -43,6 +43,62 @@ const teaData = [
       "Use 1 tablespoon of dried peppermint leaves per 8 oz water. Steep at 95°C (203°F) for 5 minutes.",
     usage: "Digestion support and very refreshing",
   },
+  {
+    name: "Green Tea",
+    type: "Green",
+    description:
+      "A delicate tea made from unoxidized leaves, rich in antioxidants.",
+    caffeineLevel: "Medium",
+    brewTempCelsius: "80",
+    brewTempFahrenheit: "176",
+    brewTimeMinutes: "2",
+    flavorNotes: "Grassy, Vegetal",
+    looseLeafRecipe:
+      "Use 1 teaspoon of loose leaves per 8 oz water. Steep at 80°C (176°F) for 2-3 minutes.",
+    usage: "Relaxation and antioxidants",
+  },
+  {
+    name: "Oolong",
+    type: "Oolong",
+    description:
+      "A partially fermented tea with a flavor profile between green and black tea.",
+    caffeineLevel: "Medium",
+    brewTempCelsius: "85",
+    brewTempFahrenheit: "185",
+    brewTimeMinutes: "4",
+    flavorNotes: "Floral, Fruity, Sweet",
+    looseLeafRecipe:
+      "Use 1 teaspoon of loose leaves per 8 oz water. Steep at 85°C (185°F) for 4 minutes.",
+    usage: "Focus and relaxation",
+  },
+  {
+    name: "Chai",
+    type: "Spiced Black",
+    description:
+      "A spiced black tea blend often brewed with milk and sugar for a rich, creamy experience.",
+    caffeineLevel: "High",
+    brewTempCelsius: "100",
+    brewTempFahrenheit: "212",
+    brewTimeMinutes: "5",
+    flavorNotes: "Spicy, Sweet, Creamy",
+    looseLeafRecipe:
+      "Use 1-2 teaspoons of loose leaves per 8 oz water. Steep at 100°C (212°F) for 5 minutes.",
+    usage: "Energy boost and warming",
+  },
+  {
+    name: "White Tea",
+    type: "White",
+    description:
+      "A light and subtle tea made from the young leaves of the tea plant.",
+    caffeineLevel: "Low",
+    brewTempCelsius: "70",
+    brewTempFahrenheit: "158",
+    brewTimeMinutes: "2",
+    flavorNotes: "Floral, Light, Sweet",
+    looseLeafRecipe:
+      "Use 1 teaspoon of loose leaves per 8 oz water. Steep at 70°C (158°F) for 2-3 minutes.",
+    usage: "Relaxation and skin health",
+  },
 ];
 const seedDatabase = async () => {
   try {
@@ -54,7 +110,7 @@ const seedDatabase = async () => {
     await TeaCategory.deleteMany({});
     // adding new tea data
 
-    await TeaCategory.insertManny(teaData);
+    await TeaCategory.insertMany(teaData);
     console.log("DB seeded with Tea!!");
     mongoose.connection.close();
   } catch (error) {
