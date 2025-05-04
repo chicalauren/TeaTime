@@ -33,24 +33,8 @@ const typeDefs = gql`
     createdByUsername: String
     comments: [Comment]
     likes: Int
-    createdAt: String
+    createdAt: String!
   }
-  _id: ID!
-  content: String!
-  createdByUsername: String!
-  createdAt: String!
-}
-
-type SpillPost {
-  _id: ID!
-  title: String!
-  content: String!
-  createdBy: ID
-  createdByUsername: String
-  comments: [Comment] 
-  likes: Int
-  createdAt: String!
-}
 
   type Auth {
     token: ID!
