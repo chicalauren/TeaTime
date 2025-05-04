@@ -41,6 +41,7 @@ const typeDefs = gql`
     user: User
   }
 
+  # Queries
   type Query {
     me: User
     teas: [TeaCategory]
@@ -49,6 +50,7 @@ const typeDefs = gql`
     recommendTeas(tags: [String!]!): [TeaCategory]
   }
 
+  # Mutations
   type Mutation {
     login(email: String!, password: String!): Auth
     register(username: String!, email: String!, password: String!): Auth

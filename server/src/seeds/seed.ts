@@ -1,5 +1,12 @@
-const mongoose = require("mongoose");
-const TeaCategory = require("../models/TeaCategory");
+require("dotenv").config();
+import mongoose from "mongoose";
+import TeaCategory from "../models/TeaCategory";
+import connectDB from "../config/connection";
+if (!process.env.MONGODB_URI) {
+  throw new Error("MONGODB_URI is not defined in the environment variables.");
+}
+
+mongoose.connect(process.env.MONGODB_URI);
 
 const teaData = [
   {
@@ -102,16 +109,15 @@ const teaData = [
 ];
 const seedDatabase = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    // clearing DB
-    await TeaCategory.deleteMany({});
-    // adding new tea data
+    // Connect to DB
+    await connectDB();
 
-    await TeaCategory.insertMany(teaData);
-    console.log("DB seeded with Tea!!");
+    // Insert the tea data into the database
+    const insertedTeas = await TeaCategory.insertMany(teaData);
+
+    console.log(`Successfully inserted ${insertedTeas.length} tea categories`);
+
+    // Close connection
     mongoose.connection.close();
   } catch (error) {
     console.error("Error seeding the database:", error);
