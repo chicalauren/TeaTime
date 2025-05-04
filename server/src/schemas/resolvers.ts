@@ -61,7 +61,7 @@ const resolvers = {
         imageUrl,
         tastingNotes,
         tags,
-        createdBy: context.req.user._id,
+        createdBy: context.req.user._id, // ✅ context.req.user._id
       });
       if (favorite) {
         await User.findByIdAndUpdate(context.req.user._id, {
@@ -97,25 +97,36 @@ const resolvers = {
         createdByUsername: context.req.user.username, // ✅ context.req.user.username
       });
 
+      console.log("New post created:", newPost); // Debugging
+      console.log("Context user:", context.user); // Debugging
+      console.log("Context req user:", context.req.user); // Debugging
+      console.log("Context req user ID:", context.req.user._id); // Debugging
+      console.log("Context req user username:", context.req.user.username); // Debugging
+      console.log("Context req user email:", context.req.user.email); // Debugging
+      console.log("Context req user password:", context.req.user.password); // Debugging
       return newPost;
     },
 
     addComment: async (_: any, { spillPostId, content }: any, context: any) => {
+      console.log("Context user:", context.user); // Debugging
       if (!context.user) {
         throw new AuthenticationError("Authentication required");
       }
 
       const newComment = {
         content,
-        createdByUsername: context.user.username,
+        createdByUsername: context.user.username || "Anonymous", // Ensure this is not null
         createdAt: new Date(),
       };
 
-      return SpillPost.findByIdAndUpdate(
+      const updatedPost = await SpillPost.findByIdAndUpdate(
         spillPostId,
         { $push: { comments: newComment } },
-        { new: true }
+        { new: true } // Return the updated document
       );
+
+      console.log("Updated post:", updatedPost); // Debugging
+      return updatedPost;
     },
 
     likeSpillPost: async (_: any, { spillPostId }: any) => {

@@ -67,23 +67,32 @@ function SpillTheTea() {
               border: '1px solid #ccc',
               borderRadius: '8px',
               padding: '1rem',
-              backgroundColor: '#fafafa',
+              backgroundColor: '#fafafa', // TESTING: changed from #fafafa to #72a85a
               boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
               transition: 'transform 0.2s ease-in',
             }}
           >
-            <h3>{post.title}</h3>
-            <p style={{ fontStyle: 'italic', color: '#555' }}>
+            <h3 style={{ color: '#72a85a', fontWeight: 'bold'}}>{post.title}</h3>
+            <p style={{ fontStyle: 'italic', color: '#000000' }}> 
               by {post.createdByUsername || 'Anonymous'}
             </p>
-            <p>{post.content}</p>
+            <p style={{ color: '#72a85a', fontWeight: 'bold'}}>{post.content}</p>
             <p style={{ fontSize: '0.8rem', color: '#777' }}>
-              Posted on {new Date(post.createdAt).toLocaleString()}
+              Posted on {new Date(post.createdAt).toDateString()}
             </p>
 
             {/* ❤️ Like Button */}
             <button
-              onClick={() => likeSpillPost({ variables: { spillPostId: post._id } })}
+              onClick={() => {
+                console.log('Post liked:', post._id);
+                console.log('Post likes:', post.likes);
+                console.log('Post comments:', post.comments);
+                console.log('Post createdByUsername:', post.createdByUsername);
+                console.log('Post createdAt:', post.createdAt);
+                console.log('Post content:', post.content);
+                console.log('Post title:', post.title);
+                likeSpillPost({ variables: { spillPostId: post._id } });
+              }}
               style={{ marginTop: '0.5rem', padding: '5px 10px' }}
             >
               ❤️ {post.likes || 0} Likes
@@ -91,7 +100,7 @@ function SpillTheTea() {
 
             {/* 🗣 Comments Section */}
             <div style={{ marginTop: '1rem' }}>
-              <h4 style={{ marginBottom: '0.5rem' }}>Comments:</h4>
+              <h4 style={{ marginBottom: '0.5rem', color: '#72a85a', fontWeight: 'bold' }}>Comments:</h4>
               {post.comments?.length > 0 ? (
                 post.comments.map((comment: any, index: number) => (
                   <div
@@ -142,12 +151,17 @@ function SpillTheTea() {
             {/* ➕ Add Comment Form */}
             {commentingOn === post._id ? (
               <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  addComment({ variables: { spillPostId: post._id, content: commentContent } });
+              onSubmit={async (e) => {
+                e.preventDefault();
+                try {
+                  await addComment({ variables: { spillPostId: post._id, content: commentContent } });
                   setCommentContent('');
                   setCommentingOn(null);
-                }}
+                } catch (err) {
+                  console.log('Adding comment with variables:', { spillPostId: post._id, content: commentContent });
+                  console.error('Failed to add comment:', err);
+                }
+              }}
                 style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
               >
                 <input

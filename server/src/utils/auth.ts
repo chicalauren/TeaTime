@@ -19,17 +19,18 @@ export function signToken({ _id, email, username }: UserPayload) {
 }
 
 export function authMiddleware({ req }: { req: Request }) {
-  let token = req.headers.authorization?.split(' ').pop() || '';
-
+  
+  const token = req.headers.authorization?.split(' ')[1]; // Extract the token
   if (!token) {
-    return { req };
+    return { req }; // No token, user is not authenticated
   }
 
   try {
-    const { data } = jwt.verify(token, secret) as { data: UserPayload };
-    (req as any).user = data; // 🔥 🔥 🔥 ATTACH user to req
+    const { data } = jwt.verify(token, process.env.JWT_SECRET!) as { data: { _id: string; username: string; email: string } };
+    (req as any).user = data; // Attach user to req
+    
   } catch (err) {
-    console.error('Invalid token');
+    console.error('Invalid or expired token');
   }
 
   return { req };
