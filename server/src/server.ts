@@ -21,7 +21,12 @@ async function startApolloServer() {
 
   await server.start();
 
-  app.use(cors());
+  // ✅ Allow cross-origin requests from frontend
+  app.use(cors({
+    origin: 'http://localhost:3000', // your Vite frontend
+    credentials: true
+  }));
+
   app.use(express.json());
 
   app.use(
@@ -34,7 +39,7 @@ async function startApolloServer() {
   await connectDB();
 
   app.listen(PORT, () => {
-    console.log(` Server running at http://localhost:${PORT}/graphql`);
+    console.log(`🚀 Server running at http://localhost:${PORT}/graphql`);
   });
 }
 
