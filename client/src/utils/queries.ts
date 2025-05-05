@@ -3,7 +3,7 @@ import { gql } from '@apollo/client';
 export const GET_ME = gql`
   query GetMe {
     me {
-      _id
+      id
       username
       email
     }
@@ -13,7 +13,7 @@ export const GET_ME = gql`
 export const GET_TEAS = gql`
   query GetTeas {
     teas {
-      _id
+      id
       name
       brand
       type
@@ -29,7 +29,7 @@ export const GET_TEAS = gql`
 export const GET_TEA = gql`
   query GetTea($id: ID!) {
     tea(id: $id) {
-      _id
+      id
       name
       brand
       type
@@ -45,14 +45,14 @@ export const GET_TEA = gql`
 export const GET_SPILL_POSTS = gql`
   query GetSpillPosts {
     spillPosts {
-      _id
+      id
       title
       content
       likes
       createdByUsername
       createdAt
       comments {
-        _id
+        id
         content
         createdByUsername
         createdAt
