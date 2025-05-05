@@ -1,4 +1,7 @@
-require("dotenv").config();
+import dotenv from 'dotenv';
+dotenv.config();
+import User from "../models/User";
+
 import mongoose from "mongoose";
 import TeaCategory from "../models/TeaCategory";
 import connectDB from "../config/connection";
@@ -114,14 +117,25 @@ const seedDatabase = async () => {
 
     // Insert the tea data into the database
     const insertedTeas = await TeaCategory.insertMany(teaData);
+    console.log(`✅ Inserted ${insertedTeas.length} tea categories`);
 
-    console.log(`Successfully inserted ${insertedTeas.length} tea categories`);
+    // Create a fake user for testing
+    const fakeUser = await User.create({
+      username: "testuser",
+      email: "test@example.com",
+      password: "password123", // will be hashed automatically
+      favoriteTeas: [insertedTeas[0]._id], // e.g. Earl Grey
+    });
+
+    console.log(`✅ Created user: ${fakeUser.username}`);
 
     // Close connection
     mongoose.connection.close();
   } catch (error) {
-    console.error("Error seeding the database:", error);
+    console.error("❌ Error seeding the database:", error);
+    process.exit(1);
   }
 };
+
 
 seedDatabase();
