@@ -20,7 +20,7 @@ export const GET_TEAS = gql`
       imageUrl
       tastingNotes
       tags
-      createdBy
+      createdByUsername
       createdAt
     }
   }
@@ -36,7 +36,7 @@ export const GET_TEA = gql`
       imageUrl
       tastingNotes
       tags
-      createdBy
+      createdByUsername
       createdAt
     }
   }
@@ -52,7 +52,6 @@ export const GET_SPILL_POSTS = gql`
       createdByUsername
       createdAt
       comments {
-        _id
         content
         createdByUsername
         createdAt

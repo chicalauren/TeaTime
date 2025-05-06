@@ -18,11 +18,11 @@ export function signToken({ _id, email, username }: UserPayload) {
   return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
 }
 
-export function authMiddleware({ req }: { req: Request }) {
+export async function authMiddleware({ req }: { req: Request }) {
   
   const token = req.headers.authorization?.split(' ')[1]; // Extract the token
   if (!token) {
-    return { req }; // No token, user is not authenticated
+    return req ; // No token, user is not authenticated
   }
 
   try {
@@ -33,5 +33,5 @@ export function authMiddleware({ req }: { req: Request }) {
     console.error('Invalid or expired token');
   }
 
-  return { req };
+  return req ;
 }
