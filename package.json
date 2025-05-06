@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cd client && npm run build && cd ../server && npm run build",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "seed": "cd server && npm run seed",
     "server": "cd server && npm run dev",
     "client": "cd client && npm run dev"
   },
@@ -16,6 +18,7 @@
     "@vitejs/plugin-react": "^4.4.1",
     "apollo-server": "^3.13.0",
     "axios": "^1.9.0",
+    "dotenv": "^16.5.0",
     "react-circular-progressbar": "^2.2.0",
     "react-confetti": "^6.4.0",
     "react-hot-toast": "^2.5.2"

@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface ITea extends Document {
   name: string;
@@ -12,12 +12,12 @@ export interface ITea extends Document {
 
 const TeaSchema: Schema = new Schema({
   name: { type: String, required: true },
-  brand: { type: String, required: true },
+  brand: { type: String, required: false },
   type: { type: String, required: true },
   imageUrl: { type: String }, // optional
   tastingNotes: { type: String },
   tags: [{ type: String }],
-  createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  createdBy: { type: Schema.Types.ObjectId, ref: "User", required: false },
 });
 
 TeaSchema.add({
@@ -32,6 +32,6 @@ TeaSchema.add({
   },
 });
 
-const TeaCategory = mongoose.model<ITea>('TeaCategory', TeaSchema);
+const TeaCategory = mongoose.model<ITea>("TeaCategory", TeaSchema);
 
 export default TeaCategory;

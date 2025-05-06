@@ -6,8 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "seed": "ts-node src/seed.ts",
-    "seed:all": "ts-node src/seedAll.ts"
+    "seed": "ts-node src/seeds/seed.ts",
+    "seed:all": "ts-node src/seeds/seed.ts && ts-node src/seeds/wikiTea.ts"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +19,7 @@
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
-    "express": "^5.1.0",
+    "express": "^4.21.2",
     "graphql": "^16.11.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.14.0"
