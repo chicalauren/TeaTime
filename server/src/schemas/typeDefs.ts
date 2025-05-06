@@ -15,6 +15,10 @@ const typeDefs = gql`
     imageUrl: String
     tastingNotes: String
     tags: [String]
+    description: String
+    caffeineLevel: String
+    brewTempCelsius: Int
+    brewTimeSeconds: Int
     createdBy: ID
     createdAt: String
   }
