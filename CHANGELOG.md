@@ -14,6 +14,9 @@ Includes type safety with TypeScript interfaces
 TODO:
 The Apollo authLink isn't being used at all — likely because the Apollo Client in main.tsx is not running when you're navigating to /profile.
 
+TODO:
+every time I clone the repo and spin up the code I have to npm i in the root, the server folder and the client folder; that seems wrong
+
 ✅ What we now know:
 
     🔐 The Authorization header is being sent correctly with your token.
