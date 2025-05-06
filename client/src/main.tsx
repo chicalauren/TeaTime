@@ -7,15 +7,23 @@ import ReactDOM from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:4000/graphql',  // ✅ make sure correct port and /graphql
+  uri: 'http://localhost:4000/graphql',
 });
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('id_token');
+  
+  // 🔍 Debugging output
+  if (token) {
+    console.log('✅ id_token found in localStorage:', token);
+  } else {
+    console.warn('⚠️ No id_token found in localStorage.');
+  }
+
   return {
     headers: {
       ...headers,
-      Authorization: token ? `Bearer ${token}` : '', // Ensure token is included
+      authorization: token ? `Bearer ${token}` : '',
     },
   };
 });
@@ -28,7 +36,7 @@ const client = new ApolloClient({
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <Toaster position="top-center" reverseOrder={false} /> {/* 🔥 Add this */}
+      <Toaster position="top-center" reverseOrder={false} />
       <App />
     </ApolloProvider>
   </React.StrictMode>
