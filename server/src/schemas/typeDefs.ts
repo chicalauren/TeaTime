@@ -10,7 +10,7 @@ const typeDefs = gql`
   type TeaCategory {
     _id: ID!
     name: String!
-    brand: String!
+    brand: String
     type: String!
     imageUrl: String
     tastingNotes: String
@@ -61,7 +61,7 @@ const typeDefs = gql`
 
     addTea(
       name: String!
-      brand: String!
+      brand: String
       type: String!
       imageUrl: String
       tastingNotes: String
