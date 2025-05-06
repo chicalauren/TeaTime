@@ -10,12 +10,14 @@ const typeDefs = gql`
   type TeaCategory {
     _id: ID!
     name: String!
-    brand: String!
+    brand: String
     type: String!
     imageUrl: String
     tastingNotes: String
     tags: [String]
-    createdBy: ID
+    favorite: Boolean
+    rating: Int
+    createdByUsername: ID
     createdAt: String
   }
 
@@ -35,11 +37,6 @@ const typeDefs = gql`
     likes: Int
     createdAt: String
   }
-  _id: ID!
-  content: String!
-  createdByUsername: String!
-  createdAt: String!
-}
 
 type SpillPost {
   _id: ID!

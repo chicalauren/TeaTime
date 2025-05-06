@@ -33,7 +33,12 @@ function TeaTimer() {
       setProgress(100);
     }
     return () => clearTimeout(timer);
-  }, [running, timeLeft, selectedTea.time]);
+  }, [running, timeLeft]);
+
+  useEffect(() => {
+    setRunning(false); // Stop the timer when tea type changes
+    setProgress(100); // Reset progress
+  }, [selectedTea]);
 
   const startTimer = () => {
     setTimeLeft(selectedTea.time);
