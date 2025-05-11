@@ -8,13 +8,14 @@ function Profile() {
   if (error) return <p>Error loading profile: {error.message}</p>;
 
   const user = data?.me;
+  if (!user) return <p>User not found.</p>;
 
   return (
     <div>
       <h1>👤 Profile</h1>
       <p><strong>Username:</strong> {user.username}</p>
       <p><strong>Email:</strong> {user.email}</p>
-      <p><strong>ID:</strong> {user._id}</p>
+      <p><strong>ID:</strong> {user.id}</p>
     </div>
   );
 }

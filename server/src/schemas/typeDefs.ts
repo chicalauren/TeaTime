@@ -2,13 +2,13 @@ import { gql } from "apollo-server-express";
 
 const typeDefs = gql`
   type User {
-    _id: ID!
+    id: ID!
     username: String!
     email: String!
   }
 
   type TeaCategory {
-    _id: ID!
+    id: ID!
     name: String!
     brand: String
     type: String!
@@ -28,7 +28,7 @@ const typeDefs = gql`
   }
 
   type SpillPost {
-    _id: ID!
+    id: ID!
     title: String!
     content: String!
     createdBy: ID
@@ -38,23 +38,11 @@ const typeDefs = gql`
     createdAt: String
   }
 
-type SpillPost {
-  _id: ID!
-  title: String!
-  content: String!
-  createdBy: ID
-  createdByUsername: String
-  comments: [Comment] 
-  likes: Int
-  createdAt: String!
-}
-
   type Auth {
     token: ID!
     user: User
   }
 
-  # Queries
   type Query {
     me: User
     teas: [TeaCategory]
@@ -63,7 +51,6 @@ type SpillPost {
     recommendTeas(tags: [String!]!): [TeaCategory]
   }
 
-  # Mutations
   type Mutation {
     login(email: String!, password: String!): Auth
     register(username: String!, email: String!, password: String!): Auth
