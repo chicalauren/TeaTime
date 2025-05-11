@@ -19,6 +19,7 @@
     "@vitejs/plugin-react": "^4.4.1",
     "apollo-server": "^3.13.0",
     "axios": "^1.9.0",
+    "dotenv": "^16.5.0",
     "react-circular-progressbar": "^2.2.0",
     "react-confetti": "^6.4.0",
     "react-hot-toast": "^2.5.2"
@@ -28,6 +29,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "typescript": "^5.8.3"
   }
 }

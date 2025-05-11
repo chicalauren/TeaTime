@@ -13,6 +13,7 @@ function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Login submitted');
     try {
       const { data } = await login({
         variables: { email, password },
