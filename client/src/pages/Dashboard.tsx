@@ -147,16 +147,14 @@ function Dashboard() {
                       <p className="card-text mb-1"><strong>Brand:</strong> {tea.brand || 'n/a'}</p>
                       <p className="card-text"><strong>Type:</strong> {tea.type}</p>
                     </div>
-                  </div>
-
-                <div className="card-footer d-flex justify-content-center gap-2">
+                    <div className="card-footer d-flex justify-content-center gap-2">
                   <Link to={`/teas/${tea._id}`}>
-                    <button className="btn btn-outline-primary btn-sm" title="View">
+                    <button className="btn btn-primary btn-sm" title="View">
                       <i className="bi bi-eye"></i>
                     </button>
                   </Link>
                   <Link to={`/edit-tea/${tea._id}`}>
-                    <button className="btn btn-outline-secondary btn-sm" title="Edit">
+                    <button className="btn btn-secondary btn-sm" title="Edit">
                       <i className="bi bi-pencil"></i>
                     </button>
                   </Link>
@@ -168,6 +166,9 @@ function Dashboard() {
                     <i className="bi bi-trash"></i>
                   </button>
                 </div>
+                  </div>
+
+                
               </div>
             </div>
           ))}
