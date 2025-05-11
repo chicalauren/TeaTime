@@ -113,11 +113,16 @@ const seedDatabase = async () => {
   try {
     await connectDB();
 
+    // ✅ Clear existing tea entries before inserting new ones
+    await TeaCategory.deleteMany();
+    console.log("🧹 Cleared old tea data");
+
     // Insert teas
     const insertedTeas = await TeaCategory.insertMany(teaData);
     console.log(`✅ Inserted ${insertedTeas.length} tea categories`);
 
     await User.deleteOne({ username: "testuser" });
+
     // Create fake user
     const fakeUser = await User.create({
       username: "testuser",
@@ -134,5 +139,6 @@ const seedDatabase = async () => {
     process.exit(1);
   }
 };
+
 
 seedDatabase();
