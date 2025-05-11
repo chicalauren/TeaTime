@@ -21,7 +21,7 @@ function Dashboard() {
   const teas = data?.teas || [];
     // 🔍 Log raw data and unique IDs
   console.log('Raw teas fetched:', teas);
-  const teaIds = teas.map((t: any) => t._id);
+  const teaIds = teas.map((t: any) => t.id);
   console.log('Tea IDs:', teaIds);
   
 
@@ -127,50 +127,46 @@ function Dashboard() {
       ) : (
         <div className="row g-4">
           {sortedTeas.map((tea: any) => (
-            <div className="col-md-4 col-sm-6" key={tea._id}>
-              <div className="card h-100 shadow-sm">
-                <div
+            <div className="col-md-4 col-sm-6" key={tea.id}>
+              <div className="card shadow-sm">
+                <div className="ratio ratio-1x1 rounded overflow-hidden">
+                  <div
                     className="card-img-overlay d-flex flex-column justify-content-end text-white"
                     style={{
                       backgroundImage: `url(${tea.imageUrl || ''})`,
                       backgroundSize: 'cover',
                       backgroundPosition: 'center',
-                      height: '200px',
-                      position: 'relative',
                     }}
                   >
-                    <div
-                      className="bg-dark bg-opacity-50 p-2 rounded"
-                      style={{ backdropFilter: 'blur(3px)' }}
-                    >
+                    <div className="bg-dark bg-opacity-50 p-2 rounded mb-2">
                       <h5 className="card-title">{tea.name}</h5>
                       <p className="card-text mb-1"><strong>Brand:</strong> {tea.brand || 'n/a'}</p>
                       <p className="card-text"><strong>Type:</strong> {tea.type}</p>
                     </div>
-                    <div className="card-footer d-flex justify-content-center gap-2">
-                  <Link to={`/teas/${tea._id}`}>
-                    <button className="btn btn-primary btn-sm" title="View">
-                      <i className="bi bi-eye"></i>
-                    </button>
-                  </Link>
-                  <Link to={`/edit-tea/${tea._id}`}>
-                    <button className="btn btn-secondary btn-sm" title="Edit">
-                      <i className="bi bi-pencil"></i>
-                    </button>
-                  </Link>
-                  <button
-                    className="btn btn-outline-danger btn-sm"
-                    title="Delete"
-                    onClick={() => handleDeleteTea(tea._id)}
-                  >
-                    <i className="bi bi-trash"></i>
-                  </button>
-                </div>
+                    <div className="d-flex justify-content-center gap-2">
+                      <Link to={`/teas/${tea.id}`}>
+                        <button className="btn btn-light btn-sm" title="View">
+                          <i className="bi bi-eye"></i>
+                        </button>
+                      </Link>
+                      <Link to={`/edit-tea/${tea.id}`}>
+                        <button className="btn btn-light btn-sm" title="Edit">
+                          <i className="bi bi-pencil"></i>
+                        </button>
+                      </Link>
+                      <button
+                        className="btn btn-light btn-sm"
+                        title="Delete"
+                        onClick={() => handleDeleteTea(tea.id)}
+                      >
+                        <i className="bi bi-trash"></i>
+                      </button>
+                    </div>
                   </div>
-
-                
+                </div>
               </div>
             </div>
+
           ))}
         </div>
       )}

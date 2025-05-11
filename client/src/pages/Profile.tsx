@@ -11,7 +11,7 @@ function Profile() {
   if (!user) return <p>User not found.</p>;
 
   return (
-    <div className="d-flex justify-content-center align-items-start min-vh-100 py-5 px-3">
+    <div className="d-flex justify-content-center align-items-start min-vh-100 py-5 mt-5">
       <div className="card shadow w-100" style={{ maxWidth: '500px' }}>
         
         <div className="ratio ratio-1x1">
