@@ -19,6 +19,11 @@ function Dashboard() {
   if (error) return <p>Error loading teas: {error.message}</p>;
 
   const teas = data?.teas || [];
+    // 🔍 Log raw data and unique IDs
+  console.log('Raw teas fetched:', teas);
+  const teaIds = teas.map((t: any) => t._id);
+  console.log('Tea IDs:', teaIds);
+  
 
   const handleDeleteTea = async (id: string) => {
     const confirmDelete = window.confirm('Are you sure you want to delete this tea?');
@@ -124,26 +129,26 @@ function Dashboard() {
           {sortedTeas.map((tea: any) => (
             <div className="col-md-4 col-sm-6" key={tea._id}>
               <div className="card h-100 shadow-sm">
-                {tea.imageUrl ? (
-                  <img
-                    src={tea.imageUrl}
-                    alt={tea.name}
-                    className="card-img-top"
-                    style={{ height: '200px', objectFit: 'cover' }}
-                  />
-                ) : (
-                  <div
-                    className="bg-light d-flex justify-content-center align-items-center"
-                    style={{ height: '200px' }}
+                <div
+                    className="card-img-overlay d-flex flex-column justify-content-end text-white"
+                    style={{
+                      backgroundImage: `url(${tea.imageUrl || ''})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      height: '200px',
+                      position: 'relative',
+                    }}
                   >
-                    No Image
+                    <div
+                      className="bg-dark bg-opacity-50 p-2 rounded"
+                      style={{ backdropFilter: 'blur(3px)' }}
+                    >
+                      <h5 className="card-title">{tea.name}</h5>
+                      <p className="card-text mb-1"><strong>Brand:</strong> {tea.brand || 'n/a'}</p>
+                      <p className="card-text"><strong>Type:</strong> {tea.type}</p>
+                    </div>
                   </div>
-                )}
-                <div className="card-body text-center">
-                  <h5 className="card-title">{tea.name}</h5>
-                  <p className="card-text mb-1"><strong>Brand:</strong> {tea.brand || 'n/a'}</p>
-                  <p className="card-text"><strong>Type:</strong> {tea.type}</p>
-                </div>
+
                 <div className="card-footer d-flex justify-content-center gap-2">
                   <Link to={`/teas/${tea._id}`}>
                     <button className="btn btn-outline-primary btn-sm" title="View">
