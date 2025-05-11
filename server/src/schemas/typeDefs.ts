@@ -15,7 +15,9 @@ const typeDefs = gql`
     imageUrl: String
     tastingNotes: String
     tags: [String]
-    createdBy: ID
+    favorite: Boolean
+    rating: Int
+    createdByUsername: ID
     createdAt: String
   }
 

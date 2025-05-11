@@ -91,7 +91,6 @@ export const UPDATE_TEA = gql`
       type
       rating
       tags
-      favorite
       imageUrl
     }
   }
