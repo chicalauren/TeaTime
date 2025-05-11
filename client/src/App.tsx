@@ -41,6 +41,7 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <Router>
+        <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.85)', minHeight: '100vh' }}>
         <Navbar />
         <Routes>
           <Route
@@ -80,6 +81,7 @@ function App() {
           />
         </Routes>
         <Footer />
+        </div>
       </Router>
     </ApolloProvider>
   );
