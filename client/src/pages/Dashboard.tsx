@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { GET_TEAS } from '../utils/queries';
 import { DELETE_TEA } from '../utils/mutations';
-import CustomButton from '../components/CustomButton';
-
+//import CustomButton from '../components/CustomButton';
 
 function Dashboard() {
   const { loading, error, data } = useQuery(GET_TEAS);
@@ -15,7 +14,6 @@ function Dashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('');
   const [sortOption, setSortOption] = useState('newest');
-  
 
   if (loading) return <p>Loading teas...</p>;
   if (error) return <p>Error loading teas: {error.message}</p>;
@@ -63,140 +61,108 @@ function Dashboard() {
   });
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>🍵 Welcome to Your Tea Time Dashboard!</h1>
+    <div className="container py-5 mt-5">
+      <h1 className="mb-4 text-center">🍵Tea Time!</h1>
 
-      {/* Top Controls */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '20px' }}>
-        {/* ➕ Add Tea Button */}
-        <Link to="/add-tea">
-        <CustomButton>➕ Add New Tea</CustomButton>
-        </Link>
-        
-
-        {/* 🔍 Search Box */}
-        <input
-          type="text"
-          placeholder="Search teas..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{ padding: '10px', fontSize: '16px' }}
-        />
-
-        {/* 🔽 Filter Type Dropdown */}
-        <select
-          value={filterType}
-          onChange={(e) => setFilterType(e.target.value)}
-          style={{ padding: '10px', fontSize: '16px' }}
-        >
-          <option value="">All Types</option>
-          <option value="Green">Green</option>
-          <option value="Black">Black</option>
-          <option value="Oolong">Oolong</option>
-          <option value="Herbal">Herbal</option>
-          <option value="White">White</option>
-        </select>
-
-        {/* 🔽 Sort Dropdown */}
-        <select
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value)}
-          style={{ padding: '10px', fontSize: '16px' }}
-        >
-          <option value="newest">Newest</option>
-          <option value="az">Name A-Z</option>
-          <option value="za">Name Z-A</option>
-        </select>
-
-        {/* 🧹 Clear Filters Button */}
-        <CustomButton onClick={handleClearFilters}>🧹 Clear Filters</CustomButton>
+      {/* Controls */}
+      <div className="row g-3 mb-4">
+        <div className="col-md-3 col-6">
+          <Link to="/add-tea" className="btn btn-success w-100">
+            ➕ Add New Tea
+          </Link>
+        </div>
+        <div className="col-md-3 col-6">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search teas..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className="col-md-2 col-6">
+          <select
+            className="form-select"
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+          >
+            <option value="">All Types</option>
+            <option value="Green">Green</option>
+            <option value="Black">Black</option>
+            <option value="Oolong">Oolong</option>
+            <option value="Herbal">Herbal</option>
+            <option value="White">White</option>
+          </select>
+        </div>
+        <div className="col-md-2 col-6">
+          <select
+            className="form-select"
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+          >
+            <option value="newest">Newest</option>
+            <option value="az">Name A-Z</option>
+            <option value="za">Name Z-A</option>
+          </select>
+        </div>
+        <div className="col-md-2 col-12">
+          <button className="btn btn-outline-secondary w-100" onClick={handleClearFilters}>
+            🧹 Clear Filters
+          </button>
+        </div>
       </div>
 
-      {/* Tea List */}
-      {filteredTeas.length === 0 ? (
-        <div
-          style={{
-            padding: '4rem',
-            textAlign: 'center',
-            color: '#555',
-          }}
-        >
+      {/* Tea Cards */}
+      {sortedTeas.length === 0 ? (
+        <div className="text-center py-5 text-muted">
           <div style={{ fontSize: '4rem' }}>🍵</div>
-          <h2 style={{ marginTop: '1rem' }}>No Teas Found</h2>
-          <p style={{ marginTop: '0.5rem' }}>
-            Try adjusting your search or clearing filters.
-          </p>
+          <h2>No Teas Found</h2>
+          <p>Try adjusting your search or clearing filters.</p>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+        <div className="row g-4">
           {sortedTeas.map((tea: any) => (
-            <div
-              key={tea._id}
-              style={{
-                border: '1px solid #ccc',
-                borderRadius: '8px',
-                padding: '1rem',
-                width: '250px',
-                backgroundColor: '#fafafa',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}
-            >
-              {/* 🖼 Thumbnail */}
-              {tea.imageUrl ? (
-                <img
-                  src={tea.imageUrl}
-                  alt={tea.name}
-                  style={{
-                    width: '150px',
-                    height: '150px',
-                    objectFit: 'cover',
-                    borderRadius: '8px',
-                    marginBottom: '1rem',
-                  }}
-                />
-              ) : (
-                <div
-                  style={{
-                    width: '150px',
-                    height: '150px',
-                    backgroundColor: '#eee',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: '8px',
-                    marginBottom: '1rem',
-                    color: '#999',
-                    fontSize: '14px',
-                  }}
-                >
-                  No Image
+            <div className="col-md-4 col-sm-6" key={tea._id}>
+              <div className="card h-100 shadow-sm">
+                {tea.imageUrl ? (
+                  <img
+                    src={tea.imageUrl}
+                    alt={tea.name}
+                    className="card-img-top"
+                    style={{ height: '200px', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <div
+                    className="bg-light d-flex justify-content-center align-items-center"
+                    style={{ height: '200px' }}
+                  >
+                    No Image
+                  </div>
+                )}
+                <div className="card-body text-center">
+                  <h5 className="card-title">{tea.name}</h5>
+                  <p className="card-text mb-1"><strong>Brand:</strong> {tea.brand || 'n/a'}</p>
+                  <p className="card-text"><strong>Type:</strong> {tea.type}</p>
                 </div>
-              )}
-
-
-              <h3 style={{color: 'black'}}>{tea.name}</h3>
-              <p style={{color: 'black'}}><strong>Brand:</strong> {tea.brand || "n/a"}</p>
-              <p style={{color: 'black'}}><strong>Type:</strong> {tea.type}</p>
-
-              {/* Buttons */}
-              <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <Link to={`/teas/${tea._id}`}>
-                  <button>🔎 View Details</button>
-                </Link>
-
-                <Link to={`/edit-tea/${tea._id}`}>
-                  <button>✏️ Edit</button>
-                </Link>
-
-                <button
-                  style={{ backgroundColor: 'red', color: 'white' }}
-                  onClick={() => handleDeleteTea(tea._id)}
-                >
-                  🗑 Delete
-                </button>
+                <div className="card-footer d-flex justify-content-center gap-2">
+                  <Link to={`/teas/${tea._id}`}>
+                    <button className="btn btn-outline-primary btn-sm" title="View">
+                      <i className="bi bi-eye"></i>
+                    </button>
+                  </Link>
+                  <Link to={`/edit-tea/${tea._id}`}>
+                    <button className="btn btn-outline-secondary btn-sm" title="Edit">
+                      <i className="bi bi-pencil"></i>
+                    </button>
+                  </Link>
+                  <button
+                    className="btn btn-outline-danger btn-sm"
+                    title="Delete"
+                    onClick={() => handleDeleteTea(tea._id)}
+                  >
+                    <i className="bi bi-trash"></i>
+                  </button>
+                </div>
               </div>
             </div>
           ))}
