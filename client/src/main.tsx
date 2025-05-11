@@ -5,6 +5,9 @@ import App from './App';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:4000/graphql',

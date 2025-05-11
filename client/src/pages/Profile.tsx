@@ -11,11 +11,18 @@ function Profile() {
   if (!user) return <p>User not found.</p>;
 
   return (
-    <div>
-      <h1>👤 Profile</h1>
-      <p><strong>Username:</strong> {user.username}</p>
-      <p><strong>Email:</strong> {user.email}</p>
-      <p><strong>ID:</strong> {user.id}</p>
+    <div className="container my-5">
+      <div className="row justify-content-center">
+        <div className="col-12 col-md-8 col-lg-6">
+          <div className="card shadow-sm">
+            <div className="card-body text-center">
+              <h1 className="card-title mb-4">👤 Profile</h1>
+              <p><strong>Username:</strong> {user.username}</p>
+              <p><strong>Email:</strong> {user.email}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
