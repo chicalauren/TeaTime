@@ -1,3 +1,5 @@
+//TODO: styling
+
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { GET_TEA } from '../utils/queries';
