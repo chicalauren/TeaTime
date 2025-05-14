@@ -66,6 +66,7 @@ const typeDefs = gql`
       imageUrl: String
       tastingNotes: String
       tags: [String]
+      favorite: Boolean
     ): TeaCategory
 
     updateTea(
