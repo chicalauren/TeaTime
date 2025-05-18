@@ -7,6 +7,8 @@ import toast from 'react-hot-toast';
 import Confetti from 'react-confetti';
 import { motion } from 'framer-motion';
 
+//TODO: add data tags for cypress testing  
+
 function AddTeaForm() {
   const navigate = useNavigate();
   const [addTea] = useMutation(ADD_TEA);

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { GET_TEAS } from '../utils/queries';
 import { DELETE_TEA } from '../utils/mutations';
 //import CustomButton from '../components/CustomButton';
+//TODO: add data tags for cypress testing  
 
 function Dashboard() {
   const { loading, error, data } = useQuery(GET_TEAS);

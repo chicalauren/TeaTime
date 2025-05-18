@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { LOGIN } from '../utils/mutations';
 import { useNavigate } from 'react-router-dom';
+//TODO: add data tags for cypress testing  
 
 function Login() {
   const navigate = useNavigate();

@@ -1,5 +1,9 @@
 import { useQuery } from '@apollo/client';
 import { GET_ME } from '../utils/queries';
+//TODO: list favorite teas
+//TODO: Blurb or bio for people to enter;
+//TODO: favorite tea source? 
+//TODO: add data tags for cypress testing    
 
 function Profile() {
   const { loading, error, data } = useQuery(GET_ME);

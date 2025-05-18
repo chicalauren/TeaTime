@@ -1,4 +1,5 @@
 //TODO: styling
+//TODO: add data tags for cypress testing  
 
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
