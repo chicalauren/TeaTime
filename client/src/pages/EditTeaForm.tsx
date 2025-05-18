@@ -8,22 +8,20 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 function EditTeaForm() {
-  const { id } = useParams();
+  const params = useParams();
+  const id = params.id ?? "";
   const navigate = useNavigate();
   const { data, loading, error } = useQuery(GET_TEA, { variables: { id } });
   const [updateTea] = useMutation(UPDATE_TEA, {
     refetchQueries: [{ query: GET_TEAS }],
   });
 
-  if (loading) return <p>Loading tea details...</p>;
-  if (error) return <p>Error loading tea.</p>;
-
   const tea = data?.tea;
 
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("");
   const [type, setType] = useState("");
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState<number | "">("");
   const [tags, setTags] = useState("");
   const [favorite, setFavorite] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -40,8 +38,13 @@ function EditTeaForm() {
     }
   }, [tea]);
 
+  // Early returns must come after all hooks
+  if (!id) return <p>Invalid tea ID.</p>;
+  if (loading) return <p>Loading tea details...</p>;
+  if (error) return <p>Error loading tea.</p>;
+
   const handleImageUpload = async () => {
-    if (!imageFile) return tea.imageUrl; // No new image → keep old one
+    if (!imageFile) return tea?.imageUrl || ""; // No new image → keep old one
 
     const formData = new FormData();
     formData.append("file", imageFile);
@@ -76,7 +79,7 @@ function EditTeaForm() {
           name,
           brand,
           type,
-          rating,
+          rating: rating === "" ? null : rating,
           tags: tags.split(",").map((tag) => tag.trim()),
           favorite,
           imageUrl,
@@ -133,7 +136,9 @@ function EditTeaForm() {
         <label>Rating (1-5 Stars)</label>
         <select
           value={rating}
-          onChange={(e) => setRating(parseInt(e.target.value))}
+          onChange={(e) =>
+            setRating(e.target.value === "" ? "" : Number(e.target.value))
+          }
           required
         >
           <option value="">Select Rating</option>

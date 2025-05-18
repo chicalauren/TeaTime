@@ -14,6 +14,7 @@ export interface ITea extends Document {
   caffeineLevel?: string;
   brewTempCelsius?: number;
   brewTimeSeconds?: number;
+  purchaseDate?: Date;
 }
 
 const TeaSchema: Schema = new Schema({
@@ -47,6 +48,9 @@ TeaSchema.add({
   },
   brewTimeSeconds: {
     type: Number,
+  },
+  purchaseDate: {
+    type: Date,
   },
 });
 
