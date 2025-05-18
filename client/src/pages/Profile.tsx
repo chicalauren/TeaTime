@@ -11,11 +11,24 @@ function Profile() {
   if (!user) return <p>User not found.</p>;
 
   return (
-    <div>
-      <h1>👤 Profile</h1>
-      <p><strong>Username:</strong> {user.username}</p>
-      <p><strong>Email:</strong> {user.email}</p>
-      <p><strong>ID:</strong> {user.id}</p>
+    <div className="d-flex justify-content-center align-items-start min-vh-100 py-5 mt-5">
+      <div className="card shadow w-100" style={{ maxWidth: '500px' }}>
+        
+        <div className="ratio ratio-1x1">
+          <img 
+            src="/teacup.jpg" 
+            alt="User profile"
+            className="img-fluid object-fit-cover rounded-top"
+          />
+        </div>
+
+
+        <div className="card-body text-center">
+          <h1 className="card-title mb-4">{user.username}</h1>
+          
+          <p><strong>Email:</strong> {user.email}</p>
+        </div>
+      </div>
     </div>
   );
 }

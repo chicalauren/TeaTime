@@ -27,6 +27,7 @@ const teaData = [
     flavorNotes: "Citrus, Malty, Floral",
     looseLeafRecipe: "Use 1 teaspoon of loose leaves per 8 oz water. Steep at 95°C (203°F) for 3–5 minutes.",
     usage: "focus and energy",
+    imageUrl: "/images/earl-grey.jpg"
   },
   {
     name: "Chamomile",
@@ -39,6 +40,7 @@ const teaData = [
     flavorNotes: "Floral, almost Apple-like",
     looseLeafRecipe: "Use 1 tablespoon of dried chamomile flowers per 8 oz water. Steep at 90°C (194°F) for 5 minutes.",
     usage: "Sleepy Time and stress relief",
+    imageUrl: "/images/chamomile.jpg"
   },
   {
     name: "Peppermint",
@@ -51,6 +53,7 @@ const teaData = [
     flavorNotes: "Minty and Cooling",
     looseLeafRecipe: "Use 1 tablespoon of dried peppermint leaves per 8 oz water. Steep at 95°C (203°F) for 5 minutes.",
     usage: "Digestion support and very refreshing",
+    imageUrl: "/images/peppermint.jpg"
   },
   {
     name: "Green Tea",
@@ -63,6 +66,7 @@ const teaData = [
     flavorNotes: "Grassy, Vegetal",
     looseLeafRecipe: "Use 1 teaspoon of loose leaves per 8 oz water. Steep at 80°C (176°F) for 2-3 minutes.",
     usage: "Relaxation and antioxidants",
+    imageUrl: "/images/green-tea.jpg"
   },
   {
     name: "Oolong",
@@ -75,6 +79,7 @@ const teaData = [
     flavorNotes: "Floral, Fruity, Sweet",
     looseLeafRecipe: "Use 1 teaspoon of loose leaves per 8 oz water. Steep at 85°C (185°F) for 4 minutes.",
     usage: "Focus and relaxation",
+    imageUrl: "/images/oolong.jpg"
   },
   {
     name: "Chai",
@@ -87,6 +92,7 @@ const teaData = [
     flavorNotes: "Spicy, Sweet, Creamy",
     looseLeafRecipe: "Use 1-2 teaspoons of loose leaves per 8 oz water. Steep at 100°C (212°F) for 5 minutes.",
     usage: "Energy boost and warming",
+    imageUrl: "/images/chai.jpg"
   },
   {
     name: "White Tea",
@@ -99,6 +105,7 @@ const teaData = [
     flavorNotes: "Floral, Light, Sweet",
     looseLeafRecipe: "Use 1 teaspoon of loose leaves per 8 oz water. Steep at 70°C (158°F) for 2-3 minutes.",
     usage: "Relaxation and skin health",
+    imageUrl: "/images/white-tea.jpg"
   },
 ];
 
@@ -106,9 +113,15 @@ const seedDatabase = async () => {
   try {
     await connectDB();
 
+    // ✅ Clear existing tea entries before inserting new ones
+    await TeaCategory.deleteMany();
+    console.log("🧹 Cleared old tea data");
+
     // Insert teas
     const insertedTeas = await TeaCategory.insertMany(teaData);
     console.log(`✅ Inserted ${insertedTeas.length} tea categories`);
+
+    await User.deleteOne({ username: "testuser" });
 
     // Create fake user
     const fakeUser = await User.create({
@@ -126,5 +139,6 @@ const seedDatabase = async () => {
     process.exit(1);
   }
 };
+
 
 seedDatabase();
