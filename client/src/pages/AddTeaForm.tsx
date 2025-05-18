@@ -1,5 +1,3 @@
-//TODO: styling
-
 import { useMutation } from '@apollo/client';
 import { ADD_TEA } from '../utils/mutations';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +10,6 @@ import { motion } from 'framer-motion';
 function AddTeaForm() {
   const navigate = useNavigate();
   const [addTea] = useMutation(ADD_TEA);
-
   const nameInputRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState('');
@@ -87,7 +84,6 @@ function AddTeaForm() {
       setShowConfetti(true);
       setSuccessFadeIn(true);
 
-      // Clear form
       setName('');
       setBrand('');
       setType('');
@@ -101,7 +97,6 @@ function AddTeaForm() {
       setTimeout(() => {
         navigate('/dashboard');
       }, 2500);
-
     } catch (err) {
       console.error('Failed to add tea', err);
       toast.error('Failed to add tea. Please try again.');
@@ -109,157 +104,143 @@ function AddTeaForm() {
   };
 
   return (
-    <div style={{ padding: '2rem', position: 'relative' }}>
+    <div className="container py-5 mt-5 d-flex justify-content-center" style={{ minHeight: '100vh' }}>
       {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />}
 
       {successFadeIn && (
         <motion.div
+          className="position-absolute top-0 start-50 translate-middle-x mt-3 p-3 rounded shadow"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          style={{
-            position: 'absolute',
-            top: '20px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: '#e0ffe0',
-            padding: '1rem 2rem',
-            borderRadius: '10px',
-            boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
-            fontWeight: 'bold',
-            fontSize: '1.3rem',
-            color: '#006400',
-          }}
+          style={{ background: '#e0ffe0', fontWeight: 'bold', color: '#006400' }}
         >
           🎉 Your tea was added!
         </motion.div>
       )}
 
-      <h1>Add New Tea 🍵</h1>
+      <div className="card shadow w-100" style={{ maxWidth: '600px' }}>
+        <div className="ratio ratio-1x1 rounded overflow-hidden">
+          <div
+            className="card-img-overlay d-flex flex-column justify-content-center text-white"
+            style={{
+              backgroundColor: '#222',
+              padding: '2rem',
+              borderRadius: '0.5rem',
+            }}
+          >
+            <h1 className="card-title text-center mb-4 text-white">Add New Tea 🍵</h1>
 
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <input
-          ref={nameInputRef}
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
+            <form onSubmit={handleSubmit} className="d-flex flex-column gap-3 text-white">
+              <input
+                ref={nameInputRef}
+                type="text"
+                className="form-control"
+                placeholder="Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
 
-        <input
-          type="text"
-          placeholder="Brand"
-          value={brand}
-          onChange={(e) => setBrand(e.target.value)}
-          required
-        />
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Brand"
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+                required
+              />
 
-        <input
-          type="text"
-          placeholder="Type (Green, Black, etc)"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          required
-        />
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Type (Green, Black, etc)"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                required
+              />
 
-        <textarea
-          placeholder="Tasting Notes"
-          value={tastingNotes}
-          onChange={(e) => setTastingNotes(e.target.value)}
-        />
+              <textarea
+                className="form-control"
+                placeholder="Tasting Notes"
+                value={tastingNotes}
+                onChange={(e) => setTastingNotes(e.target.value)}
+              />
 
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Tags (comma separated)"
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+              />
 
-        <input
-          type="text"
-          placeholder="Tags (comma separated)"
-          value={tags}
-          onChange={(e) => setTags(e.target.value)}
-        />
+              <div>
+                <label className="form-label">Rating (1–5 Stars)</label>
+                <select
+                  className="form-select"
+                  value={rating}
+                  onChange={(e) => setRating(parseInt(e.target.value))}
+                  required
+                >
+                  <option value="">Select Rating</option>
+                  {[1, 2, 3, 4, 5].map((num) => (
+                    <option key={num} value={num}>{'⭐'.repeat(num)}</option>
+                  ))}
+                </select>
+              </div>
 
-        <label>Rating (1-5 Stars)</label>
-        <select
-          value={rating}
-          onChange={(e) => setRating(parseInt(e.target.value))}
-          required
-        >
-          <option value="">Select Rating</option>
-          {[1, 2, 3, 4, 5].map((num) => (
-            <option key={num} value={num}>
-              {'⭐'.repeat(num)}
-            </option>
-          ))}
-        </select>
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="favorite"
+                  checked={favorite}
+                  onChange={(e) => setFavorite(e.target.checked)}
+                />
+                <label className="form-check-label" htmlFor="favorite">
+                  Mark as Favorite ❤️
+                </label>
+              </div>
 
-        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <input
-            type="checkbox"
-            checked={favorite}
-            onChange={(e) => setFavorite(e.target.checked)}
-          />
-          Mark as Favorite ❤️
-        </label>
+              <input
+                type="file"
+                className="form-control"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
 
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-        />
+              {imagePreview && (
+                <div className="text-center">
+                  <p><strong>Image Preview:</strong></p>
+                  <img
+                    src={imagePreview}
+                    alt="Selected"
+                    className="img-fluid rounded"
+                    style={{ maxHeight: '250px' }}
+                  />
+                </div>
+              )}
 
-        {imagePreview ? (
-          <div style={{ marginTop: '1rem' }}>
-            <p><strong>Image Preview:</strong></p>
-            <img
-              src={imagePreview}
-              alt="Selected"
-              style={{ width: '250px', height: 'auto', borderRadius: '8px', marginTop: '10px' }}
-            />
+              {uploading && <p className="text-primary">Uploading image, please wait...</p>}
+
+              <button
+                type="submit"
+                className="btn btn-light w-100"
+                disabled={uploading || !name || !brand || !type || rating === 0}
+              >
+                {uploading ? (
+                  <div className="spinner-border spinner-border-sm" role="status">
+                    <span className="visually-hidden">Uploading...</span>
+                  </div>
+                ) : (
+                  '➕ Add Tea'
+                )}
+              </button>
+            </form>
           </div>
-        ) : (
-          <p style={{ marginTop: '1rem', fontStyle: 'italic' }}>No image selected yet 📷</p>
-        )}
-
-        {uploading && (
-          <p style={{ color: 'blue' }}>Uploading image, please wait...</p>
-        )}
-
-        <button
-          type="submit"
-          disabled={uploading || !name || !brand || !type || rating === 0}
-          style={{
-            padding: '0.75rem 1.5rem',
-            fontSize: '1rem',
-            position: 'relative',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          {uploading ? (
-            <div
-              style={{
-                width: '20px',
-                height: '20px',
-                border: '3px solid #fff',
-                borderTop: '3px solid blue',
-                borderRadius: '50%',
-                animation: 'spin 1s linear infinite',
-              }}
-            />
-          ) : (
-            'Add Tea'
-          )}
-        </button>
-      </form>
-
-      <style>
-        {`
-          @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-          }
-        `}
-      </style>
+        </div>
+      </div>
     </div>
   );
 }
