@@ -1,0 +1,36 @@
+# Name of workflow
+name: Lint workflow
+
+# Trigger workflow on all pull requests
+on:
+  pull_request:
+    branches:
+      - develop
+      - staging
+
+# Jobs to carry out
+jobs:
+  test:
+    # Operating system to run job on
+    runs-on: ubuntu-latest
+
+    # Steps in job
+    steps:
+      # Get code from repo
+      - name: Checkout code
+        uses: actions/checkout@v1
+
+      - name: Use Node.js 21.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 21.x
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          cd server && npm install && cd ../client && npm install
+               # start the backend server?
+      - name: Start the server
+        run: |
+          cd server && npm start &  # Start server in the background
+          sleep 10  # Wait for the server to fully start

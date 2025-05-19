@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npx cypress run --browser electron",
+    "test-component": "npx cypress run --component",
+    "test-gui": "npx cypress open",
     "build": "cd client && npm run build && cd ../server && npm run build",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "render-build": "npm install && npm run build",
     "seed": "cd server && npm run seed",
     "server": "cd server && npm run dev",
     "client": "cd client && npm run dev",
