@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "cd server && npm run start",
     "test": "npx cypress run --browser electron",
     "test-component": "npx cypress run --component",
     "test-gui": "npx cypress open",
