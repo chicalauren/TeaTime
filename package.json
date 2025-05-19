@@ -12,8 +12,7 @@
     "seed": "cd server && npm run seed",
     "server": "cd server && npm run dev",
     "client": "cd client && npm run dev",
-    "install": "cd server && npm i && cd ../client && npm i",
-    "start": "cd server && npm start",
+    "install": "cd server && npm i && cd ../client && npm i"
   },
   "keywords": [],
   "author": "",
