@@ -64,17 +64,19 @@ function EditTeaForm() {
 
       await updateTea({
         variables: {
-          id,
-          name,
-          brand,
-          type,
-          rating: rating === "" ? null : rating,
-          tags: tags
-            .split(",")
-            .map((tag) => tag.trim())
-            .filter((tag) => tag.length > 0),
-          favorite,
-          imageUrl,
+          updateTeaId: id,
+          input: {
+            name,
+            brand,
+            type,
+            rating: rating === "" ? null : rating,
+            tags: tags
+              .split(",")
+              .map((tag) => tag.trim())
+              .filter((tag) => tag.length > 0),
+            favorite,
+            imageUrl,
+          },
         },
       });
 
