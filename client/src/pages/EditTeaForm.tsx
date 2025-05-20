@@ -2,8 +2,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { GET_TEA, GET_TEAS } from "../utils/queries";
 import { UPDATE_TEA } from "../utils/mutations";
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -21,7 +20,7 @@ function EditTeaForm() {
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("");
   const [type, setType] = useState("");
-  const [rating, setRating] = useState<number | "">("");
+  const [rating, setRating] = useState<number | "">(""); // should never be null
   const [tags, setTags] = useState("");
   const [favorite, setFavorite] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -32,20 +31,19 @@ function EditTeaForm() {
       setName(tea.name);
       setBrand(tea.brand);
       setType(tea.type);
-      setRating(tea.rating);
+      setRating(tea.rating ?? ""); // <-- fix: never let it be null
       setTags(tea.tags?.join(", ") || "");
       setFavorite(tea.favorite || false);
     }
   }, [tea]);
 
-  // Early returns must come after all hooks
+  // Early returns
   if (!id) return <p>Invalid tea ID.</p>;
   if (loading) return <p>Loading tea details...</p>;
   if (error) return <p>Error loading tea.</p>;
 
   const handleImageUpload = async () => {
-    if (!imageFile) return tea?.imageUrl || ""; // No new image → keep old one
-
+    if (!imageFile) return tea?.imageUrl || ""; // keep old image if no new one
     const formData = new FormData();
     formData.append("file", imageFile);
     formData.append("upload_preset", "tea_uploads");
@@ -64,15 +62,6 @@ function EditTeaForm() {
     try {
       const imageUrl = await handleImageUpload();
 
-      console.log("Sending Update Variables:", {
-        id,
-        name,
-        brand,
-        type,
-        rating,
-        tags: tags.split(",").map((tag) => tag.trim()),
-        favorite,
-      });
       await updateTea({
         variables: {
           id,
@@ -80,7 +69,10 @@ function EditTeaForm() {
           brand,
           type,
           rating: rating === "" ? null : rating,
-          tags: tags.split(",").map((tag) => tag.trim()),
+          tags: tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter((tag) => tag.length > 0),
           favorite,
           imageUrl,
         },

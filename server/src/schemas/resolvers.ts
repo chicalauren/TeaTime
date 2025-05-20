@@ -72,6 +72,7 @@ const resolvers = {
     },
 
     updateTea: async (_: any, { id, ...fields }: any, context: any) => {
+      console.log("Context user:", context.user); // Debugging
       if (!context.user) {
         throw new AuthenticationError("Authentication required");
       }

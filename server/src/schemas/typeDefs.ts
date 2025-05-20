@@ -21,6 +21,8 @@ const typeDefs = gql`
     brewTimeSeconds: Int
     createdBy: ID
     createdAt: String
+    rating: Int
+    favorite: Boolean
   }
 
   type Comment {
@@ -66,6 +68,7 @@ const typeDefs = gql`
       imageUrl: String
       tastingNotes: String
       tags: [String]
+      rating: Int
       favorite: Boolean
     ): TeaCategory
 

@@ -18,7 +18,7 @@ export function signToken({ _id, email, username }: UserPayload) {
   return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
 }
 
-export function authMiddleware({ req }: { req: Request }) {
+export function authMiddleware({ req }: { req: any }) {
   const token = req.headers.authorization?.split(" ")[1]; // Extract the token
   if (!token) {
     return { req }; // No token, user is not authenticated
@@ -29,10 +29,12 @@ export function authMiddleware({ req }: { req: Request }) {
     const { data } = jwt.verify(token, process.env.JWT_SECRET!) as {
       data: { _id: string; username: string; email: string };
     };
-    (req as any).user = data; // Attach user to req
+    console.log("Decoded token data:", data);
+    req.user = data as UserPayload; // Attach user to req
+    console.log("User from token:", req.user); // Debugging
   } catch (err) {
     console.error("Invalid or expired token");
   }
 
-  return { req };
+  return req;
 }
