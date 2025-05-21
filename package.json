@@ -9,8 +9,9 @@
     "test-gui": "npx cypress open",
     "build": "cd client && npm run build && cd ../server && npm run build",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
+
+    "seed": "npm run build && npx ts-node server/dist/seeds/seed.ts",
     "render-build": "npm install && npm run build",
-    "seed": "cd server && npm run seed",
     "server": "cd server && npm run dev",
     "client": "cd client && npm run dev",
     "install": "cd server && npm i && cd ../client && npm i"
