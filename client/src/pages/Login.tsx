@@ -1,15 +1,15 @@
-import { useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { LOGIN } from '../utils/mutations';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useMutation } from "@apollo/client";
+import { LOGIN } from "../utils/mutations"; // Your GraphQL mutation
+import { useNavigate } from "react-router-dom"; // if you want to redirect after login
 
 function Login() {
   const navigate = useNavigate();
   const [login] = useMutation(LOGIN);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,57 +18,43 @@ function Login() {
         variables: { email, password },
       });
 
-      localStorage.setItem('id_token', data.login.token);
-      localStorage.setItem('username', data.login.user.username);
+      // ✅ Save the token and username
+      localStorage.setItem("id_token", data.login.token);
+      localStorage.setItem("username", data.login.user.username);
 
-      navigate('/dashboard');
+      // ✅ Redirect to dashboard or homepage
+      navigate("/dashboard");
     } catch (err: any) {
-      console.error('Login error:', err);
-      setErrorMessage('Failed to login. Please check your credentials.');
+      console.error("Login error:", err);
+      setErrorMessage("Failed to login. Please check your credentials.");
     }
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center min-vh-100">
-      <div className="card p-4 shadow w-100" style={{ maxWidth: '400px' }}>
-        <h2 className="text-center mb-4">Login</h2>
+    <div className="auth-container">
+      <h2>Login</h2>
+      <form
+        onSubmit={handleLogin}
+        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+      >
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          required
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          required
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button type="submit">Login</button>
+      </form>
 
-        {errorMessage && (
-          <div className="alert alert-danger" role="alert">
-            {errorMessage}
-          </div>
-        )}
-
-        <form onSubmit={handleLogin}>
-          <div className="mb-3">
-            <label htmlFor="email" className="form-label">Email</label>
-            <input
-              id="email"
-              type="email"
-              className="form-control"
-              placeholder="Email"
-              value={email}
-              required
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="password" className="form-label">Password</label>
-            <input
-              id="password"
-              type="password"
-              className="form-control"
-              placeholder="Password"
-              value={password}
-              required
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-
-          <button type="submit" className="btn btn-primary w-100">Login</button>
-        </form>
-      </div>
+      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
     </div>
   );
 }
