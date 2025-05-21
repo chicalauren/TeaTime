@@ -37,7 +37,7 @@ function TeaCard({ tea }: { tea: any }) {
       )}
 
       <h3>{tea.name}</h3>
-      <p><strong>Brand:</strong> {tea.brand}</p>
+      <p><strong>Brand:</strong> {tea.brand || "n/a"}</p>
       <p><strong>Type:</strong> {tea.type}</p>
 
       {/* ⭐ Show Stars */}
