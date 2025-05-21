@@ -15,10 +15,14 @@ const typeDefs = gql`
     imageUrl: String
     tastingNotes: String
     tags: [String]
-    favorite: Boolean
-    rating: Int
-    createdByUsername: ID
+    description: String
+    caffeineLevel: String
+    brewTempCelsius: Int
+    brewTimeSeconds: Int
+    createdBy: ID
     createdAt: String
+    rating: Int
+    favorite: Boolean
   }
 
   type Comment {
@@ -35,7 +39,7 @@ const typeDefs = gql`
     createdByUsername: String
     comments: [Comment]
     likes: Int
-    createdAt: String
+    createdAt: String!
   }
 
   type Auth {
@@ -57,11 +61,13 @@ const typeDefs = gql`
 
     addTea(
       name: String!
-      brand: String!
+      brand: String
       type: String!
       imageUrl: String
       tastingNotes: String
       tags: [String]
+      rating: Int
+      favorite: Boolean
     ): TeaCategory
 
     updateTea(

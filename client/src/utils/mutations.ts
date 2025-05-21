@@ -1,11 +1,11 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const LOGIN = gql`
   mutation login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       token
       user {
-        id
+        _id
         username
         email
       }
@@ -42,6 +42,7 @@ export const ADD_TEA = gql`
     $imageUrl: String
     $tastingNotes: String
     $tags: [String]
+    $favorite: Boolean
   ) {
     addTea(
       name: $name
@@ -50,8 +51,9 @@ export const ADD_TEA = gql`
       imageUrl: $imageUrl
       tastingNotes: $tastingNotes
       tags: $tags
+      favorite: $favorite
     ) {
-      id
+      _id
       name
       brand
       type
@@ -63,33 +65,29 @@ export const ADD_TEA = gql`
     }
   }
 `;
-
 export const UPDATE_TEA = gql`
-  mutation updateTea(
-    $id: ID!
-    $name: String!
-    $brand: String!
-    $type: String!
+  mutation Mutation(
+    $updateTeaId: ID!
+    $brand: String
+    $type: String
     $rating: Int
-    $tags: [String]
     $favorite: Boolean
-    $imageUrl: String
+    $name: String
   ) {
     updateTea(
-      id: $id
-      name: $name
+      id: $updateTeaId
       brand: $brand
       type: $type
       rating: $rating
-      tags: $tags
       favorite: $favorite
-      imageUrl: $imageUrl
+      name: $name
     ) {
       id
       name
-      brand
-      type
       rating
+      type
+      brand
+      favorite
       tags
       imageUrl
     }
