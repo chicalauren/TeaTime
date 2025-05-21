@@ -3,10 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd server && npm run start",
+    "test": "npx cypress run --browser electron",
+    "test-component": "npx cypress run --component",
+    "test-gui": "npx cypress open",
     "build": "cd client && npm run build && cd ../server && npm run build",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
+
     "seed": "npm run build && npx ts-node server/dist/seeds/seed.ts",
+    "render-build": "npm install && npm run build",
     "server": "cd server && npm run dev",
     "client": "cd client && npm run dev",
     "install": "cd server && npm i && cd ../client && npm i"
