@@ -103,57 +103,29 @@ function EditTeaForm() {
           onChange={(e) => setName(e.target.value)}
           required
         />
-return (
-  <div className="container py-5 mt-5 d-flex justify-content-center" style={{ minHeight: '100vh' }}>
-    <div className="card shadow w-100" style={{ maxWidth: '600px' }}>
-      <div className="ratio ratio-1x1 rounded overflow-hidden">
-        <div
-          className="card-img-overlay d-flex flex-column justify-content-center text-white"
-            style={{
-              backgroundColor: '#222', // or try '#343a40' for Bootstrap's dark gray
-              padding: '2rem',
-              borderRadius: '0.5rem',
-            }}
 
-        >
-        <h1 className="card-title text-center mb-4 text-white">Edit Tea 🍵</h1>
+        <input
+          type="text"
+          placeholder="Brand"
+          value={brand}
+          onChange={(e) => setBrand(e.target.value)}
+          required
+        />
 
-        <form onSubmit={handleSubmit} className="d-flex flex-column gap-3 text-white">
+        <input
+          type="text"
+          placeholder="Type (Green, Black, etc)"
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          required
+        />
 
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Brand"
-            value={brand}
-            onChange={(e) => setBrand(e.target.value)}
-            required
-          />
-
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Type (Green, Black, etc)"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            required
-          />
-
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Tags (comma separated)"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-          />
+        <input
+          type="text"
+          placeholder="Tags (comma separated)"
+          value={tags}
+          onChange={(e) => setTags(e.target.value)}
+        />
 
         <label>Rating (1-5 Stars)</label>
         <select
@@ -170,22 +142,6 @@ return (
             </option>
           ))}
         </select>
-          <div>
-            <label className="form-label">Rating (1–5 Stars)</label>
-            <select
-              className="form-select"
-              value={rating}
-              onChange={(e) => setRating(parseInt(e.target.value))}
-              required
-            >
-              <option value="">Select Rating</option>
-              {[1, 2, 3, 4, 5].map((num) => (
-                <option key={num} value={num}>
-                  {'⭐'.repeat(num)}
-                </option>
-              ))}
-            </select>
-          </div>
 
         <label style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <input
@@ -195,37 +151,17 @@ return (
           />
           Mark as Favorite ❤️
         </label>
-          <div className="form-check">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              id="favorite"
-              checked={favorite}
-              onChange={(e) => setFavorite(e.target.checked)}
-            />
-            <label className="form-check-label" htmlFor="favorite">
-              Mark as Favorite ❤️
-            </label>
-          </div>
 
-          <input
-            type="file"
-            className="form-control"
-            accept="image/*"
-            onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-          />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+        />
 
-          <button type="submit" className="btn btn-light w-100">
-            ✅ Update Tea
-          </button>
-        </form>
-      </div>
+        <button type="submit">Update Tea</button>
+      </form>
     </div>
-  </div>
-  </div>
-);
-
-
+  );
 }
 
 export default EditTeaForm;
