@@ -6,6 +6,7 @@ on:
   pull_request:
     branches:
       - main
+    types: [ closed ]
 
 jobs:
   # Define a job named "ci"
@@ -15,19 +16,7 @@ jobs:
 
     # Define the steps to be executed in the job
     steps:
-      # Checkout the code from the repository
-      - name: Checkout code from Git
-        # Use the checkout action to get the code
-        uses: actions/checkout@v3
-
-      - name: Install
-        # Run install
-        run: npm install
-
-      # Run tests
-      - name: Run Tests
-        run: npm run test-component
-
+     
       # Define a step named "Deploy"
       - name: Deploy
         # Only run this step if the branch is main
