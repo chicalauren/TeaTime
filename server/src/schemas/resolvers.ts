@@ -1,8 +1,8 @@
-import User from "../models/User";
-import { IUser } from "../models/User";
-import TeaCategory from "../models/TeaCategory";
-import SpillPost from "../models/SpillPost";
-import { signToken } from "../utils/auth";
+import User from "../models/User.js";
+import { IUser } from "../models/User.js";
+import TeaCategory from "../models/TeaCategory.js";
+import SpillPost from "../models/SpillPost.js";
+import { signToken } from "../utils/auth.js";
 import { AuthenticationError } from "apollo-server";
 
 const resolvers = {
