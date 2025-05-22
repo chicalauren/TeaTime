@@ -8,7 +8,8 @@ export const getRecommendations = async (req: Request, res: Response) => {
 
     const user = await User.findById(userId).populate("favoriteTeas");
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      res.status(404).json({ message: "User not found" });
+      return;
     }
 
     // Extract tea types from favorite teas
