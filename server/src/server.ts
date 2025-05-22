@@ -13,7 +13,6 @@ declare global {
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import dotenv from "dotenv";
-import cors from "cors";
 import jwt from "jsonwebtoken";
 import connectDB from "./config/connection.js";
 import typeDefs from "./schemas/typeDefs.js";
