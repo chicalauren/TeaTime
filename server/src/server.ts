@@ -33,12 +33,6 @@ async function startApolloServer() {
 
   await server.start();
 
-  // ✅ Allow cross-origin requests from frontend
-  app.use(cors({
-    origin: 'http://localhost:3000',
-    credentials: true
-  }));
-
   app.use(express.json());
 
   // ✅ Custom auth context middleware for Apollo
@@ -79,10 +73,10 @@ async function startApolloServer() {
   if (process.env.NODE_ENV === 'production') {
     const __filename = fileURLToPath (import.meta.url);
     const __dirname = path.dirname(__filename);
-    app.use(express.static(path.join(__dirname, '../client/dist')));
+    app.use(express.static(path.join(__dirname, '../../../client/dist')));
 
     app.get('*', (_req, res) => {
-      res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+      res.sendFile(path.join(__dirname, '../../../client/dist/index.html'));
     });
   }
 
