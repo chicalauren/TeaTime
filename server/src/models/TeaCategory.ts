@@ -8,6 +8,13 @@ export interface ITea extends Document {
   tastingNotes?: string;
   tags?: string[];
   createdBy: mongoose.Types.ObjectId; // linked to user
+  rating?: number;
+  favorite?: boolean;
+  description?: string;
+  caffeineLevel?: string;
+  brewTempCelsius?: number;
+  brewTimeSeconds?: number;
+  purchaseDate?: Date;
 }
 
 const TeaSchema: Schema = new Schema({
@@ -29,6 +36,21 @@ TeaSchema.add({
   favorite: {
     type: Boolean,
     default: false,
+  },
+  description: {
+    type: String,
+  },
+  caffeineLevel: {
+    type: String,
+  },
+  brewTempCelsius: {
+    type: Number,
+  },
+  brewTimeSeconds: {
+    type: Number,
+  },
+  purchaseDate: {
+    type: Date,
   },
 });
 

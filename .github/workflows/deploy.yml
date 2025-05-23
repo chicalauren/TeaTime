@@ -1,0 +1,29 @@
+# Name of the GitHub Actions workflow
+name: Deploy
+
+# Trigger the workflow on push and pull request events to the main branch
+on:
+  pull_request:
+    branches:
+      - main
+    types: [ closed ]
+
+jobs:
+  # Define a job named "ci"
+  ci:
+    # Specify the operating system to run the job on
+    runs-on: ubuntu-latest
+
+    # Define the steps to be executed in the job
+    steps:
+     
+      # Define a step named "Deploy"
+      - name: Deploy
+        # Only run this step if the branch is main
+        if: github.ref == 'refs/heads/main'
+        # Set an environment variable with the deployment URL from secrets
+        env:
+          DEPLOY_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        # Run the deployment command
+        run: |
+          curl "$DEPLOY_URL"
