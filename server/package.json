@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "start": "node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc && cp src/seeds/teas.json dist/seeds/teas.json",
-    "seed": "ts-node src/seeds/seed.ts",
-    "start": "cd server && npm run start"
+    "seed": "ts-node src/seeds/seed.ts"
   },
   "keywords": [],
   "author": "",
