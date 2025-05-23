@@ -14,9 +14,9 @@ import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
-import connectDB from "./config/connection.js";
-import typeDefs from "./schemas/typeDefs.js";
-import resolvers from "./schemas/resolvers.js";
+import connectDB from "./config/connection";
+import typeDefs from "./schemas/typeDefs";
+import resolvers from "./schemas/resolvers";
 
 dotenv.config();
 
