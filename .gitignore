@@ -42,3 +42,5 @@ yarn-error.log*
 
 # Ignore TS build artifacts
 *.tsbuildinfo
+node_modules
+node_modules
