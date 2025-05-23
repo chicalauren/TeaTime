@@ -1,6 +1,6 @@
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
 
 declare global {
   namespace Express {
@@ -14,15 +14,15 @@ import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
-import connectDB from "./config/connection.js";
-import typeDefs from "./schemas/typeDefs.js";
-import resolvers from "./schemas/resolvers.js";
+import connectDB from "./config/connection";
+import typeDefs from "./schemas/typeDefs";
+import resolvers from "./schemas/resolvers";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const JWT_SECRET = process.env.JWT_SECRET || ''; // fallback if .env is missing
+const JWT_SECRET = process.env.JWT_SECRET || ""; // fallback if .env is missing
 
 async function startApolloServer() {
   const server = new ApolloServer({
@@ -34,53 +34,39 @@ async function startApolloServer() {
 
   app.use(express.json());
 
-  // ✅ Custom auth context middleware for Apollo
   app.use(
     "/graphql",
     expressMiddleware(server, {
-      context: async ({ req }) => {
-        const token = req.headers.authorization?.split(' ').pop();
-        let user = null;
-      
-        if (token) {
-          try {
-            const decoded: any = jwt.verify(token, JWT_SECRET);
-            user = decoded.data;
-            console.log('✅ Token verified, user:', user);
-          } catch (err) {
-            if (err instanceof Error) {
-              console.warn('⚠️ Invalid token:', err.message);
-            } else {
-              console.warn('⚠️ Unknown error during token verification');
-            }
-          }
-        } else {
-          console.log('ℹ️ No token provided');
-        }
-      
-        req.user = user;
-        return { req };
-      }
-      
+      context: async ({ req }) => authMiddleware({ req }),
     })
   );
 
   await connectDB();
 
+  // if we're in production, serve client/dist as static assets
+  if (process.env.NODE_ENV === "production") {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    app.use(express.static(path.join(__dirname, "../../../client/dist")));
+
+    app.get("*", (_req, res) => {
+      res.sendFile(path.join(__dirname, "../../../client/dist/index.html"));
+    });
+  }
 
   // if we're in production, serve client/dist as static assets
-  if (process.env.NODE_ENV === 'production') {
-    const __filename = fileURLToPath (import.meta.url);
+  if (process.env.NODE_ENV === "production") {
+    const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-    app.use(express.static(path.join(__dirname, '../../../client/dist')));
+    app.use(express.static(path.join(__dirname, "../../../client/dist")));
 
-    app.get('*', (_req, res) => {
-      res.sendFile(path.join(__dirname, '../../../client/dist/index.html'));
+    app.get("*", (_req, res) => {
+      res.sendFile(path.join(__dirname, "../../../client/dist/index.html"));
     });
   }
 
   app.listen(PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${PORT}/graphql`);
+    console.log(` Server running at http://localhost:${PORT}/graphql`);
   });
 }
 

@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { Request } from "express";
 import dotenv from "dotenv";
 
 dotenv.config();
