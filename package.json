@@ -9,7 +9,9 @@
     "seed": "npm run build && npx ts-node server/dist/seeds/seed.js",
     "server": "cd server && npm run dev",
     "client": "cd client && npm run dev",
+    "render-build": "npm install && npm run build",
     "start": "cd server && npm run start"
+
   },
   "keywords": [],
   "author": "",
