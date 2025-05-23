@@ -1,8 +1,8 @@
-import { useQuery, useMutation } from '@apollo/client';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import { GET_TEAS } from '../utils/queries';
-import { DELETE_TEA } from '../utils/mutations';
+import { useQuery, useMutation } from "@apollo/client";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import { GET_TEAS } from "../utils/queries";
+import { DELETE_TEA } from "../utils/mutations";
 //import CustomButton from '../components/CustomButton';
 
 function Dashboard() {
@@ -11,55 +11,60 @@ function Dashboard() {
     refetchQueries: [{ query: GET_TEAS }],
   });
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('');
-  const [sortOption, setSortOption] = useState('newest');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("");
+  const [sortOption, setSortOption] = useState("newest");
 
   if (loading) return <p>Loading teas...</p>;
   if (error) return <p>Error loading teas: {error.message}</p>;
 
   const teas = data?.teas || [];
-    // 🔍 Log raw data and unique IDs
-  console.log('Raw teas fetched:', teas);
-  const teaIds = teas.map((t: any) => t.id);
-  console.log('Tea IDs:', teaIds);
-  
+  // 🔍 Log raw data and unique IDs
+  console.log("Raw teas fetched:", teas);
+  const teaIds = teas.map((t: any) => t._id);
+  console.log("Tea IDs:", teaIds);
 
   const handleDeleteTea = async (id: string) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this tea?');
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this tea?"
+    );
     if (!confirmDelete) return;
 
     try {
       await deleteTea({ variables: { id } });
     } catch (err) {
-      console.error('Failed to delete tea', err);
+      console.error("Failed to delete tea", err);
     }
   };
 
   const handleClearFilters = () => {
-    setSearchTerm('');
-    setFilterType('');
-    setSortOption('newest');
+    setSearchTerm("");
+    setFilterType("");
+    setSortOption("newest");
   };
 
   const filteredTeas = teas.filter((tea: any) => {
     const matchesSearch =
       tea.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      tea.tags?.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+      tea.tags?.some((tag: string) =>
+        tag.toLowerCase().includes(searchTerm.toLowerCase())
+      );
 
-    const matchesType = filterType ? tea.type.toLowerCase() === filterType.toLowerCase() : true;
+    const matchesType = filterType
+      ? tea.type.toLowerCase() === filterType.toLowerCase()
+      : true;
 
     return matchesSearch && matchesType;
   });
 
   const sortedTeas = [...filteredTeas].sort((a: any, b: any) => {
-    if (sortOption === 'az') {
+    if (sortOption === "az") {
       return a.name.localeCompare(b.name);
     }
-    if (sortOption === 'za') {
+    if (sortOption === "za") {
       return b.name.localeCompare(a.name);
     }
-    if (sortOption === 'newest') {
+    if (sortOption === "newest") {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }
     return 0;
@@ -111,7 +116,10 @@ function Dashboard() {
           </select>
         </div>
         <div className="col-md-2 col-12">
-          <button className="btn btn-outline-secondary w-100" onClick={handleClearFilters}>
+          <button
+            className="btn btn-outline-secondary w-100"
+            onClick={handleClearFilters}
+          >
             🧹 Clear Filters
           </button>
         </div>
@@ -120,36 +128,40 @@ function Dashboard() {
       {/* Tea Cards */}
       {sortedTeas.length === 0 ? (
         <div className="text-center py-5 text-muted">
-          <div style={{ fontSize: '4rem' }}>🍵</div>
+          <div style={{ fontSize: "4rem" }}>🍵</div>
           <h2>No Teas Found</h2>
           <p>Try adjusting your search or clearing filters.</p>
         </div>
       ) : (
         <div className="row g-4">
           {sortedTeas.map((tea: any) => (
-            <div className="col-md-4 col-sm-6" key={tea.id}>
+            <div className="col-md-4 col-sm-6" key={tea._id}>
               <div className="card shadow-sm">
                 <div className="ratio ratio-1x1 rounded overflow-hidden">
                   <div
                     className="card-img-overlay d-flex flex-column justify-content-end text-white"
                     style={{
-                      backgroundImage: `url(${tea.imageUrl || ''})`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
+                      backgroundImage: `url(${tea.imageUrl || ""})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
                     }}
                   >
                     <div className="bg-dark bg-opacity-50 p-2 rounded mb-2">
                       <h5 className="card-title">{tea.name}</h5>
-                      <p className="card-text mb-1"><strong>Brand:</strong> {tea.brand || 'n/a'}</p>
-                      <p className="card-text"><strong>Type:</strong> {tea.type}</p>
+                      <p className="card-text mb-1">
+                        <strong>Brand:</strong> {tea.brand || "n/a"}
+                      </p>
+                      <p className="card-text">
+                        <strong>Type:</strong> {tea.type}
+                      </p>
                     </div>
                     <div className="d-flex justify-content-center gap-2">
-                      <Link to={`/teas/${tea.id}`}>
+                      <Link to={`/teas/${tea._id}`}>
                         <button className="btn btn-light btn-sm" title="View">
                           <i className="bi bi-eye"></i>
                         </button>
                       </Link>
-                      <Link to={`/edit-tea/${tea.id}`}>
+                      <Link to={`/edit-tea/${tea._id}`}>
                         <button className="btn btn-light btn-sm" title="Edit">
                           <i className="bi bi-pencil"></i>
                         </button>
@@ -157,7 +169,7 @@ function Dashboard() {
                       <button
                         className="btn btn-light btn-sm"
                         title="Delete"
-                        onClick={() => handleDeleteTea(tea.id)}
+                        onClick={() => handleDeleteTea(tea._id)}
                       >
                         <i className="bi bi-trash"></i>
                       </button>
@@ -166,7 +178,6 @@ function Dashboard() {
                 </div>
               </div>
             </div>
-
           ))}
         </div>
       )}

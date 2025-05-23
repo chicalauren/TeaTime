@@ -82,7 +82,7 @@ export const UPDATE_TEA = gql`
       favorite: $favorite
       name: $name
     ) {
-      id
+      _id
       name
       rating
       type

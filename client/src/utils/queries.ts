@@ -29,7 +29,7 @@ export const GET_TEAS = gql`
 export const GET_TEA = gql`
   query GetTea($id: ID!) {
     tea(id: $id) {
-      id
+      _id
       name
       brand
       type

@@ -73,7 +73,7 @@ const typeDefs = gql`
     ): TeaCategory
 
     updateTea(
-      id: ID!
+      _id: ID!
       name: String
       brand: String
       type: String
