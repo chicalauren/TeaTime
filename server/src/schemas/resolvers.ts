@@ -3,7 +3,7 @@ import { IUser } from "../models/User";
 import TeaCategory from "../models/TeaCategory";
 import SpillPost from "../models/SpillPost";
 import { signToken } from "../utils/auth";
-import { AuthenticationError } from "apollo-server";
+import { AuthenticationError } from "apollo-server-express";
 
 const resolvers = {
   Query: {
