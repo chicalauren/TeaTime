@@ -20,8 +20,9 @@ export function signToken({ _id, email, username }: UserPayload) {
 export function authMiddleware({ req }: { req: any }) {
   const token = req.headers.authorization?.split(" ")[1]; // Extract the token
   if (!token) {
-    return { req }; // No token, user is not authenticated
+    return { user: null }; // No token, user is not authenticated
   }
+
   console.log("Received token:", token);
 
   try {
