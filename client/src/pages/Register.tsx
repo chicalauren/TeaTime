@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { REGISTER } from '../utils/mutations';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useMutation } from "@apollo/client";
+import { REGISTER } from "../utils/mutations";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const navigate = useNavigate();
   const [register] = useMutation(REGISTER);
 
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,21 +20,24 @@ function Register() {
       });
 
       // ✅ Save the token and username
-      localStorage.setItem('id_token', data.register.token);
-      localStorage.setItem('username', data.register.user.username);
+      localStorage.setItem("id_token", data.register.token);
+      localStorage.setItem("username", data.register.user.username);
 
       // ✅ Redirect to dashboard or homepage
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err: any) {
-      console.error('Register error:', err);
-      setErrorMessage('Failed to register. Try a different email.');
+      console.error("Register error:", err);
+      setErrorMessage("Failed to register. Try a different email.");
     }
   };
 
   return (
     <div className="auth-container">
       <h2>Register</h2>
-      <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <form
+        onSubmit={handleRegister}
+        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+      >
         <input
           type="text"
           placeholder="Username"
@@ -59,7 +62,7 @@ function Register() {
         <button type="submit">Register</button>
       </form>
 
-      {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
     </div>
   );
 }
