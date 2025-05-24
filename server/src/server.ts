@@ -21,13 +21,22 @@ async function startApolloServer() {
 
   await server.start();
 
-  app.use(cors());
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
+
   app.use(express.json());
 
   app.use(
     "/graphql",
     expressMiddleware(server, {
-      context: async ({ req }) => authMiddleware({ req }),
+      context: async ({ req }) => {
+        const { user } = authMiddleware({ req });
+        return { user }; // ✅ Consistent context
+      },
     })
   );
 

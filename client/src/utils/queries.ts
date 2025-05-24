@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const GET_ME = gql`
   query GetMe {
@@ -13,14 +13,14 @@ export const GET_ME = gql`
 export const GET_TEAS = gql`
   query GetTeas {
     teas {
-      id
+      _id
       name
       brand
       type
       imageUrl
       tastingNotes
       tags
-      createdByUsername
+
       createdAt
     }
   }
@@ -29,7 +29,7 @@ export const GET_TEAS = gql`
 export const GET_TEA = gql`
   query GetTea($id: ID!) {
     tea(id: $id) {
-      id
+      _id
       name
       brand
       type
@@ -60,4 +60,3 @@ export const GET_SPILL_POSTS = gql`
     }
   }
 `;
-

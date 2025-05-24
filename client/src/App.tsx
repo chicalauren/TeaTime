@@ -1,33 +1,36 @@
-import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Navigate } from 'react-router-dom';
-//import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import Profile from './pages/Profile';
-import ProtectedRoute from './components/ProtectedRoute';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import AddTeaForm from './pages/AddTeaForm';
-import TeaList from './pages/TeaList';
-import TeaDetail from './pages/TeaDetail';
-import EditTeaForm from './pages/EditTeaForm';
-import SpillTheTea from './pages/SpillTheTea';
-import TeaTimer from './pages/TeaTimer';
-
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  createHttpLink,
+} from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import AddTeaForm from "./pages/AddTeaForm";
+import TeaList from "./pages/TeaList";
+import TeaDetail from "./pages/TeaDetail";
+import EditTeaForm from "./pages/EditTeaForm";
+import SpillTheTea from "./pages/SpillTheTea";
+import TeaTimer from "./pages/TeaTimer";
 
 const httpLink = createHttpLink({
-  uri: '/graphql',
+  uri: "http://localhost:4000/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('id_token');
+  const token = localStorage.getItem("id_token");
   return {
     headers: {
       ...headers,
-      authorization: token ? `Bearer ${token}` : '',
+      authorization: token ? `Bearer ${token}` : "",
     },
   };
 });
@@ -41,21 +44,19 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <Router>
-        <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.85)', minHeight: '100vh' }}>
         <Navbar />
         <Routes>
-          <Route
-            path="/"
-            element={
-              localStorage.getItem('id_token')
-                ? <Navigate to="/dashboard" replace />
-                : <Navigate to="/login" replace />
-            }
-          />
-
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/add-tea" element={<ProtectedRoute><AddTeaForm /></ProtectedRoute>} />
+          <Route
+            path="/add-tea"
+            element={
+              <ProtectedRoute>
+                <AddTeaForm />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/teas/:id" element={<TeaDetail />} />
           <Route path="/teas" element={<TeaList />} />
           <Route path="/teas/:id" element={<TeaDetail />} />
@@ -81,11 +82,9 @@ function App() {
           />
         </Routes>
         <Footer />
-        </div>
       </Router>
     </ApolloProvider>
   );
 }
 
 export default App;
-

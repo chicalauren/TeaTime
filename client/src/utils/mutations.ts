@@ -18,7 +18,7 @@ export const REGISTER = gql`
     register(username: $username, email: $email, password: $password) {
       token
       user {
-        id
+        _id
         username
         email
       }
