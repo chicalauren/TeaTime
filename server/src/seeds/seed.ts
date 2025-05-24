@@ -5,7 +5,7 @@ import path from "path";
 import fs from "fs";
 import connectDB from "../config/connection";
 
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 // Ensure MONGODB_URI is defined in the environment variables
 if (!process.env.MONGODB_URI) {
@@ -16,13 +16,15 @@ mongoose.connect(process.env.MONGODB_URI);
 
 // Read the teas.json file
 const teaData = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "teas.json"), "utf-8")
+  fs.readFileSync(path.resolve(__dirname, "../../src/seeds/teas.json"), "utf-8")
 );
 
 const seedDatabase = async () => {
   try {
     // Connect to DB
     await connectDB();
+    await TeaCategory.deleteMany();
+    console.log("🧹 Cleared old tea data");
 
     // Insert the tea data into the database
     const insertedTeas = await TeaCategory.insertMany(teaData);
