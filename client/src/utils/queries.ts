@@ -60,3 +60,15 @@ export const GET_SPILL_POSTS = gql`
     }
   }
 `;
+export const RECOMMEND_TEAS = gql`
+  query RecommendTeas($tags: [String!]!) {
+    recommendTeas(tags: $tags) {
+      _id
+      name
+      brand
+      type
+      imageUrl
+      tags
+    }
+  }
+`;

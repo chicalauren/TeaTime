@@ -178,3 +178,49 @@ export const GET_TEA = gql`
     }
   }
 `;
+export const GET_ME = gql`
+  query Me {
+    me {
+      _id
+      username
+      favoriteTeas {
+        _id
+        name
+        brand
+        type
+        tags
+      }
+    }
+  }
+`;
+export const ADD_FAVORITE_TEA = gql`
+  mutation AddFavoriteTea($teaId: ID!) {
+    addFavoriteTea(teaId: $teaId) {
+      _id
+      username
+      favoriteTeas {
+        _id
+        name
+        brand
+        type
+        tags
+      }
+    }
+  }
+`;
+
+export const REMOVE_FAVORITE_TEA = gql`
+  mutation RemoveFavoriteTea($teaId: ID!) {
+    removeFavoriteTea(teaId: $teaId) {
+      _id
+      username
+      favoriteTeas {
+        _id
+        name
+        brand
+        type
+        tags
+      }
+    }
+  }
+`;
