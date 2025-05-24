@@ -1,11 +1,12 @@
 //TODO: styling
 
-import { useParams } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
-import { GET_TEA } from '../utils/queries';
+import { useParams } from "react-router-dom";
+import { useQuery } from "@apollo/client";
+import { GET_TEA } from "../utils/queries";
 
 function TeaDetail() {
   const { id } = useParams<{ id: string }>();
+  console.log("Tea ID from URL:", id);
   const { loading, error, data } = useQuery(GET_TEA, {
     variables: { id },
   });
@@ -20,12 +21,28 @@ function TeaDetail() {
   return (
     <div>
       <h1>{tea.name}</h1>
-      <p><strong>Brand:</strong> {tea.brand}</p>
-      <p><strong>Type:</strong> {tea.type}</p>
-      {tea.imageUrl && <img src={tea.imageUrl} alt={tea.name} style={{ width: '200px', marginTop: '10px' }} />}
-      {tea.tastingNotes && <p><strong>Tasting Notes:</strong> {tea.tastingNotes}</p>}
+      <p>
+        <strong>Brand:</strong> {tea.brand}
+      </p>
+      <p>
+        <strong>Type:</strong> {tea.type}
+      </p>
+      {tea.imageUrl && (
+        <img
+          src={tea.imageUrl}
+          alt={tea.name}
+          style={{ width: "200px", marginTop: "10px" }}
+        />
+      )}
+      {tea.tastingNotes && (
+        <p>
+          <strong>Tasting Notes:</strong> {tea.tastingNotes}
+        </p>
+      )}
       {tea.tags?.length > 0 && (
-        <p><strong>Tags:</strong> {tea.tags.join(', ')}</p>
+        <p>
+          <strong>Tags:</strong> {tea.tags.join(", ")}
+        </p>
       )}
     </div>
   );
