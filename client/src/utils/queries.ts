@@ -48,9 +48,9 @@ export const GET_SPILL_POSTS = gql`
       _id
       title
       content
-      likes
-      createdByUsername
       createdAt
+      createdByUsername
+      likes
       comments {
         content
         createdByUsername

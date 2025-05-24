@@ -50,7 +50,6 @@ export const ADD_COMMENT = gql`
     addComment(spillPostId: $spillPostId, content: $content) {
       _id
       comments {
-        _id
         content
         createdByUsername
         createdAt

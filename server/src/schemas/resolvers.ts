@@ -103,15 +103,15 @@ const resolvers = {
     },
 
     addSpillPost: async (_: any, { title, content }: any, context: any) => {
-      if (!context.req.user) {
+      if (!context.user) {
         throw new AuthenticationError("Authentication required");
       }
 
       const newPost = await SpillPost.create({
         title,
         content,
-        createdBy: context.req.user._id,
-        createdByUsername: context.req.user.username,
+        createdBy: context.user._id,
+        createdByUsername: context.user.username,
       });
 
       return newPost;
