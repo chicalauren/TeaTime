@@ -23,6 +23,8 @@ const seedDatabase = async () => {
   try {
     // Connect to DB
     await connectDB();
+    await TeaCategory.deleteMany();
+    console.log("🧹 Cleared old tea data");
 
     // Insert the tea data into the database
     const insertedTeas = await TeaCategory.insertMany(teaData);
