@@ -52,7 +52,6 @@ export const GET_SPILL_POSTS = gql`
       createdByUsername
       createdAt
       comments {
-        _id
         content
         createdByUsername
         createdAt
