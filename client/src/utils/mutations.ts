@@ -140,7 +140,7 @@ export const ADD_TEA = gql`
 `;
 export const UPDATE_TEA = gql`
   mutation Mutation(
-    $updateTeaId: ID!
+    $teaId: ID!
     $brand: String
     $type: String
     $rating: Int
@@ -148,7 +148,7 @@ export const UPDATE_TEA = gql`
     $name: String
   ) {
     updateTea(
-      id: $updateTeaId
+      id: $teaId
       brand: $brand
       type: $type
       rating: $rating
@@ -165,13 +165,13 @@ export const UPDATE_TEA = gql`
 `;
 export const GET_TEA = gql`
   query getTea($id: ID!) {
-    tea(id: _id) {
+    tea(id: $id) {
       _id
       name
       brand
       type
       rating
-      tags
+
       favorite
       imageUrl
     }
@@ -187,7 +187,6 @@ export const GET_ME = gql`
         name
         brand
         type
-        tags
       }
     }
   }
@@ -202,7 +201,6 @@ export const ADD_TEA_TO_FAVORITES = gql`
         name
         brand
         type
-        tags
       }
     }
   }

@@ -10,7 +10,7 @@ const resolvers = {
   Query: {
     me: async (_: any, __: any, context: any) => {
       if (context.user) {
-        return User.findById(context.user._id);
+        return User.findById(context.user._id).populate("favoriteTeas");
       }
       throw new AuthenticationError("You must be logged in");
     },
@@ -65,7 +65,7 @@ const resolvers = {
       { name, brand, type, imageUrl, tastingNotes, tags, favorite }: any,
       context: any
     ) => {
-      if (!context.req.user) {
+      if (!context.user) {
         throw new AuthenticationError("Authentication required");
       }
 
@@ -80,7 +80,7 @@ const resolvers = {
       });
 
       if (favorite) {
-        await User.findByIdAndUpdate(context.req.user._id, {
+        await User.findByIdAndUpdate(context.user._id, {
           $addToSet: { favoriteTeas: tea._id },
         });
       }
@@ -122,8 +122,26 @@ const resolvers = {
       if (!context.user) {
         throw new AuthenticationError("Authentication required");
       }
+      console.log(id, fields);
 
-      return TeaCategory.findByIdAndUpdate(id, fields, { new: true });
+      const updatedTea = await TeaCategory.findByIdAndUpdate(id, fields, {
+        new: true,
+      });
+
+      if (updatedTea?.favorite) {
+        await User.findByIdAndUpdate(
+          context.user._id,
+          { $addToSet: { favoriteTeas: id } },
+          { new: true }
+        ).populate("favoriteTeas");
+      } else {
+        await User.findByIdAndUpdate(
+          context.user._id,
+          { $pull: { favoriteTeas: id } },
+          { new: true }
+        ).populate("favoriteTeas");
+      }
+      return updatedTea;
     },
 
     deleteTea: async (_: any, { id }: any, context: any) => {
