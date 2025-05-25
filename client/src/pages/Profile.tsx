@@ -11,6 +11,7 @@ function Profile() {
 
   const user = userData?.me;
   const favoriteTeas = user?.favoriteTeas ?? [];
+  console.log(user);
 
   const allTags = Array.from(
     new Set(favoriteTeas.flatMap((tea: any) => tea.tags || []))
@@ -22,7 +23,6 @@ function Profile() {
     error: errorRecs,
   } = useQuery(RECOMMEND_TEAS, {
     variables: { tags: allTags },
-    skip: allTags.length === 0,
   });
 
   if (loadingUser) return <p>Loading profile...</p>;
