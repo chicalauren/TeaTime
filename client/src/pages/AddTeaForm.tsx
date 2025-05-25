@@ -104,7 +104,7 @@ function AddTeaForm() {
   };
 
   return (
-    <div className="container py-5 mt-5 d-flex justify-content-center" style={{ minHeight: '100vh' }}>
+    <div className="container py-5 mt-5 d-flex justify-content-center">
       {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />}
 
       {successFadeIn && (
@@ -120,9 +120,9 @@ function AddTeaForm() {
       )}
 
       <div className="card shadow w-100" style={{ maxWidth: '600px' }}>
-        <div className="ratio ratio-1x1 rounded overflow-hidden">
+        <div className="rounded">
           <div
-            className="card-img-overlay d-flex flex-column justify-content-center text-white"
+            className="d-flex flex-column justify-content-center text-white"
             style={{
               backgroundColor: '#222',
               padding: '2rem',
