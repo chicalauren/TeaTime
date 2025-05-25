@@ -20,7 +20,7 @@ document.body.style.backgroundPosition = "center";
 document.body.style.backgroundAttachment = "fixed";
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000/graphql",
+  uri: "/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {

@@ -3,7 +3,6 @@ import path from "path";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import dotenv from "dotenv";
-import cors from "cors";
 import connectDB from "./config/connection";
 import typeDefs from "./schemas/typeDefs";
 import resolvers from "./schemas/resolvers";
@@ -22,13 +21,6 @@ async function startApolloServer() {
   });
 
   await server.start();
-
-  app.use(
-    cors({
-      origin: "http://localhost:3000",
-      credentials: true,
-    })
-  );
 
   app.use(express.json());
 
