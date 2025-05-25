@@ -23,7 +23,7 @@ import TeaTimer from "./pages/TeaTimer";
 import Favorites from "./pages/Favorites";
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000/graphql",
+  uri: "/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {
