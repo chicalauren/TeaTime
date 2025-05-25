@@ -58,6 +58,7 @@ export const GET_SPILL_POSTS = gql`
       createdByUsername
       likes
       comments {
+        _id
         content
         createdByUsername
         createdAt

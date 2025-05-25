@@ -160,14 +160,28 @@ function SpillTheTea() {
                     {comment.createdByUsername ===
                       localStorage.getItem("username") && (
                       <button
-                        onClick={() =>
-                          deleteComment({
-                            variables: {
-                              spillPostId: post._id,
-                              commentId: comment._id,
-                            },
-                          })
-                        }
+                        onClick={async () => {
+                          const confirmed = window.confirm(
+                            "Are you sure you want to delete this comment?"
+                          );
+                          if (confirmed) {
+                            try {
+                              console.log("Deleting comment with", {
+                                spillPostId: post._id,
+                                commentId: comment._id,
+                              });
+                              await deleteComment({
+                                variables: {
+                                  spillPostId: post._id,
+                                  commentId: comment._id,
+                                },
+                              });
+                            } catch (err) {
+                              console.error("Error deleting comment:", err);
+                              alert("Failed to delete comment.");
+                            }
+                          }
+                        }}
                         style={{
                           marginTop: "5px",
                           backgroundColor: "red",
