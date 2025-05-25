@@ -46,44 +46,46 @@ function App() {
     <ApolloProvider client={client}>
       <Router>
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route
-            path="/add-tea"
-            element={
-              <ProtectedRoute>
-                <AddTeaForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/teas/:id" element={<TeaDetail />} />
-          <Route path="/teas" element={<TeaList />} />
-          <Route path="/teas/:id" element={<TeaDetail />} />
-          <Route path="/edit-tea/:id" element={<EditTeaForm />} />
-          <Route path="/spill" element={<SpillTheTea />} />
-          <Route path="/teatimer" element={<TeaTimer />} />
-          <Route path="/favorites" element={<Favorites />} />
+        <main style={{ paddingTop: "64px" }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route
+              path="/add-tea"
+              element={
+                <ProtectedRoute>
+                  <AddTeaForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/teas/:id" element={<TeaDetail />} />
+            <Route path="/teas" element={<TeaList />} />
+            <Route path="/teas/:id" element={<TeaDetail />} />
+            <Route path="/edit-tea/:id" element={<EditTeaForm />} />
+            <Route path="/spill" element={<SpillTheTea />} />
+            <Route path="/teatimer" element={<TeaTimer />} />
+            <Route path="/favorites" element={<Favorites />} />
 
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </main>
         <Footer />
       </Router>
     </ApolloProvider>
