@@ -27,9 +27,10 @@ const typeDefs = gql`
   }
 
   type Comment {
+    _id: ID!
     content: String!
     createdByUsername: String!
-    createdAt: String
+    createdAt: String!
   }
 
   type SpillPost {
