@@ -48,6 +48,54 @@ function Profile() {
         </div>
       </div>
 
+      {/* 🌟 Favorite Teas */}
+      <div className="w-100 mb-5" style={{ maxWidth: "1000px" }}>
+        <h2 className="text-center mb-4">Favorite Teas ❤️</h2>
+
+        {favoriteTeas.length === 0 ? (
+          <p className="text-center text-muted">
+            You haven't saved any teas yet.
+          </p>
+        ) : (
+          <>
+            <div className="row g-3">
+              {favoriteTeas.slice(0, 3).map((tea: any) => (
+                <div key={tea._id} className="col-md-4 col-sm-6">
+                  <div className="card shadow-sm h-100">
+                    <div
+                      className="ratio ratio-1x1 rounded-top overflow-hidden"
+                      style={{
+                        backgroundImage: `url(${
+                          tea.imageUrl || "/default-tea.jpg"
+                        })`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                      }}
+                    ></div>
+                    <div className="card-body">
+                      <h5 className="card-title">{tea.name}</h5>
+                      <p className="card-text">
+                        <strong>Type:</strong> {tea.type}
+                        <br />
+                        <strong>Brand:</strong> {tea.brand || "N/A"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {favoriteTeas.length > 3 && (
+              <div className="text-center mt-3">
+                <a href="/favorites" className="btn btn-outline-secondary">
+                  View All Favorites
+                </a>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {/* 🍃 Recommended Teas */}
       <div className="w-100" style={{ maxWidth: "1000px" }}>
         <h2 className="text-center mb-4">Recommended Teas 🍃</h2>
 

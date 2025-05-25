@@ -20,6 +20,7 @@ import TeaDetail from "./pages/TeaDetail";
 import EditTeaForm from "./pages/EditTeaForm";
 import SpillTheTea from "./pages/SpillTheTea";
 import TeaTimer from "./pages/TeaTimer";
+import Favorites from "./pages/Favorites";
 
 const httpLink = createHttpLink({
   uri: "http://localhost:4000/graphql",
@@ -49,6 +50,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/favorites" element={<Favorites />} />
           <Route
             path="/add-tea"
             element={
@@ -63,6 +65,7 @@ function App() {
           <Route path="/edit-tea/:id" element={<EditTeaForm />} />
           <Route path="/spill" element={<SpillTheTea />} />
           <Route path="/teatimer" element={<TeaTimer />} />
+          <Route path="/favorites" element={<Favorites />} />
 
           <Route
             path="/dashboard"
