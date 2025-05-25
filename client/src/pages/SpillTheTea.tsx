@@ -135,9 +135,9 @@ function SpillTheTea() {
                 Comments:
               </h4>
               {post.comments?.length > 0 ? (
-                post.comments.map((comment: any, index: number) => (
+                post.comments.map((comment: any) => (
                   <div
-                    key={index}
+                    key={comment._id}
                     style={{
                       backgroundColor: "#e0f7fa",
                       borderRadius: "12px",
@@ -145,7 +145,7 @@ function SpillTheTea() {
                       marginBottom: "0.5rem",
                       alignSelf: "flex-start",
                       maxWidth: "75%",
-                      opacity: 0,
+                      opacity: 1,
                       animation: "fadeIn 0.5s ease forwards",
                     }}
                   >

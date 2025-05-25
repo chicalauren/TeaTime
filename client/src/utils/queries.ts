@@ -3,9 +3,15 @@ import { gql } from "@apollo/client";
 export const GET_ME = gql`
   query GetMe {
     me {
-      id
+      _id
       username
       email
+      favoriteTeas {
+        _id
+        name
+        imageUrl
+        type
+      }
     }
   }
 `;
@@ -20,7 +26,7 @@ export const GET_TEAS = gql`
       imageUrl
       tastingNotes
       tags
-
+      createdBy
       createdAt
     }
   }
@@ -36,7 +42,7 @@ export const GET_TEA = gql`
       imageUrl
       tastingNotes
       tags
-      createdByUsername
+      createdBy
       createdAt
     }
   }
@@ -45,18 +51,29 @@ export const GET_TEA = gql`
 export const GET_SPILL_POSTS = gql`
   query GetSpillPosts {
     spillPosts {
-      id
+      _id
       title
       content
-      likes
-      createdByUsername
       createdAt
+      createdByUsername
+      likes
       comments {
-        id
         content
         createdByUsername
         createdAt
       }
+    }
+  }
+`;
+export const RECOMMEND_TEAS = gql`
+  query RecommendTeas($tags: [String!]!) {
+    recommendTeas(tags: $tags) {
+      _id
+      name
+      brand
+      type
+      imageUrl
+      tags
     }
   }
 `;

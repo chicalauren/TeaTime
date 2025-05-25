@@ -5,6 +5,7 @@ const typeDefs = gql`
     _id: ID!
     username: String!
     email: String!
+    favoriteTeas: [TeaCategory]
   }
 
   type TeaCategory {
@@ -71,6 +72,14 @@ const typeDefs = gql`
       rating: Int
       favorite: Boolean
     ): TeaCategory
+
+    addTeaToFavorites(teaId: ID!): User
+    removeTeaFromFavorites(teaId: ID!): User
+
+    recommendTeas(tags: [String!]!): [TeaCategory]
+    updateTeaRating(teaId: ID!, rating: Int!): TeaCategory
+    updateTeaTags(teaId: ID!, tags: [String!]!): TeaCategory
+    updateTeaDescription(teaId: ID!, description: String!): TeaCategory
 
     updateTea(
       id: ID!
