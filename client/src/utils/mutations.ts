@@ -192,9 +192,9 @@ export const GET_ME = gql`
     }
   }
 `;
-export const ADD_FAVORITE_TEA = gql`
-  mutation AddFavoriteTea($teaId: ID!) {
-    addFavoriteTea(teaId: $teaId) {
+export const ADD_TEA_TO_FAVORITES = gql`
+  mutation addTeaToFavorites($teaId: ID!) {
+    addTeaToFavorites(teaId: $teaId) {
       _id
       username
       favoriteTeas {
@@ -208,9 +208,9 @@ export const ADD_FAVORITE_TEA = gql`
   }
 `;
 
-export const REMOVE_FAVORITE_TEA = gql`
-  mutation RemoveFavoriteTea($teaId: ID!) {
-    removeFavoriteTea(teaId: $teaId) {
+export const REMOVE_TEA_FROM_FAVORITES = gql`
+  mutation removeTeaFromFavorites($teaId: ID!) {
+    removeTeaFromFavorites(teaId: $teaId) {
       _id
       username
       favoriteTeas {

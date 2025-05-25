@@ -87,11 +87,42 @@ const resolvers = {
 
       return tea;
     },
+    addTeaToFavorites: async (
+      _: any,
+      { teaId }: { teaId: string },
+      context: { user?: { _id: string } }
+    ) => {
+      if (!context.user) {
+        throw new AuthenticationError("You must be logged in");
+      }
+      const user = await User.findByIdAndUpdate(
+        context.user._id,
+        { $addToSet: { favoriteTeas: teaId } },
+        { new: true }
+      ).populate("favoriteTeas");
+      return user;
+    },
+    removeTeaFromFavorites: async (
+      _: any,
+      { teaId }: { teaId: string },
+      context: { user?: { _id: string } }
+    ) => {
+      if (!context.user) {
+        throw new AuthenticationError("You must be logged in");
+      }
+      const user = await User.findByIdAndUpdate(
+        context.user._id,
+        { $pull: { favoriteTeas: teaId } },
+        { new: true }
+      ).populate("favoriteTeas");
+      return user;
+    },
 
     updateTea: async (_: any, { id, ...fields }: any, context: any) => {
       if (!context.user) {
         throw new AuthenticationError("Authentication required");
       }
+
       return TeaCategory.findByIdAndUpdate(id, fields, { new: true });
     },
 

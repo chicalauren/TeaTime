@@ -73,6 +73,14 @@ const typeDefs = gql`
       favorite: Boolean
     ): TeaCategory
 
+    addTeaToFavorites(teaId: ID!): User
+    removeTeaFromFavorites(teaId: ID!): User
+
+    recommendTeas(tags: [String!]!): [TeaCategory]
+    updateTeaRating(teaId: ID!, rating: Int!): TeaCategory
+    updateTeaTags(teaId: ID!, tags: [String!]!): TeaCategory
+    updateTeaDescription(teaId: ID!, description: String!): TeaCategory
+
     updateTea(
       id: ID!
       name: String
