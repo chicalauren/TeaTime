@@ -5,7 +5,7 @@ export const LOGIN = gql`
     login(email: $email, password: $password) {
       token
       user {
-        id
+        _id
         username
         email
       }
@@ -148,17 +148,15 @@ export const DELETE_SPILL_POST = gql`
   }
 `;
 
-export const GET_TEA = gql`
-  query getTea($id: ID!) {
-    tea(id: $id) {
-      id
-      name
-      brand
-      type
-      rating
-      tags
-      favorite
-      imageUrl
+export const UPDATE_USER = gql`
+  mutation UpdateUser($bio: String, $favoriteTeaSource: String) {
+    updateUser(bio: $bio, favoriteTeaSource: $favoriteTeaSource) {
+      _id
+      username
+      bio
+      favoriteTeaSource
     }
   }
 `;
+
+
