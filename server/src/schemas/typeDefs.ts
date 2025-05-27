@@ -2,10 +2,14 @@ import { gql } from "apollo-server-express";
 
 const typeDefs = gql`
   type User {
-    id: ID!
+    _id: ID!
     username: String!
     email: String!
-  }
+    favoriteTea: Tea
+    bio: String
+    favoriteTeaSource: String
+    }
+
 
   type TeaCategory {
     id: ID!
@@ -74,6 +78,8 @@ const typeDefs = gql`
       favorite: Boolean
       imageUrl: String
     ): TeaCategory
+
+    updateUser(bio: String, favoriteTeaSource: String): User
 
     deleteTea(id: ID!): TeaCategory
 
