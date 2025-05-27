@@ -76,7 +76,7 @@ const resolvers = {
         imageUrl,
         tastingNotes,
         tags,
-        createdBy: context.req.user._id,
+        createdBy: context.user._id,
       });
 
       if (favorite) {

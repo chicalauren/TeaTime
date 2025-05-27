@@ -133,8 +133,8 @@ export const ADD_TEA = gql`
       imageUrl
       tastingNotes
       tags
-      createdBy
-      createdAt
+      favorite
+      rating
     }
   }
 `;
