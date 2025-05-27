@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/graphql": "^14.2.3",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
