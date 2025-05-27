@@ -8,15 +8,17 @@ import { AuthenticationError } from "apollo-server";
 const resolvers = {
   Query: {
     me: async (_: any, __: any, context: any) => {
-      const user = context.req?.user;
-      if (!user) {
+      
+      if (!context.user) {
         throw new AuthenticationError("You must be logged in");
       }
+
+      const user = context.user; //changed from context.req.user to context.user
     
-      console.log('🔍 Looking up user by ID:', user._id);
-      const found = await User.findById(user._id || user.id);
+      //console.log('🔍 Looking up user by ID:', user._id);
+      const found = await User.findById(user.id);
       if (!found) {
-        console.warn('❌ No user found with ID:', user._id);
+        console.warn('❌ No user found with ID:', user.id);
       }
       return found;
     },
@@ -45,8 +47,8 @@ const resolvers = {
         throw new AuthenticationError("Incorrect credentials");
       }
 
-      const token = signToken({
-        _id: user._id,
+      const token = signToken({ //arguments for this are the UserPayload, not the TokenPayload
+        _id: user.id,
         email: user.email,
         username: user.username,
       });
@@ -58,7 +60,7 @@ const resolvers = {
       { name, brand, type, imageUrl, tastingNotes, tags, favorite }: any,
       context: any
     ) => {
-      if (!context.req.user) {
+      if (!context.user) {
         throw new AuthenticationError("Authentication required");
       }
 
@@ -69,11 +71,11 @@ const resolvers = {
         imageUrl,
         tastingNotes,
         tags,
-        createdBy: context.req.user._id,
+        createdBy: context.req.user.id,
       });
 
       if (favorite) {
-        await User.findByIdAndUpdate(context.req.user._id, {
+        await User.findByIdAndUpdate(context.user.id, {
           $addToSet: { favoriteTeas: tea._id },
         });
       }
@@ -96,15 +98,15 @@ const resolvers = {
     },
 
     addSpillPost: async (_: any, { title, content }: any, context: any) => {
-      if (!context.req.user) {
+      if (!context.user) {
         throw new AuthenticationError("Authentication required");
       }
 
       const newPost = await SpillPost.create({
         title,
         content,
-        createdBy: context.req.user._id,
-        createdByUsername: context.req.user.username,
+        createdBy: context.user.id,
+        createdByUsername: context.user.username,
       });
 
       console.log("New post created:", newPost);
@@ -137,6 +139,22 @@ const resolvers = {
         { $inc: { likes: 1 } },
         { new: true }
       );
+    },
+
+    updateUser: async (_: any, { bio, favoriteTeaSource }: any, context: any) => {
+      if (!context.user) {
+        throw new AuthenticationError("Authentication required");
+      }
+
+      const userId = context.user.id;
+
+      return await User.findByIdAndUpdate(
+        userId,
+        {bio, favoriteTeaSource},
+        { new: true }
+      );
+
+
     },
 
     deleteComment: async (

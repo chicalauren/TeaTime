@@ -21,7 +21,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const JWT_SECRET = process.env.JWT_SECRET || 'mysecret'; // fallback if .env is missing
+const JWT_SECRET = process.env.JWT_SECRET || "";
 
 async function startApolloServer() {
   const server = new ApolloServer({
@@ -51,7 +51,7 @@ async function startApolloServer() {
           try {
             const decoded: any = jwt.verify(token, JWT_SECRET);
             user = decoded.data;
-            console.log('✅ Token verified, user:', user);
+            // console.log('✅ Token verified, user:', user);
           } catch (err) {
             if (err instanceof Error) {
               console.warn('⚠️ Invalid token:', err.message);
@@ -64,7 +64,7 @@ async function startApolloServer() {
         }
       
         req.user = user;
-        return { req };
+        return req ;
       }
       
     })
