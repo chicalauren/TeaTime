@@ -52,24 +52,6 @@ const resolvers = {
       });
       return { token, user };
     },
-    updateUser: async (_: any, { bio, favoriteTeaSource }: any, context: any) => {
-      if (!context.user && !context.req?.user) {
-        throw new AuthenticationError("Authentication required");
-      }
-
-      const userId = context.user?._id || context.req?.user?._id;
-
-      return await User.findByIdAndUpdate(
-        userId,
-        {
-          ...(bio && { bio }),
-          ...(favoriteTeaSource && { favoriteTeaSource }),
-        },
-        { new: true }
-      );
-}
-
-    },
 
     addTea: async (
       _: any,
@@ -179,6 +161,7 @@ const resolvers = {
         { new: true }
       );
     },
-  };
+  },
+};
 
 export default resolvers;
