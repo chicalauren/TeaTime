@@ -206,6 +206,7 @@ export const ADD_TEA_TO_FAVORITES = gql`
         name
         brand
         type
+        tags
       }
     }
   }
