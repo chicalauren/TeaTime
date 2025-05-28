@@ -24,6 +24,20 @@ function AddTeaForm() {
   const [uploading, setUploading] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [successFadeIn, setSuccessFadeIn] = useState(false);
+  const teaTypes = [
+    "Black",
+    "Green",
+    "White",
+    "Oolong",
+    "Pu-erh",
+    "Herbal",
+    "Rooibos",
+    "Mate",
+    "Yellow",
+    "Chai",
+    "Blooming",
+    "Blend",
+  ];
 
   useEffect(() => {
     nameInputRef.current?.focus();
@@ -161,14 +175,19 @@ function AddTeaForm() {
                 required
               />
 
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Type (Green, Black, etc)"
+              <select
+                className="form-select"
                 value={type}
                 onChange={(e) => setType(e.target.value)}
                 required
-              />
+              >
+                <option value="">Select Tea Type</option>
+                {teaTypes.map((teaType) => (
+                  <option key={teaType} value={teaType}>
+                    {teaType}
+                  </option>
+                ))}
+              </select>
 
               <textarea
                 className="form-control"
