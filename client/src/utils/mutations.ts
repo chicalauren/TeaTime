@@ -221,3 +221,13 @@ export const REMOVE_TEA_FROM_FAVORITES = gql`
     }
   }
 `;
+export const UPDATE_USER = gql`
+  mutation UpdateUser($bio: String, $favoriteTeaSource: String) {
+    updateUser(bio: $bio, favoriteTeaSource: $favoriteTeaSource) {
+      _id
+      username
+      bio
+      favoriteTeaSource
+    }
+  }
+`;

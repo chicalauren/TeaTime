@@ -40,6 +40,28 @@ const resolvers = {
       const token = signToken(user);
       return { token, user };
     },
+    updateUser: async (
+      _: any,
+      { bio, favoriteTeaSource }: { bio?: string; favoriteTeaSource?: string },
+      context: any
+    ) => {
+      if (!context.user) {
+        throw new AuthenticationError("You must be logged in");
+      }
+
+      const updatedFields: Partial<IUser> = {};
+      if (bio !== undefined) updatedFields.bio = bio;
+      if (favoriteTeaSource !== undefined)
+        updatedFields.favoriteTeaSource = favoriteTeaSource;
+
+      const updatedUser = await User.findByIdAndUpdate(
+        context.user._id,
+        { $set: updatedFields },
+        { new: true }
+      );
+
+      return updatedUser;
+    },
 
     login: async (_: any, { email, password }: any) => {
       const user = (await User.findOne({ email })) as IUser;
@@ -65,7 +87,7 @@ const resolvers = {
       { name, brand, type, imageUrl, tastingNotes, tags, favorite }: any,
       context: any
     ) => {
-      console.log(context)
+      console.log(context);
       if (!context.user) {
         throw new AuthenticationError("Authentication required");
       }

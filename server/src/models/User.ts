@@ -7,6 +7,8 @@ export interface IUser extends Document {
   email: string;
   password: string;
   favoriteTeas: mongoose.Types.ObjectId[]; // to see the users fav teas
+  bio?: string;
+  favoriteTeaSource?: string;
   isCorrectPassword: (password: string) => Promise<boolean>;
 }
 
@@ -36,6 +38,14 @@ const userSchema = new Schema<IUser>(
         ref: "TeaCategory",
       },
     ],
+    bio: {
+      type: String,
+      default: "",
+    },
+    favoriteTeaSource: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,

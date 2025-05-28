@@ -6,6 +6,8 @@ const typeDefs = gql`
     username: String!
     email: String!
     favoriteTeas: [TeaCategory]
+    bio: String
+    favoriteTeaSource: String
   }
 
   type TeaCategory {
@@ -62,6 +64,7 @@ const typeDefs = gql`
   type Mutation {
     login(email: String!, password: String!): Auth
     register(username: String!, email: String!, password: String!): Auth
+    updateUser(bio: String, favoriteTeaSource: String): User
 
     addTea(
       name: String!
