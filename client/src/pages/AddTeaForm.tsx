@@ -104,13 +104,10 @@ function AddTeaForm() {
 
   return (
     <div className="container py-5 mt-5 d-flex justify-content-center">
-
-    <div
-      className="container py-5 mt-5 d-flex justify-content-center"
-    >
       {showConfetti && (
         <Confetti width={window.innerWidth} height={window.innerHeight} />
       )}
+
       {successFadeIn && (
         <motion.div
           className="position-absolute top-0 start-50 translate-middle-x mt-3 p-3 rounded shadow"
@@ -128,8 +125,6 @@ function AddTeaForm() {
       )}
 
       <div className="card shadow w-100" style={{ maxWidth: "600px" }}>
-        <div className="rounded">
-      <div className="card shadow w-100" style={{ maxWidth: '600px' }}>
         <div className="rounded">
           <div
             className="d-flex flex-column justify-content-center text-white"
