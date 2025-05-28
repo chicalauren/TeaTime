@@ -39,7 +39,6 @@ function Profile() {
     error: errorRecs,
   } = useQuery(RECOMMEND_TEAS, {
     variables: { tags: allTags },
-    skip: allTags.length === 0,
   });
 
   if (loadingUser) return <p>Loading profile...</p>;
