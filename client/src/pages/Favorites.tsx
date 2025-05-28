@@ -3,9 +3,15 @@ import { useQuery } from "@apollo/client";
 import { GET_ME } from "../utils/queries";
 
 function Favorites() {
-  const { loading, error, data } = useQuery(GET_ME);
+  const { loading, error, data } = useQuery(GET_ME, {
+    fetchPolicy: "network-only",
+  });
   const user = data?.me;
   const favoriteTeas = user?.favoriteTeas ?? [];
+  console.log("Favorite teas:", favoriteTeas);
+  const sortedFavorites = [...favoriteTeas].sort(
+    (a, b) => (b.rating || 0) - (a.rating || 0)
+  );
 
   if (loading) return <p className="text-center mt-5">Loading favorites...</p>;
   if (error)
@@ -22,7 +28,7 @@ function Favorites() {
         <p className="text-center text-muted">No favorites yet.</p>
       ) : (
         <div className="row g-4">
-          {favoriteTeas.map((tea: any) => (
+          {sortedFavorites.map((tea: any) => (
             <div key={tea._id} className="col-md-4 col-sm-6">
               <div className="card shadow-sm h-100">
                 <div
