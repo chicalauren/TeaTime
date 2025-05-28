@@ -65,6 +65,7 @@ const resolvers = {
       { name, brand, type, imageUrl, tastingNotes, tags, favorite }: any,
       context: any
     ) => {
+      console.log(context)
       if (!context.user) {
         throw new AuthenticationError("Authentication required");
       }
