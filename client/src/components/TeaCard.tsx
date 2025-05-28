@@ -1,26 +1,27 @@
 import { useMutation } from "@apollo/client";
 import {
-  DELETE_TEA,
   ADD_TEA_TO_FAVORITES,
   REMOVE_TEA_FROM_FAVORITES,
+  DELETE_TEA,
 } from "../utils/mutations";
 import { GET_TEAS } from "../utils/queries";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import FavoriteButton from "./FavoriteButton";
+import { useState } from "react";
 
 function TeaCard({ tea }: { tea: any }) {
   const navigate = useNavigate();
-  const [isFavorite, setIsFavorite] = useState(!!tea.favorite || false);
+  const [toastMessage, setToastMessage] = useState("");
 
   const [deleteTea] = useMutation(DELETE_TEA, {
     refetchQueries: [{ query: GET_TEAS }],
   });
 
-  const [addToFavorites] = useMutation(ADD_TEA_TO_FAVORITES, {
+  const [addToFavoritesMutation] = useMutation(ADD_TEA_TO_FAVORITES, {
     refetchQueries: [{ query: GET_TEAS }],
   });
 
-  const [removeFromFavorites] = useMutation(REMOVE_TEA_FROM_FAVORITES, {
+  const [removeFromFavoritesMutation] = useMutation(REMOVE_TEA_FROM_FAVORITES, {
     refetchQueries: [{ query: GET_TEAS }],
   });
 
@@ -30,22 +31,18 @@ function TeaCard({ tea }: { tea: any }) {
     }
   };
 
-  const handleToggleFavorite = async () => {
-    try {
-      if (isFavorite) {
-        await removeFromFavorites({ variables: { teaId: tea._id } });
-      } else {
-        await addToFavorites({ variables: { teaId: tea._id } });
-      }
-      setIsFavorite(!isFavorite);
-    } catch (error) {
-      console.error("Failed to toggle favorite", error);
-    }
+  const addToFavorites = async (teaId: string) => {
+    await addToFavoritesMutation({ variables: { teaId } });
   };
 
-  useEffect(() => {
-    setIsFavorite(tea.favorite || false);
-  }, [tea.favorite]);
+  const removeFromFavorites = async (teaId: string) => {
+    await removeFromFavoritesMutation({ variables: { teaId } });
+  };
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(""), 2000);
+  };
 
   return (
     <div
@@ -55,27 +52,39 @@ function TeaCard({ tea }: { tea: any }) {
         padding: "1rem",
         width: "250px",
         position: "relative",
-        backgroundColor: isFavorite ? "#ffe8e8" : "white",
+        backgroundColor: tea.favorite ? "#ffe8e8" : "white",
       }}
     >
-      {/* Favorite Heart Button */}
-      <button
-        onClick={handleToggleFavorite}
-        aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-        style={{
-          position: "absolute",
-          top: "10px",
-          right: "10px",
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          fontSize: "24px",
-          color: isFavorite ? "red" : "#ccc",
-          userSelect: "none",
-        }}
-      >
-        {isFavorite ? "❤️" : "🤍"}
-      </button>
+      {/* Toast Message */}
+      {toastMessage && (
+        <div
+          style={{
+            position: "absolute",
+            top: "-10px",
+            right: "10px",
+            backgroundColor: "black",
+            color: "white",
+            padding: "4px 8px",
+            borderRadius: "6px",
+            fontSize: "0.85rem",
+            zIndex: 10,
+          }}
+        >
+          {toastMessage}
+        </div>
+      )}
+
+      <div style={{ position: "absolute", top: "10px", right: "10px" }}>
+        <FavoriteButton
+          teaId={tea._id}
+          initialFavorite={!!tea.favorite}
+          addToFavorites={addToFavorites}
+          removeFromFavorites={removeFromFavorites}
+          onFavoriteChange={(isFav) =>
+            showToast(isFav ? "Added to favorites" : "Removed from favorites")
+          }
+        />
+      </div>
 
       <h3>{tea.name}</h3>
       <p>
@@ -83,14 +92,6 @@ function TeaCard({ tea }: { tea: any }) {
       </p>
       <p>
         <strong>Type:</strong> {tea.type}
-      </p>
-
-      <p>
-        {Array(tea.rating)
-          .fill("⭐")
-          .map((star, index) => (
-            <span key={index}>{star}</span>
-          ))}
       </p>
 
       <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem" }}>

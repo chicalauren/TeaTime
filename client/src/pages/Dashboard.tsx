@@ -19,6 +19,7 @@ function Dashboard() {
   if (error) return <p>Error loading teas: {error.message}</p>;
 
   const teas = data?.teas || [];
+  const teaTypes = Array.from(new Set(teas.map((tea: any) => tea.type))).sort();
 
   const handleDeleteTea = async (id: string) => {
     const confirmDelete = window.confirm(
@@ -40,11 +41,11 @@ function Dashboard() {
   };
 
   const filteredTeas = teas.filter((tea: any) => {
-    const searchLower = searchTerm.toLowerCase();
-
     const matchesSearch =
-      tea.name.toLowerCase().includes(searchLower) ||
-      tea.tags?.some((tag: string) => tag.toLowerCase().includes(searchLower));
+      tea.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      tea.tags?.some((tag: string) =>
+        tag.toLowerCase().includes(searchTerm.toLowerCase())
+      );
 
     const matchesType = filterType
       ? tea.type.toLowerCase() === filterType.toLowerCase()
@@ -100,11 +101,11 @@ function Dashboard() {
           style={{ padding: "10px", fontSize: "16px" }}
         >
           <option value="">All Types</option>
-          <option value="Green">Green</option>
-          <option value="Black">Black</option>
-          <option value="Oolong">Oolong</option>
-          <option value="Herbal">Herbal</option>
-          <option value="White">White</option>
+          {teaTypes.map((type, index) => (
+            <option key={index} value={type as string}>
+              {String(type)}
+            </option>
+          ))}
         </select>
 
         {/* 🔽 Sort Dropdown */}
