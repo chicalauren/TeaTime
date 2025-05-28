@@ -29,6 +29,8 @@ export const GET_TEAS = gql`
       imageUrl
       tastingNotes
       tags
+      rating
+      favorite
       createdBy
       createdAt
     }

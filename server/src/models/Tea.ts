@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 interface Tea extends Document {
+  _id: string;
   name: string;
   type: string;
   caffeine: string;
@@ -9,6 +10,7 @@ interface Tea extends Document {
   temperatureFahrenheit: number;
   description: string;
   usage: string;
+  favorite?: boolean;
   flavorNotes: string[];
   purchaseDate: Date;
 }
