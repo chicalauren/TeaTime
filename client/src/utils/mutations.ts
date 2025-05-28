@@ -79,6 +79,7 @@ export const DELETE_SPILL_POST = gql`
   mutation DeleteSpillPost($spillPostId: ID!) {
     deleteSpillPost(spillPostId: $spillPostId) {
       _id
+      title
     }
   }
 `;
@@ -171,7 +172,7 @@ export const GET_TEA = gql`
       brand
       type
       rating
-
+      tags
       favorite
       imageUrl
     }
@@ -187,6 +188,10 @@ export const GET_ME = gql`
         name
         brand
         type
+        tags
+        imageUrl
+        rating
+        favorite
       }
     }
   }

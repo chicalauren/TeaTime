@@ -190,6 +190,27 @@ const resolvers = {
 
       return newPost;
     },
+    deleteSpillPost: async (
+      _: any,
+      { spillPostId }: { spillPostId: string },
+      context: any
+    ) => {
+      if (!context.user) {
+        throw new AuthenticationError("Authentication required");
+      }
+      const post = await SpillPost.findById(spillPostId);
+
+      if (!post) {
+        throw new Error("Spill post not found");
+      }
+      if (String(post.createdBy) !== String(context.user._id)) {
+        throw new AuthenticationError("Not authorized to delete this post");
+      }
+
+      await SpillPost.findByIdAndDelete(spillPostId);
+
+      return post; // return deleted post data per typeDefs
+    },
 
     addComment: async (_: any, { spillPostId, content }: any, context: any) => {
       if (!context.user) {

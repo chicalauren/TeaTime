@@ -5,6 +5,7 @@ import {
   ADD_COMMENT,
   LIKE_SPILL_POST,
   DELETE_COMMENT,
+  DELETE_SPILL_POST,
 } from "../utils/mutations";
 import { useState } from "react";
 
@@ -20,6 +21,9 @@ function SpillTheTea() {
     refetchQueries: [{ query: GET_SPILL_POSTS }],
   });
   const [deleteComment] = useMutation(DELETE_COMMENT, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
+  const [deleteSpillPost] = useMutation(DELETE_SPILL_POST, {
     refetchQueries: [{ query: GET_SPILL_POSTS }],
   });
 
@@ -93,6 +97,36 @@ function SpillTheTea() {
               transition: "transform 0.2s ease-in",
             }}
           >
+            {/* ✅ Place the delete button here */}
+            {post.createdByUsername === localStorage.getItem("username") && (
+              <button
+                onClick={async () => {
+                  const confirmed = window.confirm("Delete this spill?");
+                  if (confirmed) {
+                    try {
+                      await deleteSpillPost({
+                        variables: { spillPostId: post._id },
+                      });
+                    } catch (err) {
+                      console.error("Error deleting spill post:", err);
+                      alert("Failed to delete post.");
+                    }
+                  }
+                }}
+                style={{
+                  backgroundColor: "#d32f2f",
+                  color: "#fff",
+                  border: "none",
+                  padding: "6px 10px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  marginTop: "0.5rem",
+                  fontSize: "14px",
+                }}
+              >
+                🗑 Delete Post
+              </button>
+            )}
             <h3 style={{ color: "#72a85a", fontWeight: "bold" }}>
               {post.title}
             </h3>

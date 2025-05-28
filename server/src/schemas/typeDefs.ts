@@ -101,6 +101,7 @@ const typeDefs = gql`
     deleteComment(spillPostId: ID!, commentId: ID!): SpillPost
 
     addSpillPost(title: String!, content: String!): SpillPost
+    deleteSpillPost(spillPostId: ID!): SpillPost
     addComment(spillPostId: ID!, content: String!): SpillPost
     likeSpillPost(spillPostId: ID!): SpillPost
   }
