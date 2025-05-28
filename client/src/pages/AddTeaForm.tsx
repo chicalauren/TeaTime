@@ -6,7 +6,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Confetti from "react-confetti";
 import { motion } from "framer-motion";
-
+// adding notes because the form needs an update and it's being rude!
 function AddTeaForm() {
   const navigate = useNavigate();
   const [addTea] = useMutation(ADD_TEA);
