@@ -21,7 +21,7 @@ function Profile() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("🟡 Submitting:", { bio, favoriteTeaSource }); 
+    console.log("Submitting:", { bio, favoriteTeaSource }); 
 
     try {
       const { data } = await updateUser({
@@ -31,23 +31,14 @@ function Profile() {
         },
       });
 
-      console.log("✅ Server returned:", data); 
+      console.log("Server returned:", data); 
       await refetch();
       setIsEditing(false);
     } catch (err) {
-      console.error("❌ Error updating profile:", err);
+      console.error("Error updating profile:", err);
     }
   };
 
-  // useEffect(() => {
-  //   if (user) {
-  //     setBio(user.bio || '');
-  //     setFavoriteTeaSource(user.favoriteTeaSource || '');
-  //   }
-  // }, [user]);
-
-
-  
 
   return (
     <div className="d-flex justify-content-center align-items-start min-vh-100 py-5 mt-5">
