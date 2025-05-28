@@ -10,7 +10,9 @@ const resolvers = {
   Query: {
     me: async (_: any, __: any, context: any) => {
       if (context.user) {
-        return User.findById(context.user._id).populate("favoriteTeas");
+        return User.findById(context.user._id)
+          .select("_id username email bio favoriteTeaSource favoriteTeas")
+          .populate("favoriteTeas");
       }
       throw new AuthenticationError("You must be logged in");
     },

@@ -6,6 +6,8 @@ export const GET_ME = gql`
       _id
       username
       email
+      bio
+      favoriteTeaSource
       favoriteTeas {
         _id
         name

@@ -8,8 +8,10 @@ function Profile() {
     loading: loadingUser,
     error: errorUser,
     data: userData,
+    refetch,
   } = useQuery(GET_ME);
   const [updateUser] = useMutation(UPDATE_USER);
+  console.log("User from GET_ME:", userData?.me);
 
   const user = userData?.me;
   const favoriteTeas = user?.favoriteTeas ?? [];
@@ -20,8 +22,8 @@ function Profile() {
 
   useEffect(() => {
     if (user) {
-      setBio(user.bio || "");
-      setFavoriteTeaSource(user.favoriteTeaSource || "");
+      setBio(user.bio ?? "");
+      setFavoriteTeaSource(user.favoriteTeaSource ?? "");
     }
   }, [user]);
 
@@ -56,10 +58,7 @@ function Profile() {
 
       console.log("UpdateUser mutation response:", data);
 
-      // skip refetch and just manually update UI state
-      setBio(data.updateUser.bio || "");
-      setFavoriteTeaSource(data.updateUser.favoriteTeaSource || "");
-
+      await refetch();
       setIsEditing(false);
     } catch (err) {
       console.error("Error updating profile:", err);
