@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { GET_TEAS } from '../utils/queries';
 import { DELETE_TEA } from '../utils/mutations';
 //import CustomButton from '../components/CustomButton';
-//TODO: add data tags for cypress testing  
+
 
 function Dashboard() {
   const { loading, error, data } = useQuery(GET_TEAS);
@@ -20,7 +20,7 @@ function Dashboard() {
   if (error) return <p>Error loading teas: {error.message}</p>;
 
   const teas = data?.teas || [];
-    // 🔍 Log raw data and unique IDs
+    // Log raw data and unique IDs
   console.log('Raw teas fetched:', teas);
   const teaIds = teas.map((t: any) => t.id);
   console.log('Tea IDs:', teaIds);

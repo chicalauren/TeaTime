@@ -31,7 +31,7 @@ async function startApolloServer() {
 
   await server.start();
 
-  // ✅ Allow cross-origin requests from frontend
+  
   app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true
@@ -39,7 +39,7 @@ async function startApolloServer() {
 
   app.use(express.json());
 
-  // ✅ Custom auth context middleware for Apollo
+ 
   app.use(
     "/graphql",
     expressMiddleware(server, {
