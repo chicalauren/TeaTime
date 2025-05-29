@@ -3,30 +3,37 @@ import { IUser } from "../models/User";
 import TeaCategory from "../models/TeaCategory";
 import SpillPost from "../models/SpillPost";
 import { signToken } from "../utils/auth";
-import { AuthenticationError } from "apollo-server";
+import { AuthenticationError } from "apollo-server-express";
+import { generateRecommendations } from "../utils/generateTeaRecomendations";
 
 const resolvers = {
   Query: {
     me: async (_: any, __: any, context: any) => {
-      
+      if (context.user) {
+        return User.findById(context.user._id)
+          .select("_id username email bio favoriteTeaSource favoriteTeas")
+          .populate("favoriteTeas");
+      }
+      throw new AuthenticationError("You must be logged in");
+    },
+    teas: async () => TeaCategory.find(),
+    tea: async (_: any, { id }: { id: string }) => TeaCategory.findById(id),
+    spillPosts: async () => SpillPost.find().sort({ createdAt: -1 }),
+
+    recommendTeas: async (
+      _parent: unknown,
+      _args: any,
+      context: { user?: { _id: string } }
+    ) => {
       if (!context.user) {
         throw new AuthenticationError("You must be logged in");
       }
 
-      const user = context.user; //changed from context.req.user to context.user
-    
-      //console.log('🔍 Looking up user by ID:', user._id);
-      const found = await User.findById(user.id);
-      if (!found) {
-        console.warn('❌ No user found with ID:', user.id);
-      }
-      return found;
-    },
-    
+      // Only pass user._id here
+      const recommendedTeas = await generateRecommendations(context.user._id);
 
-    teas: async () => TeaCategory.find(),
-    tea: async (_: any, { id }: { id: string }) => TeaCategory.findById(id),
-    spillPosts: async () => SpillPost.find().sort({ createdAt: -1 }),
+      return recommendedTeas;
+    },
   },
 
   Mutation: {
@@ -34,6 +41,28 @@ const resolvers = {
       const user = await User.create({ username, email, password });
       const token = signToken(user);
       return { token, user };
+    },
+    updateUser: async (
+      _: any,
+      { bio, favoriteTeaSource }: { bio?: string; favoriteTeaSource?: string },
+      context: any
+    ) => {
+      if (!context.user) {
+        throw new AuthenticationError("You must be logged in");
+      }
+
+      const updatedFields: Partial<IUser> = {};
+      if (bio !== undefined) updatedFields.bio = bio;
+      if (favoriteTeaSource !== undefined)
+        updatedFields.favoriteTeaSource = favoriteTeaSource;
+
+      const updatedUser = await User.findByIdAndUpdate(
+        context.user._id,
+        { $set: updatedFields },
+        { new: true }
+      );
+
+      return updatedUser;
     },
 
     login: async (_: any, { email, password }: any) => {
@@ -71,23 +100,72 @@ const resolvers = {
         imageUrl,
         tastingNotes,
         tags,
-        createdBy: context.req.user.id,
+        createdBy: context.user._id,
       });
 
       if (favorite) {
-        await User.findByIdAndUpdate(context.user.id, {
+        await User.findByIdAndUpdate(context.user._id, {
           $addToSet: { favoriteTeas: tea._id },
         });
       }
 
       return tea;
     },
+    addTeaToFavorites: async (
+      _: any,
+      { teaId }: { teaId: string },
+      context: { user?: { _id: string } }
+    ) => {
+      if (!context.user) {
+        throw new AuthenticationError("You must be logged in");
+      }
+      const user = await User.findByIdAndUpdate(
+        context.user._id,
+        { $addToSet: { favoriteTeas: teaId } },
+        { new: true }
+      ).populate("favoriteTeas");
+      return user;
+    },
+    removeTeaFromFavorites: async (
+      _: any,
+      { teaId }: { teaId: string },
+      context: { user?: { _id: string } }
+    ) => {
+      if (!context.user) {
+        throw new AuthenticationError("You must be logged in");
+      }
+      const user = await User.findByIdAndUpdate(
+        context.user._id,
+        { $pull: { favoriteTeas: teaId } },
+        { new: true }
+      ).populate("favoriteTeas");
+      return user;
+    },
 
     updateTea: async (_: any, { id, ...fields }: any, context: any) => {
       if (!context.user) {
         throw new AuthenticationError("Authentication required");
       }
-      return TeaCategory.findByIdAndUpdate(id, fields, { new: true });
+      console.log(id, fields);
+
+      const updatedTea = await TeaCategory.findByIdAndUpdate(id, fields, {
+        new: true,
+      });
+
+      if (updatedTea?.favorite) {
+        await User.findByIdAndUpdate(
+          context.user._id,
+          { $addToSet: { favoriteTeas: id } },
+          { new: true }
+        ).populate("favoriteTeas");
+      } else {
+        await User.findByIdAndUpdate(
+          context.user._id,
+          { $pull: { favoriteTeas: id } },
+          { new: true }
+        ).populate("favoriteTeas");
+      }
+      return updatedTea;
     },
 
     deleteTea: async (_: any, { id }: any, context: any) => {
@@ -105,12 +183,32 @@ const resolvers = {
       const newPost = await SpillPost.create({
         title,
         content,
-        createdBy: context.user.id,
+        createdBy: context.user._id,
         createdByUsername: context.user.username,
       });
 
-      console.log("New post created:", newPost);
       return newPost;
+    },
+    deleteSpillPost: async (
+      _: any,
+      { spillPostId }: { spillPostId: string },
+      context: any
+    ) => {
+      if (!context.user) {
+        throw new AuthenticationError("Authentication required");
+      }
+      const post = await SpillPost.findById(spillPostId);
+
+      if (!post) {
+        throw new Error("Spill post not found");
+      }
+      if (String(post.createdBy) !== String(context.user._id)) {
+        throw new AuthenticationError("Not authorized to delete this post");
+      }
+
+      await SpillPost.findByIdAndDelete(spillPostId);
+
+      return post; // return deleted post data per typeDefs
     },
 
     addComment: async (_: any, { spillPostId, content }: any, context: any) => {
@@ -141,18 +239,6 @@ const resolvers = {
       );
     },
 
-    updateUser: async (_: any, { bio, favoriteTeaSource }: any, context: any) => {
-      if (!context.user) {
-        throw new AuthenticationError("Authentication required");
-      }
-
-      const userId = context.user.id;
-
-      return await User.findByIdAndUpdate(
-        userId,
-        {bio, favoriteTeaSource},
-        { new: true }
-      );
 
 
     },
@@ -165,7 +251,6 @@ const resolvers = {
       if (!context.user) {
         throw new AuthenticationError("Authentication required");
       }
-
       return SpillPost.findByIdAndUpdate(
         spillPostId,
         {
@@ -179,7 +264,6 @@ const resolvers = {
         { new: true }
       );
     },
-  },
-};
+  };
 
 export default resolvers;

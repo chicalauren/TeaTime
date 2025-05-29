@@ -44,8 +44,8 @@ function AddTeaForm() {
 
     try {
       const formData = new FormData();
-      formData.append('file', imageFile);
-      formData.append('upload_preset', 'tea_uploads');
+      formData.append("file", imageFile);
+      formData.append("upload_preset", "tea_uploads");
 
       const response = await axios.post(
         `https://api.cloudinary.com/v1_1/dcaivdnrk/image/upload`,
@@ -54,8 +54,8 @@ function AddTeaForm() {
 
       return response.data.secure_url;
     } catch (error) {
-      console.error('Image upload failed', error);
-      toast.error('Image upload failed. Please try again.');
+      console.error("Image upload failed", error);
+      toast.error("Image upload failed. Please try again.");
       return null;
     } finally {
       setUploading(false);
@@ -112,7 +112,6 @@ function AddTeaForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       const imageUrl = await handleImageUpload();
 
@@ -129,7 +128,7 @@ function AddTeaForm() {
         },
       });
 
-      toast.success('Tea Added Successfully! 🎉');
+      toast.success("Tea Added Successfully! 🎉");
       setShowConfetti(true);
       setSuccessFadeIn(true);
 
@@ -144,18 +143,20 @@ function AddTeaForm() {
       setImagePreview(null);
 
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate("/dashboard");
       }, 2500);
     } catch (err) {
-      console.error('Failed to add tea', err);
-      toast.error('Failed to add tea. Please try again.');
+      console.error("Failed to add tea", err);
+      toast.error("Failed to add tea. Please try again.");
     }
   };
 
 
   return (
-    <div className="container py-5 mt-5 d-flex justify-content-center" style={{ minHeight: '100vh' }}>
-      {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} />}
+    <div className="container py-5 mt-5 d-flex justify-content-center">
+      {showConfetti && (
+        <Confetti width={window.innerWidth} height={window.innerHeight} />
+      )}
 
       {successFadeIn && (
         <motion.div
@@ -163,25 +164,34 @@ function AddTeaForm() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          style={{ background: '#e0ffe0', fontWeight: 'bold', color: '#006400' }}
+          style={{
+            background: "#e0ffe0",
+            fontWeight: "bold",
+            color: "#006400",
+          }}
         >
           🎉 Your tea was added!
         </motion.div>
       )}
 
-      <div className="card shadow w-100" style={{ maxWidth: '600px' }}>
-        <div className="ratio ratio-1x1 rounded overflow-hidden">
+      <div className="card shadow w-100" style={{ maxWidth: "600px" }}>
+        <div className="rounded">
           <div
-            className="card-img-overlay d-flex flex-column justify-content-center text-white"
+            className="d-flex flex-column justify-content-center text-white"
             style={{
-              backgroundColor: '#222',
-              padding: '2rem',
-              borderRadius: '0.5rem',
+              backgroundColor: "#222",
+              padding: "2rem",
+              borderRadius: "0.5rem",
             }}
           >
-            <h1 className="card-title text-center mb-4 text-white">Add New Tea 🍵</h1>
+            <h1 className="card-title text-center mb-4 text-white">
+              Add New Tea 🍵
+            </h1>
 
-            <form onSubmit={handleSubmit} className="d-flex flex-column gap-3 text-white">
+            <form
+              onSubmit={handleSubmit}
+              className="d-flex flex-column gap-3 text-white"
+            >
               <input
                 ref={nameInputRef}
                 type="text"
@@ -273,17 +283,21 @@ function AddTeaForm() {
 
               {imagePreview && (
                 <div className="text-center">
-                  <p><strong>Image Preview:</strong></p>
+                  <p>
+                    <strong>Image Preview:</strong>
+                  </p>
                   <img
                     src={imagePreview}
                     alt="Selected"
                     className="img-fluid rounded"
-                    style={{ maxHeight: '250px' }}
+                    style={{ maxHeight: "250px" }}
                   />
                 </div>
               )}
 
-              {uploading && <p className="text-primary">Uploading image, please wait...</p>}
+              {uploading && (
+                <p className="text-primary">Uploading image, please wait...</p>
+              )}
 
               <button
                 type="submit"
@@ -291,11 +305,14 @@ function AddTeaForm() {
                 disabled={uploading || !name || !brand || !type || rating === 0}
               >
                 {uploading ? (
-                  <div className="spinner-border spinner-border-sm" role="status">
+                  <div
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                  >
                     <span className="visually-hidden">Uploading...</span>
                   </div>
                 ) : (
-                  '➕ Add Tea'
+                  "➕ Add Tea"
                 )}
               </button>
             </form>

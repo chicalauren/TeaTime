@@ -1,4 +1,4 @@
-import mongoose, { Document, model, Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 
 export interface IUser extends Document {
@@ -6,9 +6,9 @@ export interface IUser extends Document {
   username: string;
   email: string;
   password: string;
-  favoriteTeas: mongoose.Types.ObjectId[];
-  bio: string;
-  favoriteTeaSource: string;
+  favoriteTeas: mongoose.Types.ObjectId[]; // to see the users fav teas
+  bio?: string;
+  favoriteTeaSource?: string;
   isCorrectPassword: (password: string) => Promise<boolean>;
 }
 
@@ -43,11 +43,11 @@ const userSchema = new Schema<IUser>(
     ],
     bio: {
       type: String,
-      default: '',
+      default: "",
     },
     favoriteTeaSource: {
       type: String,
-      default: '',
+      default: "",
     },
   },
   {
