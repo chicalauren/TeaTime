@@ -16,6 +16,7 @@ const teaOptions = [
 ];
 
 // 🔁 Replace this with the actual image URL you're using on Dashboard
+//TODO: Change the color of the timer based on the tea type; this is a low priority feature
 const backgroundImageUrl = "/images/tea-background.jpg";
 
 function TeaTimer() {
