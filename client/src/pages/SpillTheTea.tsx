@@ -9,6 +9,8 @@ import {
 } from "../utils/mutations";
 import { useState } from "react";
 
+
+
 function SpillTheTea() {
   const { loading, error, data } = useQuery(GET_SPILL_POSTS);
   const [addSpillPost] = useMutation(ADD_SPILL_POST, {

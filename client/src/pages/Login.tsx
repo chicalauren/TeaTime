@@ -3,6 +3,7 @@ import { useMutation } from "@apollo/client";
 import { LOGIN } from "../utils/mutations"; // Your GraphQL mutation
 import { useNavigate } from "react-router-dom"; // if you want to redirect after login
 
+
 function Login() {
   const navigate = useNavigate();
   const [login] = useMutation(LOGIN);

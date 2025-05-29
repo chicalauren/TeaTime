@@ -76,8 +76,8 @@ const resolvers = {
         throw new AuthenticationError("Incorrect credentials");
       }
 
-      const token = signToken({
-        _id: user._id,
+      const token = signToken({ //arguments for this are the UserPayload, not the TokenPayload
+        _id: user.id,
         email: user.email,
         username: user.username,
       });
@@ -89,7 +89,6 @@ const resolvers = {
       { name, brand, type, imageUrl, tastingNotes, tags, favorite }: any,
       context: any
     ) => {
-      console.log(context);
       if (!context.user) {
         throw new AuthenticationError("Authentication required");
       }
@@ -240,6 +239,10 @@ const resolvers = {
       );
     },
 
+
+
+    },
+
     deleteComment: async (
       _: any,
       { spillPostId, commentId }: any,
@@ -261,7 +264,6 @@ const resolvers = {
         { new: true }
       );
     },
-  },
-};
+  };
 
 export default resolvers;

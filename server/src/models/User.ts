@@ -12,6 +12,7 @@ export interface IUser extends Document {
   isCorrectPassword: (password: string) => Promise<boolean>;
 }
 
+
 const userSchema = new Schema<IUser>(
   {
     username: {
@@ -31,6 +32,8 @@ const userSchema = new Schema<IUser>(
       required: true,
       minlength: 8,
     },
+    
+
     favoriteTeas: [
       {
         // adding a fav category so it SHOULD pull reccomendations from the DB based on these

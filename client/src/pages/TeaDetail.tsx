@@ -7,6 +7,9 @@ import {
 } from "../utils/mutations";
 import { useState, useEffect } from "react";
 import FavoriteButton from "../components/FavoriteButton";
+import { Container, Row, Col, Card, Badge } from "react-bootstrap";
+import { motion } from "framer-motion";
+
 
 function TeaDetail() {
   const { id } = useParams<{ id: string }>();
@@ -56,48 +59,51 @@ function TeaDetail() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-2xl border border-gray-200">
-      <h1 className="text-3xl font-bold mb-4 text-emerald-700">{tea.name}</h1>
+    <Container className="my-5">
+      <Row className="justify-content-center">
+        <Col md={8}>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+            <Card className="shadow-sm">
+              {tea.imageUrl && (
+                <Card.Img
+                  variant="top"
+                  src={tea.imageUrl}
+                  alt={tea.name}
+                  style={{ objectFit: 'cover', height: '300px' }}
+                />
+              )}
+              <Card.Body>
+                <Card.Title className="fs-2">{tea.name}</Card.Title>
+                <Card.Text><strong>Brand:</strong> {tea.brand}</Card.Text>
+                <Card.Text><strong>Type:</strong> {tea.type}</Card.Text>
 
-      <div className="flex flex-col md:flex-row gap-6 items-start">
-        {tea.imageUrl && (
-          <img
-            src={tea.imageUrl}
-            alt={tea.name}
-            className="w-full md:w-60 rounded-xl shadow-md object-cover"
-          />
-        )}
+                {tea.tastingNotes && (
+                  <Card.Text><strong>Tasting Notes:</strong> {tea.tastingNotes}</Card.Text>
+                )}
 
-        <div className="flex-1 space-y-3 text-gray-700">
-          <p>
-            <span className="font-semibold">Brand:</span> {tea.brand}
-          </p>
-          <p>
-            <span className="font-semibold">Type:</span> {tea.type}
-          </p>
-          {tea.tastingNotes && (
-            <p>
-              <span className="font-semibold">Tasting Notes:</span>{" "}
-              {tea.tastingNotes}
-            </p>
-          )}
-          {tea.tags?.length > 0 && (
-            <p>
-              <span className="font-semibold">Tags:</span> {tea.tags.join(", ")}
-            </p>
-          )}
-
-          {/* FavoriteButton now correctly used */}
-          <FavoriteButton
-            teaId={tea._id}
-            initialFavorite={isFavorite}
-            addToFavorites={addToFavorites}
-            removeFromFavorites={removeFromFavorites}
-            onFavoriteChange={setIsFavorite}
-          />
-        </div>
-      </div>
-    </div>
+                {tea.tags?.length > 0 && (
+                  <Card.Text>
+                    <strong>Tags:</strong>{' '}
+                    {tea.tags.map((tag: string, index: number) => (
+                      <Badge key={index} bg="secondary" className="me-1">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </Card.Text>
+                )}
+                  <FavoriteButton
+                  teaId={tea._id}
+                  initialFavorite={isFavorite}
+                  addToFavorites={addToFavorites}
+                  removeFromFavorites={removeFromFavorites}
+                  onFavoriteChange={setIsFavorite}
+                />
+              </Card.Body>
+            </Card>
+          </motion.div>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

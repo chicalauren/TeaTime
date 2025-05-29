@@ -5,6 +5,7 @@ import { GET_TEAS } from "../utils/queries";
 import { DELETE_TEA } from "../utils/mutations";
 import CustomButton from "../components/CustomButton";
 
+
 function Dashboard() {
   const { loading, error, data } = useQuery(GET_TEAS);
   const [deleteTea] = useMutation(DELETE_TEA, {

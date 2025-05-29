@@ -12,7 +12,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const JWT_SECRET = process.env.JWT_SECRET || ''; // fallback if .env is missing
+const JWT_SECRET = process.env.JWT_SECRET || "";
 
 async function startApolloServer() {
   const server = new ApolloServer({
@@ -45,7 +45,7 @@ async function startApolloServer() {
 }
 
   app.listen(PORT, () => {
-    console.log(` Server running at http://localhost:${PORT}/graphql`);
+    console.log(`Server running at http://localhost:${PORT}/graphql`);
   });
 }
 
