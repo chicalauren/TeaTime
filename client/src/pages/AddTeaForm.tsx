@@ -6,8 +6,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import Confetti from 'react-confetti';
 import { motion } from 'framer-motion';
-
-//TODO: add data tags for cypress testing  
+import Select from 'react-select';
 
 function AddTeaForm() {
   const navigate = useNavigate();
@@ -18,7 +17,7 @@ function AddTeaForm() {
   const [brand, setBrand] = useState('');
   const [type, setType] = useState('');
   const [tastingNotes, setTastingNotes] = useState('');
-  const [tags, setTags] = useState('');
+  const [tags, setTags] = useState<{ value: string; label: string }[]>([]);
   const [rating, setRating] = useState(0);
   const [favorite, setFavorite] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -63,6 +62,54 @@ function AddTeaForm() {
     }
   };
 
+  const tagOptions = [
+    { value: "afternoon-relaxation", label: "afternoon-relaxation" },
+    { value: "afternoon-sip", label: "afternoon-sip" },
+    { value: "alertness", label: "alertness" },
+    { value: "breakfast", label: "breakfast" },
+    { value: "calm", label: "calm" },
+    { value: "calmness", label: "calmness" },
+    { value: "caffeine-free-energy", label: "caffeine-free-energy" },
+    { value: "casual-sip", label: "casual-sip" },
+    { value: "celebration", label: "celebration" },
+    { value: "comfort", label: "comfort" },
+    { value: "daily-use", label: "daily-use" },
+    { value: "daily-wellness", label: "daily-wellness" },
+    { value: "dessert-substitute", label: "dessert-substitute" },
+    { value: "digestion", label: "digestion" },
+    { value: "easy-sipping", label: "easy-sipping" },
+    { value: "elegance", label: "elegance" },
+    { value: "evening-drink", label: "evening-drink" },
+    { value: "evening-wind-down", label: "evening-wind-down" },
+    { value: "focus", label: "focus" },
+    { value: "focus-and-energy", label: "focus-and-energy" },
+    { value: "gentle-afternoons", label: "gentle-afternoons" },
+    { value: "gentle-wake-up", label: "gentle-wake-up" },
+    { value: "hydration", label: "hydration" },
+    { value: "immune-support", label: "immune-support" },
+    { value: "indulgence", label: "indulgence" },
+    { value: "invigoration", label: "invigoration" },
+    { value: "late-evening", label: "late-evening" },
+    { value: "light-refreshment", label: "light-refreshment" },
+    { value: "meditation", label: "meditation" },
+    { value: "mindfulness", label: "mindfulness" },
+    { value: "morning-wake-up", label: "morning-wake-up" },
+    { value: "nausea", label: "nausea" },
+    { value: "quiet-moments", label: "quiet-moments" },
+    { value: "reflection", label: "reflection" },
+    { value: "refreshment", label: "refreshment" },
+    { value: "relaxation", label: "relaxation" },
+    { value: "serenity", label: "serenity" },
+    { value: "skin-health", label: "skin-health" },
+    { value: "sleep-aid", label: "sleep-aid" },
+    { value: "special-occasions", label: "special-occasions" },
+    { value: "spice-and-warmth", label: "spice-and-warmth" },
+    { value: "strong-start", label: "strong-start" },
+    { value: "stress-balance", label: "stress-balance" },
+    { value: "stress-relief", label: "stress-relief" },
+    { value: "uplift", label: "uplift" },
+  ];
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -76,7 +123,7 @@ function AddTeaForm() {
           type,
           imageUrl,
           tastingNotes,
-          tags: tags.split(',').map((tag) => tag.trim()),
+          tags: tags.map((tag) => tag.value),
           rating,
           favorite,
         },
@@ -90,7 +137,7 @@ function AddTeaForm() {
       setBrand('');
       setType('');
       setTastingNotes('');
-      setTags('');
+      setTags([]);
       setRating(0);
       setFavorite(false);
       setImageFile(null);
@@ -104,6 +151,7 @@ function AddTeaForm() {
       toast.error('Failed to add tea. Please try again.');
     }
   };
+
 
   return (
     <div className="container py-5 mt-5 d-flex justify-content-center" style={{ minHeight: '100vh' }}>
@@ -153,14 +201,19 @@ function AddTeaForm() {
                 required
               />
 
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Type (Green, Black, etc)"
+              <select
+                className="form-select"
                 value={type}
                 onChange={(e) => setType(e.target.value)}
                 required
-              />
+              >
+                <option value="" disabled>Select tea type</option>
+                <option value="Black">Black</option>
+                <option value="Green">Green</option>
+                <option value="Herbal">Herbal</option>
+                <option value="Oolong">Oolong</option>
+                <option value="White">White</option>
+              </select>
 
               <textarea
                 className="form-control"
@@ -169,13 +222,19 @@ function AddTeaForm() {
                 onChange={(e) => setTastingNotes(e.target.value)}
               />
 
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Tags (comma separated)"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
-              />
+              <div className="text-dark">
+                <label htmlFor="tag-select" className="form-label">Tags</label>
+                <Select
+                  inputId="tag-select"
+                  isMulti
+                  options={tagOptions}
+                  value={tags}
+                  onChange={(selected) => setTags(selected as { value: string; label: string }[])}
+                  className="basic-multi-select"
+                  classNamePrefix="select"
+                  placeholder="Select or type tags..."
+                />
+              </div>
 
               <div>
                 <label className="form-label">Rating (1–5 Stars)</label>
@@ -186,7 +245,7 @@ function AddTeaForm() {
                   required
                 >
                   <option value="">Select Rating</option>
-                  {[1, 2, 3, 4, 5].map((num) => (
+                  {[5, 4, 3, 2, 1].map((num) => (
                     <option key={num} value={num}>{'⭐'.repeat(num)}</option>
                   ))}
                 </select>

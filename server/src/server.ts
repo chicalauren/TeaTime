@@ -31,7 +31,7 @@ async function startApolloServer() {
 
   await server.start();
 
-  
+  // TODO: Lauren said remove this in production
   app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true
@@ -51,16 +51,16 @@ async function startApolloServer() {
           try {
             const decoded: any = jwt.verify(token, JWT_SECRET);
             user = decoded.data;
-            // console.log('✅ Token verified, user:', user);
+            // console.log('Token verified, user:', user);
           } catch (err) {
             if (err instanceof Error) {
-              console.warn('⚠️ Invalid token:', err.message);
+              console.warn('Invalid token:', err.message);
             } else {
-              console.warn('⚠️ Unknown error during token verification');
+              console.warn('Unknown error during token verification');
             }
           }
         } else {
-          console.log('ℹ️ No token provided');
+          console.log('No token provided');
         }
       
         req.user = user;
@@ -73,7 +73,7 @@ async function startApolloServer() {
   await connectDB();
 
   app.listen(PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${PORT}/graphql`);
+    console.log(`Server running at http://localhost:${PORT}/graphql`);
   });
 }
 
