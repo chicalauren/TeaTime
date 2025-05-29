@@ -3,7 +3,7 @@ import { GET_SPILL_POSTS } from '../utils/queries';
 import { ADD_SPILL_POST, ADD_COMMENT, LIKE_SPILL_POST, DELETE_COMMENT } from '../utils/mutations';
 import { useState } from 'react';
 
-//TODO: add data tags for cypress testing  
+
 
 function SpillTheTea() {
   const { loading, error, data } = useQuery(GET_SPILL_POSTS);

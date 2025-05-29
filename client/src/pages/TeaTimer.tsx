@@ -3,7 +3,6 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-//TODO: add data tags for cypress testing  
 
 const beepSound = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
 
