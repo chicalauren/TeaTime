@@ -96,7 +96,7 @@ const typeDefs = gql`
       imageUrl: String
     ): TeaCategory
 
-    updateUser(bio: String, favoriteTeaSource: String): User
+
 
     deleteTea(id: ID!): TeaCategory
 

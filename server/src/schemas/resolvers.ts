@@ -239,8 +239,6 @@ const resolvers = {
       );
     },
 
-
-
     },
 
     deleteComment: async (
@@ -264,6 +262,6 @@ const resolvers = {
         { new: true }
       );
     },
-  };
+  }
 
 export default resolvers;
