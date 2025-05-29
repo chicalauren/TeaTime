@@ -239,7 +239,7 @@ const resolvers = {
       );
     },
 
-    },
+    
 
     deleteComment: async (
       _: any,
@@ -263,5 +263,6 @@ const resolvers = {
       );
     },
   }
+}
 
 export default resolvers;
