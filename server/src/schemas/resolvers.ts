@@ -76,8 +76,8 @@ const resolvers = {
         throw new AuthenticationError("Incorrect credentials");
       }
 
-      const token = signToken({ //arguments for this are the UserPayload, not the TokenPayload
-        _id: user.id,
+      const token = signToken({
+        _id: user._id,
         email: user.email,
         username: user.username,
       });
@@ -89,6 +89,7 @@ const resolvers = {
       { name, brand, type, imageUrl, tastingNotes, tags, favorite }: any,
       context: any
     ) => {
+      console.log(context);
       if (!context.user) {
         throw new AuthenticationError("Authentication required");
       }
@@ -231,15 +232,32 @@ const resolvers = {
       return updatedPost;
     },
 
-    likeSpillPost: async (_: any, { spillPostId }: any) => {
-      return SpillPost.findByIdAndUpdate(
-        spillPostId,
-        { $inc: { likes: 1 } },
-        { new: true }
-      );
-    },
+    likeSpillPost: async (_: any, { spillPostId }: any, context: any) => {
+    if (!context.user) {
+      throw new AuthenticationError("Authentication required");
+    }
 
-    
+    const post = await SpillPost.findById(spillPostId);
+    if (!post) {
+      throw new Error("Spill post not found");
+    }
+
+    const userId = context.user._id.toString();
+    const likedIndex = post.likedBy.findIndex((id: any) => id.toString() === userId);
+
+    if (likedIndex !== -1) {
+      // User already liked: unlike
+      post.likedBy.splice(likedIndex, 1);
+      post.likes = Math.max((post.likes || 1) - 1, 0);
+    } else {
+      // User has not liked: like
+      post.likedBy.push(userId);
+      post.likes = (post.likes || 0) + 1;
+    }
+
+    await post.save();
+    return post;
+  },
 
     deleteComment: async (
       _: any,
@@ -262,7 +280,7 @@ const resolvers = {
         { new: true }
       );
     },
-  }
-}
+  },
+};
 
 export default resolvers;

@@ -1,22 +1,22 @@
-import { useMutation } from '@apollo/client';
-import { ADD_TEA } from '../utils/mutations';
-import { useNavigate } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import toast from 'react-hot-toast';
-import Confetti from 'react-confetti';
-import { motion } from 'framer-motion';
-import Select from 'react-select';
+import { useMutation } from "@apollo/client";
+import { ADD_TEA } from "../utils/mutations";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import Confetti from "react-confetti";
+import { motion } from "framer-motion";
+import Select from "react-select";
 
 function AddTeaForm() {
   const navigate = useNavigate();
   const [addTea] = useMutation(ADD_TEA);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
-  const [name, setName] = useState('');
-  const [brand, setBrand] = useState('');
-  const [type, setType] = useState('');
-  const [tastingNotes, setTastingNotes] = useState('');
+  const [name, setName] = useState("");
+  const [brand, setBrand] = useState("");
+  const [type, setType] = useState("");
+  const [tastingNotes, setTastingNotes] = useState("");
   const [tags, setTags] = useState<{ value: string; label: string }[]>([]);
   const [rating, setRating] = useState(0);
   const [favorite, setFavorite] = useState(false);
@@ -25,6 +25,20 @@ function AddTeaForm() {
   const [uploading, setUploading] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [successFadeIn, setSuccessFadeIn] = useState(false);
+  const teaTypes = [
+    "Black",
+    "Green",
+    "White",
+    "Oolong",
+    "Pu-erh",
+    "Herbal",
+    "Rooibos",
+    "Mate",
+    "Yellow",
+    "Chai",
+    "Blooming",
+    "Blend",
+  ];
 
   useEffect(() => {
     nameInputRef.current?.focus();
@@ -132,10 +146,10 @@ function AddTeaForm() {
       setShowConfetti(true);
       setSuccessFadeIn(true);
 
-      setName('');
-      setBrand('');
-      setType('');
-      setTastingNotes('');
+      setName("");
+      setBrand("");
+      setType("");
+      setTastingNotes("");
       setTags([]);
       setRating(0);
       setFavorite(false);
@@ -150,7 +164,6 @@ function AddTeaForm() {
       toast.error("Failed to add tea. Please try again.");
     }
   };
-
 
   return (
     <div className="container py-5 mt-5 d-flex justify-content-center">
@@ -203,6 +216,16 @@ function AddTeaForm() {
               />
 
               <input
+                ref={nameInputRef}
+                type="text"
+                className="form-control"
+                placeholder="Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+
+              <input
                 type="text"
                 className="form-control"
                 placeholder="Brand"
@@ -217,12 +240,12 @@ function AddTeaForm() {
                 onChange={(e) => setType(e.target.value)}
                 required
               >
-                <option value="" disabled>Select tea type</option>
-                <option value="Black">Black</option>
-                <option value="Green">Green</option>
-                <option value="Herbal">Herbal</option>
-                <option value="Oolong">Oolong</option>
-                <option value="White">White</option>
+                <option value="">Select Tea Type</option>
+                {teaTypes.map((teaType) => (
+                  <option key={teaType} value={teaType}>
+                    {teaType}
+                  </option>
+                ))}
               </select>
 
               <textarea
@@ -233,13 +256,17 @@ function AddTeaForm() {
               />
 
               <div className="text-dark">
-                <label htmlFor="tag-select" className="form-label">Tags</label>
+                <label htmlFor="tag-select" className="form-label">
+                  Tags
+                </label>
                 <Select
                   inputId="tag-select"
                   isMulti
                   options={tagOptions}
                   value={tags}
-                  onChange={(selected) => setTags(selected as { value: string; label: string }[])}
+                  onChange={(selected) =>
+                    setTags(selected as { value: string; label: string }[])
+                  }
                   className="basic-multi-select"
                   classNamePrefix="select"
                   placeholder="Select or type tags..."
@@ -256,7 +283,9 @@ function AddTeaForm() {
                 >
                   <option value="">Select Rating</option>
                   {[5, 4, 3, 2, 1].map((num) => (
-                    <option key={num} value={num}>{'⭐'.repeat(num)}</option>
+                    <option key={num} value={num}>
+                      {"⭐".repeat(num)}
+                    </option>
                   ))}
                 </select>
               </div>

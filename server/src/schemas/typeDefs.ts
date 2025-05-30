@@ -43,6 +43,7 @@ const typeDefs = gql`
     createdByUsername: String
     comments: [Comment]
     likes: Int
+    likedBy: [ID!]!
     createdAt: String!
   }
 
@@ -95,8 +96,6 @@ const typeDefs = gql`
       favorite: Boolean
       imageUrl: String
     ): TeaCategory
-
-
 
     deleteTea(id: ID!): TeaCategory
 
