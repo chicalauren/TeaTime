@@ -4,13 +4,51 @@ import { UPDATE_TEA } from "../utils/mutations";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-
+import axios from "axios";
 
 function EditTeaForm() {
   const params = useParams();
   const id = params.id ?? "";
   const navigate = useNavigate();
 
+  // Image state and handlers inside component
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleImageUpload = async () => {
+    if (!imageFile) return null;
+    setUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", imageFile);
+      formData.append("upload_preset", "tea_uploads");
+
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/dcaivdnrk/image/upload`,
+        formData
+      );
+
+      return response.data.secure_url;
+    } catch (error) {
+      console.error("Image upload failed", error);
+      toast.error("Image upload failed. Please try again.");
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // GraphQL query and mutation
   const { data, loading, error } = useQuery(GET_TEA, { variables: { id } });
   const [updateTea] = useMutation(UPDATE_TEA, {
     refetchQueries: [{ query: GET_TEAS }],
@@ -33,10 +71,11 @@ function EditTeaForm() {
       setType(tea.type);
       setRating(tea.rating ?? "");
       setFavorite(tea.favorite || false);
+      if (tea.imageUrl) setImagePreview(tea.imageUrl);
     }
   }, [tea]);
 
-  // Early return cases
+  // Early return for invalid or loading states
   if (!id) return <p>Invalid tea ID.</p>;
   if (loading) return <p>Loading tea details...</p>;
   if (error) return <p>Error loading tea.</p>;
@@ -45,12 +84,16 @@ function EditTeaForm() {
     e.preventDefault();
 
     try {
+      const uploadedImageUrl = await handleImageUpload();
+
       await updateTea({
         variables: {
           teaId: id,
           name,
           brand,
           type,
+          imageUrl: uploadedImageUrl ?? imagePreview, // use old preview if no new upload
+          tags: [], // Add tags handling if needed
           rating: rating === "" ? null : rating,
           favorite,
         },
@@ -58,9 +101,13 @@ function EditTeaForm() {
 
       toast.success("Tea updated successfully!");
       navigate("/dashboard");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to update tea.");
+    } catch (error: any) {
+      console.error(
+        "Image upload failed",
+        error.response || error.message || error
+      );
+      toast.error("Image upload failed. Please try again.");
+      return null;
     }
   };
 
@@ -95,6 +142,31 @@ function EditTeaForm() {
           onChange={(e) => setType(e.target.value)}
           required
         />
+
+        <input
+          type="file"
+          className="form-control"
+          accept="image/*"
+          onChange={handleImageChange}
+        />
+
+        {imagePreview && (
+          <div className="text-center">
+            <p>
+              <strong>Image Preview:</strong>
+            </p>
+            <img
+              src={imagePreview}
+              alt="Selected"
+              className="img-fluid rounded"
+              style={{ maxHeight: "250px" }}
+            />
+          </div>
+        )}
+
+        {uploading && (
+          <p className="text-primary">Uploading image, please wait...</p>
+        )}
 
         <label>Rating (1-5 Stars)</label>
         <select

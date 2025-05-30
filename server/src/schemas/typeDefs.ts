@@ -87,7 +87,7 @@ const typeDefs = gql`
     updateTeaDescription(teaId: ID!, description: String!): TeaCategory
 
     updateTea(
-      id: ID!
+      teaId: ID!
       name: String
       brand: String
       type: String

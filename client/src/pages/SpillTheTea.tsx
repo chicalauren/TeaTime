@@ -164,9 +164,9 @@ function SpillTheTea() {
                   cursor: hasUserLiked ? "not-allowed" : "pointer",
                   opacity: hasUserLiked ? 0.6 : 1,
                 }}
-                aria-label={hasUserLiked ? "Liked" : "Like"}
+                aria-label={hasUserLiked ? "Unlike" : "Like"}
               >
-                ❤️ {post.likes || 0} {hasUserLiked ? "Liked" : "Like"}
+                ❤️ {post.likes || 0} {hasUserLiked ? "Unlike" : "Like"}
               </button>
 
               {/* 🗣 Comments Section */}
