@@ -40,6 +40,8 @@ function SpillTheTea() {
       await addSpillPost({ variables: { title, content } });
       setTitle("");
       setContent("");
+      //Testing Purposes
+      console.log("post time,", new Date().toLocaleString());
     } catch (err) {
       console.error("Failed to post spill", err);
     }
@@ -139,7 +141,7 @@ function SpillTheTea() {
               {post.content}
             </p>
             <p style={{ fontSize: "0.8rem", color: "#777" }}>
-              Posted on {new Date(post.createdAt).toDateString()}
+              Posted on {new Date(Number(post.createdAt)).toLocaleString('en-US')}
             </p>
 
             {/* ❤️ Like Button */}
@@ -190,7 +192,7 @@ function SpillTheTea() {
                     </p>
                     <p style={{ margin: "5px 0" }}>{comment.content}</p>
                     <small style={{ color: "#777" }}>
-                      {new Date(comment.createdAt).toLocaleString()}
+                      {new Date(Number(comment.createdAt)).toLocaleString('en-US')}
                     </small>
                     {/* 🗑 Delete Button */}
                     {comment.createdByUsername ===
