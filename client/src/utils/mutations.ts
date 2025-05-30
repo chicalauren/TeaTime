@@ -144,13 +144,15 @@ export const UPDATE_TEA = gql`
     $teaId: ID!
     $brand: String
     $type: String
+    $imageUrl: String
     $rating: Int
     $favorite: Boolean
     $name: String
   ) {
     updateTea(
-      id: $teaId
+      teaId: $teaId
       brand: $brand
+      imageUrl: $imageUrl
       type: $type
       rating: $rating
       favorite: $favorite
@@ -160,6 +162,7 @@ export const UPDATE_TEA = gql`
       rating
       type
       brand
+      imageUrl
       favorite
     }
   }
