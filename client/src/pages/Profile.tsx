@@ -1,7 +1,21 @@
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_ME, RECOMMEND_TEAS } from "../utils/queries";
-import { UPDATE_USER } from "../utils/mutations";
+import {
+  UPDATE_USER,
+  ADD_TEA_TO_FAVORITES,
+  REMOVE_TEA_FROM_FAVORITES,
+} from "../utils/mutations";
 import { useState, useEffect } from "react";
+import FavoriteButton from "../components/FavoriteButton"; // Adjust path as needed
+
+interface Tea {
+  _id: string;
+  name: string;
+  type: string;
+  brand?: string;
+  tags?: string[];
+  imageUrl?: string;
+}
 
 function Profile() {
   const {
@@ -10,11 +24,17 @@ function Profile() {
     data: userData,
     refetch,
   } = useQuery(GET_ME);
+
   const [updateUser] = useMutation(UPDATE_USER);
-  console.log("User from GET_ME:", userData?.me);
+  const [addToFavoritesMutation] = useMutation(ADD_TEA_TO_FAVORITES, {
+    refetchQueries: [{ query: GET_ME }],
+  });
+  const [removeFromFavoritesMutation] = useMutation(REMOVE_TEA_FROM_FAVORITES, {
+    refetchQueries: [{ query: GET_ME }],
+  });
 
   const user = userData?.me;
-  const favoriteTeas = user?.favoriteTeas ?? [];
+  const favoriteTeas: Tea[] = user?.favoriteTeas ?? [];
 
   const [bio, setBio] = useState("");
   const [favoriteTeaSource, setFavoriteTeaSource] = useState("");
@@ -28,10 +48,8 @@ function Profile() {
   }, [user]);
 
   const allTags = Array.from(
-    new Set(favoriteTeas.flatMap((tea: any) => tea.tags || []))
+    new Set(favoriteTeas.flatMap((tea) => tea.tags || []))
   );
-
-  console.log("Tags to send:", allTags);
 
   const {
     data: recData,
@@ -41,28 +59,78 @@ function Profile() {
     variables: { tags: allTags },
   });
 
+  const handleAddToFavorites = async (teaId: string) => {
+    try {
+      await addToFavoritesMutation({ variables: { teaId } });
+      await refetch();
+    } catch (e) {
+      console.error("Error adding to favorites:", e);
+    }
+  };
+
+  const handleRemoveFromFavorites = async (teaId: string) => {
+    try {
+      await removeFromFavoritesMutation({ variables: { teaId } });
+      await refetch();
+    } catch (e) {
+      console.error("Error removing from favorites:", e);
+    }
+  };
+
   if (loadingUser) return <p>Loading profile...</p>;
   if (errorUser) return <p>Error loading profile: {errorUser.message}</p>;
   if (!user) return <p>User not found.</p>;
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("handleSave triggered");
-    console.log("Saving profile with:", { bio, favoriteTeaSource });
-
     try {
-      const { data } = await updateUser({
+      await updateUser({
         variables: { bio, favoriteTeaSource },
       });
-
-      console.log("UpdateUser mutation response:", data);
-
       await refetch();
       setIsEditing(false);
     } catch (err) {
       console.error("Error updating profile:", err);
     }
   };
+
+  function TeaCardWithFavorite({ tea }: { tea: Tea }) {
+    const isFavorite = favoriteTeas.some((favTea) => favTea._id === tea._id);
+
+    return (
+      <div className="card shadow-sm h-100 position-relative">
+        <div
+          className="ratio ratio-1x1 rounded-top overflow-hidden"
+          style={{
+            backgroundImage: `url(${tea.imageUrl || "/default-tea.jpg"})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        ></div>
+        <div className="card-body">
+          <h5 className="card-title">{tea.name}</h5>
+          <p className="card-text">
+            <strong>Type:</strong> {tea.type}
+            <br />
+            <strong>Brand:</strong> {tea.brand || "N/A"}
+          </p>
+          {tea.tags && (
+            <p className="small text-muted">{tea.tags.join(", ")}</p>
+          )}
+        </div>
+        <div className="card-body d-flex justify-content-between align-items-center">
+          <h5 className="card-title mb-0">{tea.name}</h5>
+          <FavoriteButton
+            teaId={tea._id}
+            initialFavorite={isFavorite}
+            addToFavorites={handleAddToFavorites}
+            removeFromFavorites={handleRemoveFromFavorites}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="d-flex flex-column align-items-center min-vh-100 py-5 mt-5">
       {/* 🔹 Profile Info Card */}
@@ -148,28 +216,9 @@ function Profile() {
         ) : (
           <>
             <div className="row g-3">
-              {favoriteTeas.slice(0, 3).map((tea: any) => (
+              {favoriteTeas.slice(0, 3).map((tea) => (
                 <div key={tea._id} className="col-md-4 col-sm-6">
-                  <div className="card shadow-sm h-100">
-                    <div
-                      className="ratio ratio-1x1 rounded-top overflow-hidden"
-                      style={{
-                        backgroundImage: `url(${
-                          tea.imageUrl || "/default-tea.jpg"
-                        })`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                    ></div>
-                    <div className="card-body">
-                      <h5 className="card-title">{tea.name}</h5>
-                      <p className="card-text">
-                        <strong>Type:</strong> {tea.type}
-                        <br />
-                        <strong>Brand:</strong> {tea.brand || "N/A"}
-                      </p>
-                    </div>
-                  </div>
+                  <TeaCardWithFavorite tea={tea} />
                 </div>
               ))}
             </div>
@@ -193,29 +242,9 @@ function Profile() {
           <p className="text-center text-danger">Error: {errorRecs.message}</p>
         ) : recData?.recommendTeas?.length > 0 ? (
           <div className="row g-3">
-            {recData.recommendTeas.map((tea: any) => (
+            {recData.recommendTeas.map((tea: Tea) => (
               <div key={tea._id} className="col-md-4 col-sm-6">
-                <div className="card shadow-sm h-100">
-                  <div
-                    className="ratio ratio-1x1 rounded-top overflow-hidden"
-                    style={{
-                      backgroundImage: `url(${
-                        tea.imageUrl || "/default-tea.jpg"
-                      })`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  ></div>
-                  <div className="card-body">
-                    <h5 className="card-title">{tea.name}</h5>
-                    <p className="card-text">
-                      <strong>Type:</strong> {tea.type}
-                      <br />
-                      <strong>Brand:</strong> {tea.brand || "N/A"}
-                    </p>
-                    <p className="small text-muted">{tea.tags?.join(", ")}</p>
-                  </div>
-                </div>
+                <TeaCardWithFavorite tea={tea} />
               </div>
             ))}
           </div>
