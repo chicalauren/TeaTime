@@ -13,45 +13,67 @@ const teaOptions = [
   { type: "Oolong Tea", temp: "185°F (85°C)", time: 180, color: "#FF8C00" },
   { type: "White Tea", temp: "160°F (70°C)", time: 150, color: "#F5F5DD" },
   { type: "Herbal Tea", temp: "212°F (100°C)", time: 300, color: "#6A5ACD" },
+  { type: "Custom", temp: "", time: 0, color: "#808080" },
 ];
 
-// 🔁 Replace this with the actual image URL you're using on Dashboard
-//TODO: Change the color of the timer based on the tea type; this is a low priority feature
 const backgroundImageUrl = "/images/tea-background.jpg";
 
 function TeaTimer() {
   const [selectedTea, setSelectedTea] = useState(teaOptions[0]);
   const [timeLeft, setTimeLeft] = useState(0);
   const [running, setRunning] = useState(false);
+  const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [customMinutes, setCustomMinutes] = useState("");
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (running && timeLeft > 0) {
+    if (running && !paused && timeLeft > 0) {
       timer = setTimeout(() => {
         setTimeLeft((prev) => prev - 1);
-        setProgress(
-          ((selectedTea.time - (timeLeft - 1)) / selectedTea.time) * 100
-        );
+        const baseTime =
+          selectedTea.type === "Custom"
+            ? parseInt(customMinutes) * 60
+            : selectedTea.time;
+        setProgress(((baseTime - (timeLeft - 1)) / baseTime) * 100);
       }, 1000);
-    } else if (running && timeLeft === 0) {
+    } else if (running && timeLeft === 0 && !paused) {
       beepSound.play();
       alert("🍵 Tea is ready!");
       setRunning(false);
       setProgress(100);
     }
     return () => clearTimeout(timer);
-  }, [running, timeLeft]);
-
-  useEffect(() => {
-    setRunning(false);
-    setProgress(100);
-  }, [selectedTea]);
+  }, [running, paused, timeLeft]);
 
   const startTimer = () => {
-    setTimeLeft(selectedTea.time);
+    const minutes =
+      selectedTea.type === "Custom" ? parseInt(customMinutes) : null;
+    const time =
+      selectedTea.type === "Custom" ? minutes * 60 : selectedTea.time;
+
+    if (!time || isNaN(time)) {
+      return alert("Please enter a valid custom time in minutes.");
+    }
+
+    setTimeLeft(time);
     setProgress(0);
     setRunning(true);
+    setPaused(false);
+  };
+
+  const pauseResume = () => {
+    setPaused((prev) => !prev);
+  };
+
+  const handleTeaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const tea = teaOptions.find((t) => t.type === e.target.value);
+    if (tea) {
+      setSelectedTea(tea);
+      setRunning(false);
+      setProgress(0);
+      setTimeLeft(0);
+    }
   };
 
   return (
@@ -79,10 +101,7 @@ function TeaTimer() {
           <select
             className="form-select"
             value={selectedTea.type}
-            onChange={(e) => {
-              const tea = teaOptions.find((t) => t.type === e.target.value);
-              if (tea) setSelectedTea(tea);
-            }}
+            onChange={handleTeaChange}
           >
             {teaOptions.map((tea) => (
               <option key={tea.type} value={tea.type}>
@@ -92,15 +111,30 @@ function TeaTimer() {
           </select>
         </div>
 
-        <div className="mb-4">
-          <p>
-            <strong>Recommended Temperature:</strong> {selectedTea.temp}
-          </p>
-          <p>
-            <strong>Recommended Steep Time:</strong>{" "}
-            {Math.floor(selectedTea.time / 60)} minutes
-          </p>
-        </div>
+        {selectedTea.type === "Custom" && (
+          <div className="mb-3">
+            <label className="form-label">Custom Steep Time (minutes):</label>
+            <input
+              type="number"
+              className="form-control"
+              value={customMinutes}
+              onChange={(e) => setCustomMinutes(e.target.value)}
+              min="1"
+            />
+          </div>
+        )}
+
+        {selectedTea.type !== "Custom" && (
+          <div className="mb-4">
+            <p>
+              <strong>Recommended Temperature:</strong> {selectedTea.temp}
+            </p>
+            <p>
+              <strong>Recommended Steep Time:</strong>{" "}
+              {Math.floor(selectedTea.time / 60)} minutes
+            </p>
+          </div>
+        )}
 
         {running && (
           <div
@@ -121,9 +155,13 @@ function TeaTimer() {
           </div>
         )}
 
-        {!running && (
+        {!running ? (
           <button className="btn btn-primary btn-lg" onClick={startTimer}>
             Start Timer
+          </button>
+        ) : (
+          <button className="btn btn-secondary btn-lg" onClick={pauseResume}>
+            {paused ? "Resume" : "Pause"}
           </button>
         )}
       </div>

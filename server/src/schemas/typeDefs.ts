@@ -43,6 +43,7 @@ const typeDefs = gql`
     createdByUsername: String
     comments: [Comment]
     likes: Int
+    likedBy: [ID!]!
     createdAt: String!
   }
 
