@@ -143,29 +143,34 @@ const resolvers = {
       return user;
     },
 
-    updateTea: async (_: any, { id, ...fields }: any, context: any) => {
+    updateTea: async (_: any, { teaId, ...fields }: any, context: any) => {
       if (!context.user) {
         throw new AuthenticationError("Authentication required");
       }
-      console.log(id, fields);
+      if (!teaId) {
+        throw new Error("Tea ID (teaId) is required");
+      }
 
-      const updatedTea = await TeaCategory.findByIdAndUpdate(id, fields, {
+      console.log(teaId, fields);
+
+      const updatedTea = await TeaCategory.findByIdAndUpdate(teaId, fields, {
         new: true,
       });
 
       if (updatedTea?.favorite) {
         await User.findByIdAndUpdate(
           context.user._id,
-          { $addToSet: { favoriteTeas: id } },
+          { $addToSet: { favoriteTeas: teaId } },
           { new: true }
         ).populate("favoriteTeas");
       } else {
         await User.findByIdAndUpdate(
           context.user._id,
-          { $pull: { favoriteTeas: id } },
+          { $pull: { favoriteTeas: teaId } },
           { new: true }
         ).populate("favoriteTeas");
       }
+
       return updatedTea;
     },
 
@@ -233,31 +238,33 @@ const resolvers = {
     },
 
     likeSpillPost: async (_: any, { spillPostId }: any, context: any) => {
-    if (!context.user) {
-      throw new AuthenticationError("Authentication required");
-    }
+      if (!context.user) {
+        throw new AuthenticationError("Authentication required");
+      }
 
-    const post = await SpillPost.findById(spillPostId);
-    if (!post) {
-      throw new Error("Spill post not found");
-    }
+      const post = await SpillPost.findById(spillPostId);
+      if (!post) {
+        throw new Error("Spill post not found");
+      }
 
-    const userId = context.user._id.toString();
-    const likedIndex = post.likedBy.findIndex((id: any) => id.toString() === userId);
+      const userId = context.user._id.toString();
+      const likedIndex = post.likedBy.findIndex(
+        (id: any) => id.toString() === userId
+      );
 
-    if (likedIndex !== -1) {
-      // User already liked: unlike
-      post.likedBy.splice(likedIndex, 1);
-      post.likes = Math.max((post.likes || 1) - 1, 0);
-    } else {
-      // User has not liked: like
-      post.likedBy.push(userId);
-      post.likes = (post.likes || 0) + 1;
-    }
+      if (likedIndex !== -1) {
+        // User already liked: unlike
+        post.likedBy.splice(likedIndex, 1);
+        post.likes = Math.max((post.likes || 1) - 1, 0);
+      } else {
+        // User has not liked: like
+        post.likedBy.push(userId);
+        post.likes = (post.likes || 0) + 1;
+      }
 
-    await post.save();
-    return post;
-  },
+      await post.save();
+      return post;
+    },
 
     deleteComment: async (
       _: any,
