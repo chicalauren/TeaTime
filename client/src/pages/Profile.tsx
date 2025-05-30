@@ -6,7 +6,7 @@ import {
   REMOVE_TEA_FROM_FAVORITES,
 } from "../utils/mutations";
 import { useState, useEffect } from "react";
-import FavoriteButton from "../components/FavoriteButton"; // Adjust path as needed
+import FavoriteButton from "../components/FavoriteButton";
 
 interface Tea {
   _id: string;
