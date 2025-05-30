@@ -11,3 +11,6 @@ function Home() {
 }
 
 export default Home;
+
+
+//TODO: delete home.tsx file; not being used in the code any longer

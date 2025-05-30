@@ -7,8 +7,11 @@ export interface IUser extends Document {
   email: string;
   password: string;
   favoriteTeas: mongoose.Types.ObjectId[]; // to see the users fav teas
+  bio?: string;
+  favoriteTeaSource?: string;
   isCorrectPassword: (password: string) => Promise<boolean>;
 }
+
 
 const userSchema = new Schema<IUser>(
   {
@@ -22,6 +25,7 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
       match: [/.+@.+\..+/, "Must use a valid email address"],
     },
     password: {
@@ -29,6 +33,8 @@ const userSchema = new Schema<IUser>(
       required: true,
       minlength: 8,
     },
+    
+
     favoriteTeas: [
       {
         // adding a fav category so it SHOULD pull reccomendations from the DB based on these
@@ -36,6 +42,14 @@ const userSchema = new Schema<IUser>(
         ref: "TeaCategory",
       },
     ],
+    bio: {
+      type: String,
+      default: "",
+    },
+    favoriteTeaSource: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,

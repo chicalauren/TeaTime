@@ -3,6 +3,7 @@ import { useMutation } from "@apollo/client";
 import { REGISTER } from "../utils/mutations";
 import { useNavigate } from "react-router-dom";
 
+
 function Register() {
   const navigate = useNavigate();
   const [register] = useMutation(REGISTER);

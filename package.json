@@ -5,9 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cd client && npm run build && cd ../server && npm run build",
+    "dev": "concurrently \"npm run server\" \"wait-on tcp:4000 && npm run client\"",
+    "seed": "cd server && npm run seed",
     "install": "cd server && npm i && cd ../client && npm i",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "seed": "npm run build && npx ts-node server/dist/seeds/seed.js",
     "server": "cd server && npm run dev",
     "client": "cd client && npm run dev",
     "render-build": "npm run install && npm run build",
@@ -24,10 +24,12 @@
     "dotenv": "^16.5.0",
     "react-circular-progressbar": "^2.2.0",
     "react-confetti": "^6.4.0",
-    "react-hot-toast": "^2.5.2"
+    "react-hot-toast": "^2.5.2",
+    "wait-on": "^8.0.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/graphql": "^14.2.3",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",

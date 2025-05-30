@@ -12,7 +12,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const JWT_SECRET = process.env.JWT_SECRET || ''; // fallback if .env is missing
+const JWT_SECRET = process.env.JWT_SECRET || "";
 
 async function startApolloServer() {
   const server = new ApolloServer({
@@ -27,28 +27,25 @@ async function startApolloServer() {
   app.use(
     "/graphql",
     expressMiddleware(server, {
-      context: async ({ req }) => {
-        const { user } = authMiddleware({ req });
-        return { user }; // ✅ Consistent context
-      },
+      context: authMiddleware as any,
     })
   );
 
   await connectDB();
-   // if we're in production, serve client/dist as static assets
-  if (process.env.NODE_ENV === 'production') {
-  const __dirname = path.resolve(); // root: /opt/render/project/src
-  const clientPath = path.join(__dirname, 'client', 'dist');
-  
-  app.use(express.static(clientPath));
+  // if we're in production, serve client/dist as static assets
+  if (process.env.NODE_ENV === "production") {
+    const __dirname = path.resolve(); // root: /opt/render/project/src
+    const clientPath = path.join(__dirname, "client", "dist");
 
-  app.get('*', (_req, res) => {
-    res.sendFile(path.join(clientPath, 'index.html'));
-  });
-}
+    app.use(express.static(clientPath));
+
+    app.get("*", (_req, res) => {
+      res.sendFile(path.join(clientPath, "index.html"));
+    });
+  }
 
   app.listen(PORT, () => {
-    console.log(` Server running at http://localhost:${PORT}/graphql`);
+    console.log(`Server running at http://localhost:${PORT}/graphql`);
   });
 }
 

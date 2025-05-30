@@ -1,16 +1,19 @@
 import { gql } from "@apollo/client";
 
 export const GET_ME = gql`
-  query GetMe {
+  query Me {
     me {
       _id
       username
       email
+      bio
+      favoriteTeaSource
       favoriteTeas {
         _id
         name
         imageUrl
         type
+        tags
       }
     }
   }
@@ -26,11 +29,15 @@ export const GET_TEAS = gql`
       imageUrl
       tastingNotes
       tags
+      rating
+      favorite
       createdBy
       createdAt
     }
   }
 `;
+
+
 
 export const GET_TEA = gql`
   query GetTea($id: ID!) {
@@ -47,6 +54,8 @@ export const GET_TEA = gql`
     }
   }
 `;
+
+
 
 export const GET_SPILL_POSTS = gql`
   query GetSpillPosts {

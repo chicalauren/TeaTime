@@ -79,6 +79,7 @@ export const DELETE_SPILL_POST = gql`
   mutation DeleteSpillPost($spillPostId: ID!) {
     deleteSpillPost(spillPostId: $spillPostId) {
       _id
+      title
     }
   }
 `;
@@ -133,8 +134,8 @@ export const ADD_TEA = gql`
       imageUrl
       tastingNotes
       tags
-      createdBy
-      createdAt
+      favorite
+      rating
     }
   }
 `;
@@ -171,7 +172,7 @@ export const GET_TEA = gql`
       brand
       type
       rating
-
+      tags
       favorite
       imageUrl
     }
@@ -187,6 +188,10 @@ export const GET_ME = gql`
         name
         brand
         type
+        tags
+        imageUrl
+        rating
+        favorite
       }
     }
   }
@@ -201,6 +206,7 @@ export const ADD_TEA_TO_FAVORITES = gql`
         name
         brand
         type
+        tags
       }
     }
   }
@@ -218,6 +224,16 @@ export const REMOVE_TEA_FROM_FAVORITES = gql`
         type
         tags
       }
+    }
+  }
+`;
+export const UPDATE_USER = gql`
+  mutation UpdateUser($bio: String, $favoriteTeaSource: String) {
+    updateUser(bio: $bio, favoriteTeaSource: $favoriteTeaSource) {
+      _id
+      username
+      bio
+      favoriteTeaSource
     }
   }
 `;

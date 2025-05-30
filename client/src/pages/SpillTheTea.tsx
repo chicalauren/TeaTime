@@ -5,8 +5,11 @@ import {
   ADD_COMMENT,
   LIKE_SPILL_POST,
   DELETE_COMMENT,
+  DELETE_SPILL_POST,
 } from "../utils/mutations";
 import { useState } from "react";
+
+
 
 function SpillTheTea() {
   const { loading, error, data } = useQuery(GET_SPILL_POSTS);
@@ -22,6 +25,9 @@ function SpillTheTea() {
   const [deleteComment] = useMutation(DELETE_COMMENT, {
     refetchQueries: [{ query: GET_SPILL_POSTS }],
   });
+  const [deleteSpillPost] = useMutation(DELETE_SPILL_POST, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -34,6 +40,8 @@ function SpillTheTea() {
       await addSpillPost({ variables: { title, content } });
       setTitle("");
       setContent("");
+      //Testing Purposes
+      console.log("post time,", new Date().toLocaleString());
     } catch (err) {
       console.error("Failed to post spill", err);
     }
@@ -93,6 +101,36 @@ function SpillTheTea() {
               transition: "transform 0.2s ease-in",
             }}
           >
+            {/* ✅ Place the delete button here */}
+            {post.createdByUsername === localStorage.getItem("username") && (
+              <button
+                onClick={async () => {
+                  const confirmed = window.confirm("Delete this spill?");
+                  if (confirmed) {
+                    try {
+                      await deleteSpillPost({
+                        variables: { spillPostId: post._id },
+                      });
+                    } catch (err) {
+                      console.error("Error deleting spill post:", err);
+                      alert("Failed to delete post.");
+                    }
+                  }
+                }}
+                style={{
+                  backgroundColor: "#d32f2f",
+                  color: "#fff",
+                  border: "none",
+                  padding: "6px 10px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  marginTop: "0.5rem",
+                  fontSize: "14px",
+                }}
+              >
+                🗑 Delete Post
+              </button>
+            )}
             <h3 style={{ color: "#72a85a", fontWeight: "bold" }}>
               {post.title}
             </h3>
@@ -103,7 +141,7 @@ function SpillTheTea() {
               {post.content}
             </p>
             <p style={{ fontSize: "0.8rem", color: "#777" }}>
-              Posted on {new Date(post.createdAt).toDateString()}
+              Posted on {new Date(Number(post.createdAt)).toLocaleString('en-US')}
             </p>
 
             {/* ❤️ Like Button */}
@@ -154,7 +192,7 @@ function SpillTheTea() {
                     </p>
                     <p style={{ margin: "5px 0" }}>{comment.content}</p>
                     <small style={{ color: "#777" }}>
-                      {new Date(comment.createdAt).toLocaleString()}
+                      {new Date(Number(comment.createdAt)).toLocaleString('en-US')}
                     </small>
                     {/* 🗑 Delete Button */}
                     {comment.createdByUsername ===
