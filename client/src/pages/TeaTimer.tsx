@@ -50,7 +50,9 @@ function TeaTimer() {
     const minutes =
       selectedTea.type === "Custom" ? parseInt(customMinutes) : null;
     const time =
-      selectedTea.type === "Custom" ? minutes * 60 : selectedTea.time;
+      selectedTea.type === "Custom" && typeof minutes === "number" && !isNaN(minutes)
+        ? minutes * 60
+        : selectedTea.time;
 
     if (!time || isNaN(time)) {
       return alert("Please enter a valid custom time in minutes.");
