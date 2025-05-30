@@ -96,8 +96,6 @@ const typeDefs = gql`
       imageUrl: String
     ): TeaCategory
 
-
-
     deleteTea(id: ID!): TeaCategory
 
     deleteComment(spillPostId: ID!, commentId: ID!): SpillPost
