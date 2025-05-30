@@ -10,6 +10,12 @@ import {
 import FavoriteButton from "../components/FavoriteButton";
 import CustomButton from "../components/CustomButton";
 
+//TODO: Tool tip needs to work on heart
+//TODO: center the Welcome to dashboard, and the line below it
+//TODO: make the cards smaller; see if we can have a hero row
+//TODO: Check uploading image functionality
+//TODO: add images for all the teas
+
 import {
   Card,
   Button,
