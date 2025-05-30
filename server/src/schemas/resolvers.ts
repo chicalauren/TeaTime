@@ -232,12 +232,29 @@ const resolvers = {
       return updatedPost;
     },
 
-    likeSpillPost: async (_: any, { spillPostId }: any) => {
-      return SpillPost.findByIdAndUpdate(
-        spillPostId,
-        { $inc: { likes: 1 } },
-        { new: true }
-      );
+    likeSpillPost: async (_: any, { spillPostId }: any, context: any) => {
+      if (!context.user) {
+        throw new AuthenticationError("Authentication required");
+      }
+
+      const post = await SpillPost.findById(spillPostId);
+      if (!post) {
+        throw new Error("Spill post not found");
+      }
+
+      const userId = context.user._id;
+
+      if (post.likedBy.some((id: any) => id.toString() === userId.toString())) {
+        // User already liked, return post as is
+        return post;
+      }
+
+      // Add user to likedBy and increment likes
+      post.likedBy.push(userId);
+      post.likes = (post.likes || 0) + 1;
+
+      await post.save();
+      return post;
     },
 
     deleteComment: async (
