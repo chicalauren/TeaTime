@@ -127,10 +127,10 @@ function Dashboard() {
       />
       <div style={{ position: 'relative', zIndex: 1 }}>
 
-      <h1 className="mb-4">🍵 Welcome to Your Tea Time Dashboard!</h1>
+      <h1 className="text-center mb-4">🍵 Welcome to Your Tea Time Dashboard!</h1>
 
       {/* Top Controls */}
-      <div className="d-flex flex-wrap gap-3 mb-4">
+      <div className="d-flex flex-wrap gap-3 mb-4 justify-content-center text-center">
         <Link to="/add-tea">
           <CustomButton>➕ Add New Tea</CustomButton>
         </Link>
@@ -178,9 +178,9 @@ function Dashboard() {
           <p>Try adjusting your search or clearing filters.</p>
         </div>
       ) : (
-        <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+        <Row xs={1} sm={2} md={2} lg={3} className="g-7 px-3">
           {sortedTeas.map((tea) => (
-            <Col key={tea._id}>
+            <Col key={tea._id} className="mb-5 px-3">
               <Card className="h-100">
                 <Card.Img
                   variant="top"
