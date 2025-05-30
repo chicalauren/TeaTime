@@ -9,7 +9,13 @@ import { useNavigate } from "react-router-dom";
 import FavoriteButton from "./FavoriteButton";
 import { useState } from "react";
 
-function TeaCard({ tea }: { tea: any }) {
+function TeaCard({
+  tea,
+  isFavorite = false, // fallback to false
+}: {
+  tea: any;
+  isFavorite?: boolean;
+}) {
   const navigate = useNavigate();
   const [toastMessage, setToastMessage] = useState("");
 
@@ -52,7 +58,7 @@ function TeaCard({ tea }: { tea: any }) {
         padding: "1rem",
         width: "250px",
         position: "relative",
-        backgroundColor: tea.favorite ? "#ffe8e8" : "white",
+        backgroundColor: isFavorite ? "#ffe8e8" : "white",
       }}
     >
       {/* Toast Message */}
@@ -77,7 +83,7 @@ function TeaCard({ tea }: { tea: any }) {
       <div style={{ position: "absolute", top: "10px", right: "10px" }}>
         <FavoriteButton
           teaId={tea._id}
-          initialFavorite={!!tea.favorite}
+          initialFavorite={isFavorite}
           addToFavorites={addToFavorites}
           removeFromFavorites={removeFromFavorites}
           onFavoriteChange={(isFav) =>
