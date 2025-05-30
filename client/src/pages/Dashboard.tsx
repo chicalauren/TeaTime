@@ -4,10 +4,21 @@ import { useState } from "react";
 import { GET_TEAS } from "../utils/queries";
 import { DELETE_TEA } from "../utils/mutations";
 import CustomButton from "../components/CustomButton";
-
+import FavoriteButton from "../components/FavoriteButton";
+import { GET_ME } from "../utils/queries";
+import {
+  ADD_TEA_TO_FAVORITES,
+  REMOVE_TEA_FROM_FAVORITES,
+} from "../utils/mutations";
 
 function Dashboard() {
   const { loading, error, data } = useQuery(GET_TEAS);
+  const { data: userData } = useQuery(GET_ME);
+  const [addToFavorites] = useMutation(ADD_TEA_TO_FAVORITES);
+  const [removeFromFavorites] = useMutation(REMOVE_TEA_FROM_FAVORITES);
+  const userFavorites =
+    userData?.me?.favorites?.map((fav: any) => fav._id) || [];
+
   const [deleteTea] = useMutation(DELETE_TEA, {
     refetchQueries: [{ query: GET_TEAS }],
   });
@@ -223,6 +234,16 @@ function Dashboard() {
                 <Link to={`/edit-tea/${tea._id}`}>
                   <button>✏️ Edit</button>
                 </Link>
+                <FavoriteButton
+                  teaId={tea._id}
+                  initialFavorite={userFavorites.includes(tea._id)}
+                  addToFavorites={(id) =>
+                    addToFavorites({ variables: { teaId: id } })
+                  }
+                  removeFromFavorites={(id) =>
+                    removeFromFavorites({ variables: { teaId: id } })
+                  }
+                />
 
                 <button
                   style={{ backgroundColor: "red", color: "white" }}

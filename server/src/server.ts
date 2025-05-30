@@ -32,17 +32,17 @@ async function startApolloServer() {
   );
 
   await connectDB();
-   // if we're in production, serve client/dist as static assets
-  if (process.env.NODE_ENV === 'production') {
-  const __dirname = path.resolve(); // root: /opt/render/project/src
-  const clientPath = path.join(__dirname, 'client', 'dist');
-  
-  app.use(express.static(clientPath));
+  // if we're in production, serve client/dist as static assets
+  if (process.env.NODE_ENV === "production") {
+    const __dirname = path.resolve(); // root: /opt/render/project/src
+    const clientPath = path.join(__dirname, "client", "dist");
 
-  app.get('*', (_req, res) => {
-    res.sendFile(path.join(clientPath, 'index.html'));
-  });
-}
+    app.use(express.static(clientPath));
+
+    app.get("*", (_req, res) => {
+      res.sendFile(path.join(clientPath, "index.html"));
+    });
+  }
 
   app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}/graphql`);
