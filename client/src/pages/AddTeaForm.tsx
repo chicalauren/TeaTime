@@ -216,16 +216,6 @@ function AddTeaForm() {
               />
 
               <input
-                ref={nameInputRef}
-                type="text"
-                className="form-control"
-                placeholder="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-
-              <input
                 type="text"
                 className="form-control"
                 placeholder="Brand"
@@ -290,17 +280,25 @@ function AddTeaForm() {
                 </select>
               </div>
 
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="favorite"
-                  checked={favorite}
-                  onChange={(e) => setFavorite(e.target.checked)}
-                />
-                <label className="form-check-label" htmlFor="favorite">
-                  Mark as Favorite ❤️
-                </label>
+              <div className="d-flex align-items-center gap-2">
+                <span>Mark as Favorite:</span>
+                <button
+                  type="button"
+                  onClick={() => setFavorite(!favorite)}
+                  aria-label={favorite ? "Unmark favorite" : "Mark as favorite"}
+                  title={favorite ? "Unmark favorite" : "Mark as favorite"}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: "1.8rem",
+                    color: favorite ? "red" : "gray",
+                    padding: 0,
+                    lineHeight: 1,
+                  }}
+                >
+                  {favorite ? "❤️" : "🤍"}
+                </button>
               </div>
 
               <input

@@ -5,11 +5,22 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
+import FavoriteButton from "../components/FavoriteButton";
+import { GET_ME } from "../utils/queries";
+import {
+  ADD_TEA_TO_FAVORITES,
+  REMOVE_TEA_FROM_FAVORITES,
+} from "../utils/mutations";
 
 function EditTeaForm() {
   const params = useParams();
   const id = params.id ?? "";
   const navigate = useNavigate();
+  const { data: userData } = useQuery(GET_ME);
+  const [addToFavorites] = useMutation(ADD_TEA_TO_FAVORITES);
+  const [removeFromFavorites] = useMutation(REMOVE_TEA_FROM_FAVORITES);
+  const userFavorites =
+    userData?.me?.favorites?.map((fav: any) => fav._id) || [];
 
   // Image state and handlers inside component
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -184,14 +195,14 @@ function EditTeaForm() {
           ))}
         </select>
 
-        <label style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <input
-            type="checkbox"
-            checked={favorite}
-            onChange={(e) => setFavorite(e.target.checked)}
-          />
-          Mark as Favorite ❤️
-        </label>
+        <FavoriteButton
+          teaId={tea._id}
+          initialFavorite={userFavorites.includes(tea._id)}
+          addToFavorites={(id) => addToFavorites({ variables: { teaId: id } })}
+          removeFromFavorites={(id) =>
+            removeFromFavorites({ variables: { teaId: id } })
+          }
+        />
 
         <button type="submit">Update Tea</button>
       </form>
