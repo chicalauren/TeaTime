@@ -18,6 +18,8 @@ import {
 } from "react-bootstrap";
 import { Trash } from "react-bootstrap-icons";
 
+//TODO: Do we need tool tips on the other buttons like we have on the delete button?  Other buttons have text on them, only the delete button has a tooltip
+
 function SpillTheTea() {
   const currentUserId = localStorage.getItem("userId");
   const currentUsername = localStorage.getItem("username");
