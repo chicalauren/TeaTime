@@ -173,43 +173,39 @@ function Dashboard() {
           <Row xs={1} sm={2} md={2} lg={3} className="g-5 px-3">
             {sortedTeas.map((tea) => (
               <Col key={tea._id} className="mb-5 px-3">
-                <Card className="h-100" style={{ aspectRatio: '3 / 4', overflow: 'hidden' }}>
-                  <div style={{ height: '70%', overflow: 'hidden' }}>
-                    <Card.Img
-                      variant="top"
-                      src={
-                        tea.imageUrl && tea.imageUrl.trim() !== ""
-                          ? tea.imageUrl
-                          : "/editTea.jpg"
-                      }
-                      onError={(e) => {
-                        e.currentTarget.src = "/editTea.jpg";
-                      }}
-                      alt={tea.name}
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                    />
-                  </div>
+                <Card className="h-100 d-flex flex-column shadow-sm">
+                  <Card.Img
+                    variant="top"
+                    className="card-img-top"
+                    src={
+                      tea.imageUrl && tea.imageUrl.trim() !== ""
+                        ? tea.imageUrl
+                        : "/editTea.jpg"
+                    }
+                    onError={(e) => {
+                      e.currentTarget.src = "/editTea.jpg";
+                    }}
+                    alt={tea.name}
+                    style={{ objectFit: "cover", height: "250px" }}
+                  />
 
-                  <Card.Body className="text-center p-1" style={{ height: "40px" }}>
-                    <Card.Title className="fs-6 text-truncate mb-0" title={tea.name}>{tea.name}</Card.Title>
+                  <Card.Body className="text-center flex-grow-0 p-2">
+                    <Card.Title
+                      className="fs-6 text-truncate mb-0"
+                      title={tea.name}
+                    >
+                      {tea.name}
+                    </Card.Title>
                     <div className="text-muted small">{tea.type}</div>
                   </Card.Body>
 
-                  <Card.Footer className="d-flex justify-content-between">
+                  <Card.Footer className="d-flex justify-content-between align-items-center p-2">
                     <OverlayTrigger
                       placement="top"
-                      overlay={
-                        <Tooltip id={`tooltip-view-${tea._id}`}>
-                          View Details
-                        </Tooltip>
-                      }
+                      overlay={<Tooltip id={`tooltip-view-${tea._id}`}>View Details</Tooltip>}
                     >
                       <Link to={`/teas/${tea._id}`}>
-                        <Button
-                          variant="outline-secondary"
-                          size="sm"
-                          aria-label="View Details"
-                        >
+                        <Button variant="outline-secondary" size="sm" aria-label="View Details">
                           <Eye />
                         </Button>
                       </Link>
@@ -217,16 +213,10 @@ function Dashboard() {
 
                     <OverlayTrigger
                       placement="top"
-                      overlay={
-                        <Tooltip id={`tooltip-edit-${tea._id}`}>Edit</Tooltip>
-                      }
+                      overlay={<Tooltip id={`tooltip-edit-${tea._id}`}>Edit</Tooltip>}
                     >
                       <Link to={`/edit-tea/${tea._id}`}>
-                        <Button
-                          variant="outline-primary"
-                          size="sm"
-                          aria-label="Edit"
-                        >
+                        <Button variant="outline-primary" size="sm" aria-label="Edit">
                           <Pencil />
                         </Button>
                       </Link>
@@ -245,9 +235,7 @@ function Dashboard() {
 
                     <OverlayTrigger
                       placement="top"
-                      overlay={
-                        <Tooltip id={`tooltip-delete-${tea._id}`}>Delete</Tooltip>
-                      }
+                      overlay={<Tooltip id={`tooltip-delete-${tea._id}`}>Delete</Tooltip>}
                     >
                       <Button
                         variant="outline-danger"
@@ -260,6 +248,7 @@ function Dashboard() {
                     </OverlayTrigger>
                   </Card.Footer>
                 </Card>
+
               </Col>
             ))}
           </Row>
