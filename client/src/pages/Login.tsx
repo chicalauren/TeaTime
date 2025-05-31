@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
-import { LOGIN } from "../utils/mutations"; // Your GraphQL mutation
-import { useNavigate } from "react-router-dom"; // if you want to redirect after login
-
+import { LOGIN } from "../utils/mutations";
+import { useNavigate } from "react-router-dom";
+import {
+  Card,
+  Form,
+  Button,
+  Container,
+  Row,
+  Col,
+  Alert,
+} from "react-bootstrap";
 
 function Login() {
   const navigate = useNavigate();
@@ -19,11 +27,9 @@ function Login() {
         variables: { email, password },
       });
 
-      // ✅ Save the token and username
       localStorage.setItem("id_token", data.login.token);
       localStorage.setItem("username", data.login.user.username);
 
-      // ✅ Redirect to dashboard or homepage
       navigate("/dashboard");
     } catch (err: any) {
       console.error("Login error:", err);
@@ -32,30 +38,67 @@ function Login() {
   };
 
   return (
-    <div className="auth-container">
-      <h2>Login</h2>
-      <form
-        onSubmit={handleLogin}
-        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-      >
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          required
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          required
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Login</button>
-      </form>
+    <div
+      className="d-flex align-items-center justify-content-center vh-100"
+      style={{
+        backgroundImage: 'url("/your-image.jpg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        position: "relative",
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.75)",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
+        }}
+      />
+      <Container style={{ position: "relative", zIndex: 1 }}>
+        <Row className="justify-content-center">
+          <Col xs={12} sm={10} md={6} lg={4}>
+            <Card className="shadow border-0">
+              <Card.Body>
+                <h2 className="text-center mb-4">Welcome Back</h2>
+                {errorMessage && (
+                  <Alert variant="danger">{errorMessage}</Alert>
+                )}
+                <Form onSubmit={handleLogin}>
+                  <Form.Group className="mb-3" controlId="formEmail">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                      type="email"
+                      placeholder="Enter email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </Form.Group>
 
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+                  <Form.Group className="mb-3" controlId="formPassword">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control
+                      type="password"
+                      placeholder="Enter password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </Form.Group>
+
+                  <Button variant="primary" type="submit" className="w-100">
+                    Log In
+                  </Button>
+                </Form>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 }
