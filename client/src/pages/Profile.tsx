@@ -132,7 +132,28 @@ function Profile() {
   }
 
   return (
-    <div className="d-flex flex-column align-items-center min-vh-100 py-5 mt-5">
+    <div
+    className="d-flex flex-column align-items-center min-vh-100 py-5"
+    style={{
+      backgroundImage: 'url("/your-image.jpg")',
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      position: "relative",
+    }}
+  >
+    {/* Overlay */}
+    <div
+      style={{
+        backgroundColor: "rgba(255, 255, 255, 0.75)",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 0,
+      }}
+    />
+
       {/* 🔹 Profile Info Card */}
       <div className="card shadow w-100 mb-5" style={{ maxWidth: "500px" }}>
         <div className="ratio ratio-1x1">
@@ -208,14 +229,20 @@ function Profile() {
 
       {/* ❤️ Favorite Teas */}
       <div className="w-100 mb-5" style={{ maxWidth: "1000px" }}>
-        <h2 className="text-center mb-4">Favorite Teas ❤️</h2>
+        <div className="card bg-light mb-4 shadow-sm">
+        <div className="card-body text-center">
+          <h2 className="fw-bold mb-0 text-dark">❤️ Favorite Teas</h2>
+        </div>
+      </div>
+
+
         {favoriteTeas.length === 0 ? (
           <p className="text-center text-muted">
             You haven't saved any teas yet.
           </p>
         ) : (
           <>
-            <div className="row g-3">
+            <div className="row g-3 d-flex justify-content-center">
               {favoriteTeas.slice(0, 3).map((tea) => (
                 <div key={tea._id} className="col-md-4 col-sm-6">
                   <TeaCardWithFavorite tea={tea} />
@@ -235,13 +262,19 @@ function Profile() {
 
       {/* 🍃 Recommended Teas */}
       <div className="w-100" style={{ maxWidth: "1000px" }}>
-        <h2 className="text-center mb-4">Recommended Teas 🍃</h2>
+        <div className="card bg-light mb-4 shadow-sm">
+          <div className="card-body text-center">
+            <h2 className="fw-bold mb-0 text-dark">🍃 Recommended Teas</h2>
+          </div>
+        </div>
+
+
         {loadingRecs ? (
           <p className="text-center">Loading recommendations...</p>
         ) : errorRecs ? (
           <p className="text-center text-danger">Error: {errorRecs.message}</p>
         ) : recData?.recommendTeas?.length > 0 ? (
-          <div className="row g-3">
+          <div className="row g-3 d-flex justify-content-center">
             {recData.recommendTeas.map((tea: Tea) => (
               <div key={tea._id} className="col-md-4 col-sm-6">
                 <TeaCardWithFavorite tea={tea} />

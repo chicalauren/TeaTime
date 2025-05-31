@@ -6,6 +6,8 @@ import {
 } from "../utils/mutations";
 import FavoriteButton from "../components/FavoriteButton"; // Adjust path as needed
 
+//TODO: There should be a path to edit teas from this page too 
+
 function Favorites() {
   const { loading, error, data } = useQuery(GET_ME, {
     fetchPolicy: "network-only",
