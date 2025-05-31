@@ -21,6 +21,7 @@ import EditTeaForm from "./pages/EditTeaForm";
 import SpillTheTea from "./pages/SpillTheTea";
 import TeaTimer from "./pages/TeaTimer";
 import Favorites from "./pages/Favorites";
+import { Dash } from "react-bootstrap-icons";
 
 const httpLink = createHttpLink({
   uri: "/graphql",
@@ -48,7 +49,7 @@ function App() {
         <Navbar />
         <main style={{ paddingTop: "64px" }}>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/favorites" element={<Favorites />} />
