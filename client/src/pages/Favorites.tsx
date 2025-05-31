@@ -12,11 +12,13 @@ import {
   Col,
   Card,
   Button,
-  Badge,
+  //Badge,
   OverlayTrigger,
   Tooltip,
 } from "react-bootstrap";
 import { Pencil } from "react-bootstrap-icons";
+
+//TODO: When I go from favorites to edit tea, it's somehow unfavoriting the tea.
 
 
 function Favorites() {

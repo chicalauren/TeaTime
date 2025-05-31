@@ -17,7 +17,7 @@ import {
   OverlayTrigger,
   Tooltip,
 } from "react-bootstrap";
-import { Eye, Pencil, Trash } from "react-bootstrap-icons";
+import { Eye, Pencil } from "react-bootstrap-icons";
 import { motion } from "framer-motion";
 
 //TODO: there's no delete button on the tea detail page, should there be one?
