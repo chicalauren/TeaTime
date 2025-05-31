@@ -215,6 +215,43 @@ export const ADD_TEA_TO_FAVORITES = gql`
   }
 `;
 
+export const SEND_FRIEND_REQUEST = gql`
+  mutation SendFriendRequest($userId: ID!) {
+    sendFriendRequest(userId: $userId) {
+      _id
+      username
+    }
+  }
+`;
+
+export const ACCEPT_FRIEND_REQUEST = gql`
+  mutation AcceptFriendRequest($userId: ID!) {
+    acceptFriendRequest(userId: $userId) {
+      _id
+      username
+      friends { _id username }
+    }
+  }
+`;
+
+export const DECLINE_FRIEND_REQUEST = gql`
+  mutation DeclineFriendRequest($userId: ID!) {
+    declineFriendRequest(userId: $userId) {
+      _id
+      username
+    }
+  }
+`;
+
+export const REMOVE_FRIEND = gql`
+  mutation RemoveFriend($userId: ID!) {
+    removeFriend(userId: $userId) {
+      _id
+      username
+    }
+  }
+`;
+
 export const REMOVE_TEA_FROM_FAVORITES = gql`
   mutation removeTeaFromFavorites($teaId: ID!) {
     removeTeaFromFavorites(teaId: $teaId) {

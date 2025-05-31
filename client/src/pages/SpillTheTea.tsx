@@ -1,5 +1,6 @@
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_SPILL_POSTS } from "../utils/queries";
+import { Link } from "react-router-dom";
 import {
   ADD_SPILL_POST,
   ADD_COMMENT,
@@ -7,6 +8,7 @@ import {
   DELETE_COMMENT,
   DELETE_SPILL_POST,
 } from "../utils/mutations";
+
 import { useState } from "react";
 
 function SpillTheTea() {
@@ -140,7 +142,9 @@ function SpillTheTea() {
                 {post.title}
               </h3>
               <p style={{ fontStyle: "italic", color: "#000000" }}>
-                by {post.createdByUsername || "Anonymous"}
+                by <Link to={`/user/${post.createdByUsername}`}>
+                  {post.createdByUsername || "Anonymous"}
+                </Link>
               </p>
               <p style={{ color: "#72a85a", fontWeight: "bold" }}>
                 {post.content}
@@ -195,8 +199,14 @@ function SpillTheTea() {
                       }}
                     >
                       <p style={{ margin: 0, fontWeight: "bold" }}>
-                        {comment.createdByUsername || "Anonymous"}
-                      </p>
+                          {comment.createdByUsername === currentUsername ? (
+                            comment.createdByUsername || "Anonymous"
+                          ) : (
+                            <Link to={`/user/${comment.createdByUsername}`}>
+                              {comment.createdByUsername || "Anonymous"}
+                            </Link>
+                          )}
+                        </p>
                       <p style={{ margin: "5px 0" }}>{comment.content}</p>
                       <small style={{ color: "#777" }}>
                         {new Date(Number(comment.createdAt)).toLocaleString(
@@ -238,7 +248,9 @@ function SpillTheTea() {
                         >
                           Delete
                         </button>
+                        
                       )}
+                      
                     </div>
                   ))
                 ) : (

@@ -55,7 +55,30 @@ export const GET_TEA = gql`
   }
 `;
 
+export const GET_USER_BY_USERNAME = gql`
+  query UserByUsername($username: String!) {
+    userByUsername(username: $username) {
+      _id
+      username
+      email
+      bio
+      favoriteTeaSource
+    }
+  }
+`;
 
+export const GET_ME_WITH_FRIENDS = gql`
+  query Me {
+    me {
+      _id
+      username
+      friends { _id username }
+      friendRequestsSent { _id username }
+      friendRequestsReceived { _id username }
+      # ...other fields
+    }
+  }
+`;
 
 export const GET_SPILL_POSTS = gql`
   query GetSpillPosts {

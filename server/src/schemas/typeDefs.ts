@@ -6,6 +6,9 @@ const typeDefs = gql`
     username: String!
     email: String!
     favoriteTeas: [TeaCategory]
+    friends: [User]
+    friendRequestsSent: [User]
+    friendRequestsReceived: [User]
     bio: String
     favoriteTeaSource: String
   }
@@ -59,11 +62,16 @@ const typeDefs = gql`
     tea(id: ID!): TeaCategory
     spillPosts: [SpillPost]
     recommendTeas(tags: [String!]!): [TeaCategory]
+    userByUsername(username: String!): User
   }
 
   # Mutations
   type Mutation {
     login(email: String!, password: String!): Auth
+    sendFriendRequest(userId: ID!): User
+    acceptFriendRequest(userId: ID!): User
+    declineFriendRequest(userId: ID!): User
+    removeFriend(userId: ID!): User
     register(username: String!, email: String!, password: String!): Auth
     updateUser(bio: String, favoriteTeaSource: String): User
 
