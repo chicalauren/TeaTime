@@ -6,7 +6,7 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
+//import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -21,7 +21,7 @@ import EditTeaForm from "./pages/EditTeaForm";
 import SpillTheTea from "./pages/SpillTheTea";
 import TeaTimer from "./pages/TeaTimer";
 import Favorites from "./pages/Favorites";
-import { Dash } from "react-bootstrap-icons";
+//import { Dash } from "react-bootstrap-icons";
 
 const httpLink = createHttpLink({
   uri: "/graphql",
