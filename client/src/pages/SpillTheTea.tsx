@@ -142,9 +142,13 @@ function SpillTheTea() {
                 {post.title}
               </h3>
               <p style={{ fontStyle: "italic", color: "#000000" }}>
-                by <Link to={`/user/${post.createdByUsername}`}>
-                  {post.createdByUsername || "Anonymous"}
-                </Link>
+                by {post.createdByUsername === currentUsername ? (
+                  post.createdByUsername || "Anonymous"
+                ) : (
+                  <Link to={`/user/${post.createdByUsername}`}>
+                    {post.createdByUsername || "Anonymous"}
+                  </Link>
+                )}
               </p>
               <p style={{ color: "#72a85a", fontWeight: "bold" }}>
                 {post.content}

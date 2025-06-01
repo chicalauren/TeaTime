@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation } from "@apollo/client";
+import { useMutation, useApolloClient } from "@apollo/client";
 import { LOGIN } from "../utils/mutations"; // Your GraphQL mutation
 import { useNavigate } from "react-router-dom"; // if you want to redirect after login
 
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom"; // if you want to redirect after
 function Login() {
   const navigate = useNavigate();
   const [login] = useMutation(LOGIN);
+  const client = useApolloClient(); 
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,6 +23,8 @@ function Login() {
       // ✅ Save the token and username
       localStorage.setItem("id_token", data.login.token);
       localStorage.setItem("username", data.login.user.username);
+
+      await client.resetStore(); // Reset Apollo Client cache
 
       // ✅ Redirect to dashboard or homepage
       navigate("/dashboard");

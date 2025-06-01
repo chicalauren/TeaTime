@@ -75,7 +75,6 @@ export const GET_ME_WITH_FRIENDS = gql`
       friends { _id username }
       friendRequestsSent { _id username }
       friendRequestsReceived { _id username }
-      # ...other fields
     }
   }
 `;

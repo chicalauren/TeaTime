@@ -15,7 +15,10 @@ const resolvers = {
       if (context.user) {
         return User.findById(context.user._id)
           .select("_id username email bio favoriteTeaSource favoriteTeas")
-          .populate("favoriteTeas");
+          .populate("favoriteTeas")
+          .populate("friends")
+          .populate("friendRequestsSent")
+          .populate("friendRequestsReceived");
       }
       throw new AuthenticationError("You must be logged in");
     },
@@ -69,30 +72,36 @@ const resolvers = {
     },
 
     acceptFriendRequest: async (_: any, { userId }: any, context: any) => {
-      if (!context.user) throw new AuthenticationError("You must be logged in");
+    if (!context.user) throw new AuthenticationError("You must be logged in");
 
-      const user = await User.findById(context.user._id);
-      const requester = await User.findById(userId);
+    const user = await User.findById(context.user._id);
+    const requester = await User.findById(userId);
 
-      if (!user || !requester) throw new Error("User not found");
+    if (!user || !requester) throw new Error("User not found");
 
-      // Remove from requests
-      user.friendRequestsReceived = user.friendRequestsReceived.filter(
-        (id: any) => id.toString() !== userId
-      );
-      requester.friendRequestsSent = requester.friendRequestsSent.filter(
-        (id: any) => id.toString() !== context.user._id
-      );
+    // Remove from requests
+    user.friendRequestsReceived = user.friendRequestsReceived.filter(
+      (id: any) => id.toString() !== userId
+    );
+    requester.friendRequestsSent = requester.friendRequestsSent.filter(
+      (id: any) => id.toString() !== context.user._id
+    );
 
-      // Add to friends
-      user.friends.push(userId);
-      requester.friends.push(context.user._id);
+    // Add to friends
+    user.friends.push(userId);
+    requester.friends.push(context.user._id);
 
-      await user.save();
-      await requester.save();
+    await user.save();
+    await requester.save();
 
-      return user;
-    },
+    // Fetch and return the updated, fully populated user
+    const updatedUser = await User.findById(context.user._id)
+      .populate("friends")
+      .populate("friendRequestsSent")
+      .populate("friendRequestsReceived");
+
+    return updatedUser;
+  },
 
     declineFriendRequest: async (_: any, { userId }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("You must be logged in");
@@ -354,6 +363,7 @@ const resolvers = {
         // User already liked: unlike
         post.likedBy.splice(likedIndex, 1);
         post.likes = Math.max((post.likes || 1) - 1, 0);
+
       } else {
         // User has not liked: like
         post.likedBy.push(userId);
@@ -361,6 +371,8 @@ const resolvers = {
       }
 
       await post.save();
+
+
       return post;
     },
 

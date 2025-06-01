@@ -54,7 +54,7 @@ const typeDefs = gql`
     token: ID!
     user: User
   }
-
+  
   # Queries
   type Query {
     me: User
