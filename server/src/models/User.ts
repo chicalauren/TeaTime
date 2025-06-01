@@ -6,7 +6,13 @@ export interface IUser extends Document {
   username: string;
   email: string;
   password: string;
+
+  //TESTING FRIENDS
   favoriteTeas: mongoose.Types.ObjectId[]; // to see the users fav teas
+  friends: { type: [Schema.Types.ObjectId], ref: "User", default: [] },
+  friendRequestsSent: { type: [Schema.Types.ObjectId], ref: "User", default: [] },
+  friendRequestsReceived: { type: [Schema.Types.ObjectId], ref: "User", default: [] },
+
   bio?: string;
   favoriteTeaSource?: string;
   isCorrectPassword: (password: string) => Promise<boolean>;
@@ -15,6 +21,28 @@ export interface IUser extends Document {
 
 const userSchema = new Schema<IUser>(
   {
+    friends: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      default: [],
+    },
+  ],
+// Add this after the array definition:
+    friendRequestsSent: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        default: [],
+      },
+    ],
+    friendRequestsReceived: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        default: [],
+      },
+    ],
     username: {
       type: String,
       required: true,

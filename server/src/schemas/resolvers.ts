@@ -8,11 +8,17 @@ import { generateRecommendations } from "../utils/generateTeaRecomendations";
 
 const resolvers = {
   Query: {
+    userByUsername: async (_: any, { username }: any) => {
+    return User.findOne({ username }).populate("favoriteTeas");
+    },
     me: async (_: any, __: any, context: any) => {
       if (context.user) {
         return User.findById(context.user._id)
           .select("_id username email bio favoriteTeaSource favoriteTeas")
-          .populate("favoriteTeas");
+          .populate("favoriteTeas")
+          .populate("friends")
+          .populate("friendRequestsSent")
+          .populate("friendRequestsReceived");
       }
       throw new AuthenticationError("You must be logged in");
     },
@@ -37,6 +43,107 @@ const resolvers = {
   },
 
   Mutation: {
+
+    sendFriendRequest: async (_: any, { userId }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("You must be logged in");
+      if (context.user._id === userId) throw new Error("Cannot friend yourself");
+
+      const user = await User.findById(context.user._id);
+      const target = await User.findById(userId);
+
+      if (!user || !target) throw new Error("User not found");
+
+      // Prevent duplicate requests or already friends
+      if (
+        (user as any).friends.map(String).includes(String(userId)) ||
+        (user as any).friendRequestsSent.map(String).includes(String(userId)) ||
+        (target as any).friendRequestsReceived.map(String).includes(String(context.user._id))
+      ) {
+        throw new Error("Already friends or request pending");
+      }
+
+      (user as any).friendRequestsSent.push(userId);
+      (target as any).friendRequestsReceived.push(context.user._id);
+
+      await user.save();
+      await target.save();
+
+      return target;
+    },
+
+    acceptFriendRequest: async (_: any, { userId }: any, context: any) => {
+    if (!context.user) throw new AuthenticationError("You must be logged in");
+
+    const user = await User.findById(context.user._id);
+    const requester = await User.findById(userId);
+
+    if (!user || !requester) throw new Error("User not found");
+
+    // Remove from requests
+    (user as any).friendRequestsReceived = (user as any).friendRequestsReceived.filter(
+      (id: any) => id.toString() !== userId
+    );
+    (requester as any).friendRequestsSent = (requester as any).friendRequestsSent.filter(
+      (id: any) => id.toString() !== context.user._id
+    );
+
+    // Add to friends
+    (user as any).friends.push(userId);
+    (requester as any).friends.push(context.user._id);
+
+    await user.save();
+    await requester.save();
+
+    // Fetch and return the updated, fully populated user
+    const updatedUser = await User.findById(context.user._id)
+      .populate("friends")
+      .populate("friendRequestsSent")
+      .populate("friendRequestsReceived");
+
+    return updatedUser;
+  },
+
+    declineFriendRequest: async (_: any, { userId }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("You must be logged in");
+
+      const user = await User.findById(context.user._id);
+      const requester = await User.findById(userId);
+
+      if (!user || !requester) throw new Error("User not found");
+
+      // Remove from requests
+      (user as any).friendRequestsReceived = (user as any).friendRequestsReceived.filter(
+        (id: any) => id.toString() !== userId
+      );
+      (requester as any).friendRequestsSent = (requester as any).friendRequestsSent.filter(
+        (id: any) => id.toString() !== context.user._id
+      );
+
+      await user.save();
+      await requester.save();
+
+      return user;
+    },
+
+    removeFriend: async (_: any, { userId }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("You must be logged in");
+
+      const user = await User.findById(context.user._id);
+      const friend = await User.findById(userId);
+
+      if (!user || !friend) throw new Error("User not found");
+
+      (user as any).friends = (user as any).friends.filter((id: any) => id.toString() !== userId);
+      (friend as any).friends = (friend as any).friends.filter(
+        (id: any) => id.toString() !== context.user._id
+      );
+
+      await user.save();
+      await friend.save();
+
+      return user;
+    },
+
     register: async (_: any, { username, email, password }: any) => {
       const user = await User.create({ username, email, password });
       const token = signToken(user);
@@ -65,8 +172,11 @@ const resolvers = {
       return updatedUser;
     },
 
-    login: async (_: any, { email, password }: any) => {
-      const user = (await User.findOne({ email })) as IUser;
+    login: async (_: any, { login, password }: any) => {
+      const user = await User.findOne({
+        $or: [{ email: login }, { username: login }],
+      }) as IUser;
+
       if (!user) {
         throw new AuthenticationError("Incorrect credentials");
       }
@@ -256,6 +366,7 @@ const resolvers = {
         // User already liked: unlike
         post.likedBy.splice(likedIndex, 1);
         post.likes = Math.max((post.likes || 1) - 1, 0);
+
       } else {
         // User has not liked: like
         post.likedBy.push(userId);
@@ -263,6 +374,8 @@ const resolvers = {
       }
 
       await post.save();
+
+
       return post;
     },
 

@@ -1,5 +1,6 @@
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_SPILL_POSTS } from "../utils/queries";
+import { GET_SPILL_POSTS, GET_ME_WITH_FRIENDS } from "../utils/queries";
+import { Link } from "react-router-dom";
 import {
   ADD_SPILL_POST,
   ADD_COMMENT,
@@ -10,10 +11,16 @@ import {
 import { useState } from "react";
 
 function SpillTheTea() {
-  const currentUserId = localStorage.getItem("userId"); // or however you store user id
+  const currentUserId = localStorage.getItem("userId");
   const currentUsername = localStorage.getItem("username");
 
   const { loading, error, data } = useQuery(GET_SPILL_POSTS);
+  const { data: meData } = useQuery(GET_ME_WITH_FRIENDS);
+  const myFriends = meData?.me?.friends ?? [];
+
+  // Helper to check if a username is a friend
+  const isFriend = (username: string) =>
+    myFriends.some((f: any) => f.username === username);
 
   const [addSpillPost] = useMutation(ADD_SPILL_POST, {
     refetchQueries: [{ query: GET_SPILL_POSTS }],
@@ -140,7 +147,13 @@ function SpillTheTea() {
                 {post.title}
               </h3>
               <p style={{ fontStyle: "italic", color: "#000000" }}>
-                by {post.createdByUsername || "Anonymous"}
+                by {post.createdByUsername === currentUsername ? (
+                  post.createdByUsername || "Anonymous"
+                ) : (
+                  <Link to={`/user/${post.createdByUsername}`}>
+                    {post.createdByUsername || "Anonymous"}
+                  </Link>
+                )}
               </p>
               <p style={{ color: "#72a85a", fontWeight: "bold" }}>
                 {post.content}
@@ -195,7 +208,17 @@ function SpillTheTea() {
                       }}
                     >
                       <p style={{ margin: 0, fontWeight: "bold" }}>
-                        {comment.createdByUsername || "Anonymous"}
+                        {comment.createdByUsername === currentUsername ? (
+                          comment.createdByUsername || "Anonymous"
+                        ) : (
+                          <Link to={`/user/${comment.createdByUsername}`}>
+                            {comment.createdByUsername || "Anonymous"}
+                            {isFriend(comment.createdByUsername) && (
+                              <span style={{ color: "#72a85a", fontWeight: 500 }}> (Friend) </span>
+                            )}
+                          </Link>
+                  
+                        )}
                       </p>
                       <p style={{ margin: "5px 0" }}>{comment.content}</p>
                       <small style={{ color: "#777" }}>
