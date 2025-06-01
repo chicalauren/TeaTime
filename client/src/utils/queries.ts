@@ -8,6 +8,7 @@ export const GET_ME = gql`
       email
       bio
       favoriteTeaSource
+      profileImageUrl
       favoriteTeas {
         _id
         name
@@ -37,8 +38,6 @@ export const GET_TEAS = gql`
   }
 `;
 
-
-
 export const GET_TEA = gql`
   query GetTea($id: ID!) {
     tea(id: $id) {
@@ -54,8 +53,6 @@ export const GET_TEA = gql`
     }
   }
 `;
-
-
 
 export const GET_SPILL_POSTS = gql`
   query GetSpillPosts {

@@ -11,7 +11,9 @@ const resolvers = {
     me: async (_: any, __: any, context: any) => {
       if (context.user) {
         return User.findById(context.user._id)
-          .select("_id username email bio favoriteTeaSource favoriteTeas")
+          .select(
+            "_id username email bio favoriteTeaSource favoriteTeas profileImage"
+          )
           .populate("favoriteTeas");
       }
       throw new AuthenticationError("You must be logged in");
@@ -44,7 +46,11 @@ const resolvers = {
     },
     updateUser: async (
       _: any,
-      { bio, favoriteTeaSource }: { bio?: string; favoriteTeaSource?: string },
+      {
+        bio,
+        favoriteTeaSource,
+        profileImage,
+      }: { bio?: string; favoriteTeaSource?: string; profileImage?: string },
       context: any
     ) => {
       if (!context.user) {
@@ -55,6 +61,7 @@ const resolvers = {
       if (bio !== undefined) updatedFields.bio = bio;
       if (favoriteTeaSource !== undefined)
         updatedFields.favoriteTeaSource = favoriteTeaSource;
+      if (profileImage !== undefined) updatedFields.profileImage = profileImage;
 
       const updatedUser = await User.findByIdAndUpdate(
         context.user._id,

@@ -231,9 +231,18 @@ export const REMOVE_TEA_FROM_FAVORITES = gql`
   }
 `;
 export const UPDATE_USER = gql`
-  mutation UpdateUser($bio: String, $favoriteTeaSource: String) {
-    updateUser(bio: $bio, favoriteTeaSource: $favoriteTeaSource) {
+  mutation UpdateUser(
+    $bio: String
+    $favoriteTeaSource: String
+    $profileImage: String
+  ) {
+    updateUser(
+      bio: $bio
+      favoriteTeaSource: $favoriteTeaSource
+      profileImageUrl: $profileImageUrl
+    ) {
       _id
+      profileImage
       username
       bio
       favoriteTeaSource
