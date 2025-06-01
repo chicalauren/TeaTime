@@ -62,7 +62,25 @@ function UserProfile() {
               {requestSent ? "Friend Request Sent" : sending ? "Sending..." : "Send Friend Request"}
             </button>
           )}
-          {!isMe && isFriend && <span>You are friends!</span>}
+          {!isMe && isFriend && (
+            <span
+              style={{
+                display: "inline-block",
+                marginTop: "12px",
+                padding: "6px 18px",
+                background: "linear-gradient(90deg, #a8e063 0%, #56ab2f 100%)",
+                color: "#fff",
+                borderRadius: "20px",
+                fontWeight: 600,
+                fontSize: "1.1rem",
+                letterSpacing: "0.5px",
+                boxShadow: "0 2px 8px rgba(86,171,47,0.08)",
+              }}
+            >
+              <span role="img" aria-label="friends" style={{ marginRight: 6 }}>🤝</span>
+              You are friends!
+            </span>
+          )}
         </div>
       </div>
 

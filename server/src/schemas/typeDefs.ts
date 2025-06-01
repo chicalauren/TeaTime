@@ -55,9 +55,10 @@ const typeDefs = gql`
     user: User
   }
 
+  # Added this in - not sure if Auth is needed
   type AuthPayload {
-  token: String!
-  user: User!
+    token: String!
+    user: User!
 }
   
   # Queries
