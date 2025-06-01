@@ -28,7 +28,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "morning wake-up",
     "tags": ["black", "morning-wake-up"],
-    "imageUrl": "",
+    "imageUrl": "/images/assam.jpg",
     "tastingNotes": ""
   },
   {
@@ -44,7 +44,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "afternoon tea",
     "tags": ["black", "afternoon-tea"],
-    "imageUrl": "",
+    "imageUrl": "/images/darjeeling.jpg",
     "tastingNotes": ""
   },
   {
@@ -60,7 +60,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "refreshment",
     "tags": ["black", "refreshment"],
-    "imageUrl": "",
+    "imageUrl": "/images/ceylon.jpg",
     "tastingNotes": ""
   },
   {
@@ -76,7 +76,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "relaxation",
     "tags": ["black", "relaxation"],
-    "imageUrl": "",
+    "imageUrl": "/images/keemun.jpg",
     "tastingNotes": ""
   },
   {
@@ -92,7 +92,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "adventure",
     "tags": ["black", "adventure"],
-    "imageUrl": "",
+    "imageUrl": "/images/lapsang-souchong.jpg",
     "tastingNotes": ""
   },
   {
