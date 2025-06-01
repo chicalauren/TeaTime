@@ -7,7 +7,11 @@ function UserProfile() {
   const { username } = useParams();
   const { data: userData, loading, error } = useQuery(GET_USER_BY_USERNAME, { variables: { username } });
   const { data: meData } = useQuery(GET_ME_WITH_FRIENDS);
-  const [sendRequest] = useMutation(SEND_FRIEND_REQUEST);
+
+  // Refetch GET_ME_WITH_FRIENDS after sending a request so UI updates immediately
+  const [sendRequest, { loading: sending }] = useMutation(SEND_FRIEND_REQUEST, {
+    refetchQueries: [{ query: GET_ME_WITH_FRIENDS }],
+  });
 
   const user = userData?.userByUsername;
   const me = meData?.me;
@@ -44,15 +48,20 @@ function UserProfile() {
             <strong>Favorite Tea Source:</strong>{" "}
             {user.favoriteTeaSource || "Not listed."}
           </p>
-          {!isMe && !isFriend && !requestSent && (
+          {!isMe && !isFriend && (
             <button
               className="btn btn-outline-primary mt-3"
               onClick={() => sendRequest({ variables: { userId: user._id } })}
+              disabled={requestSent || sending}
+              style={
+                requestSent || sending
+                  ? { opacity: 0.6, pointerEvents: "none", cursor: "not-allowed" }
+                  : {}
+              }
             >
-              Send Friend Request
+              {requestSent ? "Friend Request Sent" : sending ? "Sending..." : "Send Friend Request"}
             </button>
           )}
-          {!isMe && requestSent && <span>Friend request sent!</span>}
           {!isMe && isFriend && <span>You are friends!</span>}
         </div>
       </div>
