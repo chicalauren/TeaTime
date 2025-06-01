@@ -22,6 +22,8 @@ import {
 } from "react-bootstrap";
 import { Eye, Pencil, Trash } from "react-bootstrap-icons";
 
+//TODO: Is there a way to make the favorite teas load first, and the other teas load after, in the display?  So favorites are always at the top of the list?
+
 interface Tea {
   _id: string;
   name: string;
