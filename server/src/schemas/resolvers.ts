@@ -55,15 +55,15 @@ const resolvers = {
 
       // Prevent duplicate requests or already friends
       if (
-        user.friends.includes(userId) ||
-        user.friendRequestsSent.includes(userId) ||
-        target.friendRequestsReceived.includes(context.user._id)
+        (user as any).friends.map(String).includes(String(userId)) ||
+        (user as any).friendRequestsSent.map(String).includes(String(userId)) ||
+        (target as any).friendRequestsReceived.map(String).includes(String(context.user._id))
       ) {
         throw new Error("Already friends or request pending");
       }
 
-      user.friendRequestsSent.push(userId);
-      target.friendRequestsReceived.push(context.user._id);
+      (user as any).friendRequestsSent.push(userId);
+      (target as any).friendRequestsReceived.push(context.user._id);
 
       await user.save();
       await target.save();
@@ -80,16 +80,16 @@ const resolvers = {
     if (!user || !requester) throw new Error("User not found");
 
     // Remove from requests
-    user.friendRequestsReceived = user.friendRequestsReceived.filter(
+    (user as any).friendRequestsReceived = (user as any).friendRequestsReceived.filter(
       (id: any) => id.toString() !== userId
     );
-    requester.friendRequestsSent = requester.friendRequestsSent.filter(
+    (requester as any).friendRequestsSent = (requester as any).friendRequestsSent.filter(
       (id: any) => id.toString() !== context.user._id
     );
 
     // Add to friends
-    user.friends.push(userId);
-    requester.friends.push(context.user._id);
+    (user as any).friends.push(userId);
+    (requester as any).friends.push(context.user._id);
 
     await user.save();
     await requester.save();
@@ -112,10 +112,10 @@ const resolvers = {
       if (!user || !requester) throw new Error("User not found");
 
       // Remove from requests
-      user.friendRequestsReceived = user.friendRequestsReceived.filter(
+      (user as any).friendRequestsReceived = (user as any).friendRequestsReceived.filter(
         (id: any) => id.toString() !== userId
       );
-      requester.friendRequestsSent = requester.friendRequestsSent.filter(
+      (requester as any).friendRequestsSent = (requester as any).friendRequestsSent.filter(
         (id: any) => id.toString() !== context.user._id
       );
 
@@ -133,8 +133,8 @@ const resolvers = {
 
       if (!user || !friend) throw new Error("User not found");
 
-      user.friends = user.friends.filter((id: any) => id.toString() !== userId);
-      friend.friends = friend.friends.filter(
+      (user as any).friends = (user as any).friends.filter((id: any) => id.toString() !== userId);
+      (friend as any).friends = (friend as any).friends.filter(
         (id: any) => id.toString() !== context.user._id
       );
 
