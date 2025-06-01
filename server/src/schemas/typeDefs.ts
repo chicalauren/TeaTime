@@ -54,6 +54,11 @@ const typeDefs = gql`
     token: ID!
     user: User
   }
+
+  type AuthPayload {
+  token: String!
+  user: User!
+}
   
   # Queries
   type Query {
@@ -67,7 +72,7 @@ const typeDefs = gql`
 
   # Mutations
   type Mutation {
-    login(email: String!, password: String!): Auth
+    login(login: String!, password: String!): AuthPayload!
     sendFriendRequest(userId: ID!): User
     acceptFriendRequest(userId: ID!): User
     declineFriendRequest(userId: ID!): User

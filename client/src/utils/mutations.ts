@@ -84,8 +84,8 @@ export const DELETE_SPILL_POST = gql`
   }
 `;
 export const LOGIN = gql`
-  mutation login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
+  mutation login($login: String!, $password: String!) {
+    login(login: $login, password: $password) {
       token
       user {
         _id

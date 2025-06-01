@@ -1,35 +1,30 @@
 import { useState } from "react";
 import { useMutation, useApolloClient } from "@apollo/client";
-import { LOGIN } from "../utils/mutations"; // Your GraphQL mutation
-import { useNavigate } from "react-router-dom"; // if you want to redirect after login
-
+import { LOGIN } from "../utils/mutations";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
-  const [login] = useMutation(LOGIN);
-  const client = useApolloClient(); 
+  const [loginMutation] = useMutation(LOGIN);
+  const client = useApolloClient();
 
-  const [email, setEmail] = useState("");
+  const [loginInput, setLoginInput] = useState(""); // email or username
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { data } = await login({
-        variables: { email, password },
+      const { data } = await loginMutation({
+        variables: { login: loginInput, password },
       });
 
-      // ✅ Save the token and username
       localStorage.setItem("id_token", data.login.token);
       localStorage.setItem("username", data.login.user.username);
 
-      await client.resetStore(); // Reset Apollo Client cache
-
-      // ✅ Redirect to dashboard or homepage
+      await client.resetStore();
       navigate("/dashboard");
     } catch (err: any) {
-      console.error("Login error:", err);
       setErrorMessage("Failed to login. Please check your credentials.");
     }
   };
@@ -42,11 +37,11 @@ function Login() {
         style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
       >
         <input
-          type="email"
-          placeholder="Email"
-          value={email}
+          type="text"
+          placeholder="Email or Username"
+          value={loginInput}
           required
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => setLoginInput(e.target.value)}
         />
         <input
           type="password"
@@ -57,7 +52,6 @@ function Login() {
         />
         <button type="submit">Login</button>
       </form>
-
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
     </div>
   );

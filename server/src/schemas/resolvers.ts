@@ -172,8 +172,11 @@ const resolvers = {
       return updatedUser;
     },
 
-    login: async (_: any, { email, password }: any) => {
-      const user = (await User.findOne({ email })) as IUser;
+    login: async (_: any, { login, password }: any) => {
+      const user = await User.findOne({
+        $or: [{ email: login }, { username: login }],
+      }) as IUser;
+
       if (!user) {
         throw new AuthenticationError("Incorrect credentials");
       }
