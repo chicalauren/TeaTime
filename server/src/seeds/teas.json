@@ -76,7 +76,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "relaxation",
     "tags": ["black", "relaxation"],
-    "imageUrl": "/images/keemun.jpg",
+    "imageUrl": "/images/keenum.jpg",
     "tastingNotes": ""
   },
   {
@@ -92,7 +92,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "adventure",
     "tags": ["black", "adventure"],
-    "imageUrl": "/images/lapsang-souchong.jpg",
+    "imageUrl": "/images/Lapsang-Souchong.jpg",
     "tastingNotes": ""
   },
   {
@@ -108,7 +108,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "breakfast",
     "tags": ["black", "breakfast"],
-    "imageUrl": "",
+    "imageUrl": "/images/English-Breakfast.jpg",
     "tastingNotes": ""
   },
   {
@@ -124,7 +124,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "strong start",
     "tags": ["black", "strong-start"],
-    "imageUrl": "",
+    "imageUrl": "/images/Irish-Breakfast.jpg",
     "tastingNotes": ""
   },
   {
@@ -140,7 +140,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "invigoration",
     "tags": ["black", "invigoration"],
-    "imageUrl": "",
+    "imageUrl": "/images/yunnan.jpg",
     "tastingNotes": ""
   },
   {
@@ -156,7 +156,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "afternoon sip",
     "tags": ["black", "afternoon-sip"],
-    "imageUrl": "",
+    "imageUrl": "/images/nilgiri.jpg",
     "tastingNotes": ""
   },
   {
@@ -172,7 +172,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "daily wellness",
     "tags": ["green", "daily-wellness"],
-    "imageUrl": "",
+    "imageUrl": "/images/sencha.jpg",
     "tastingNotes": ""
   },
   {
@@ -188,7 +188,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "alertness",
     "tags": ["green", "alertness"],
-    "imageUrl": "",
+    "imageUrl": "/images/matcha.jpg",
     "tastingNotes": ""
   },
   {
@@ -204,7 +204,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "mindfulness",
     "tags": ["green", "mindfulness"],
-    "imageUrl": "",
+    "imageUrl": "/images/dragon-well.jpg",
     "tastingNotes": ""
   },
   {
@@ -220,7 +220,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "focus",
     "tags": ["green", "focus"],
-    "imageUrl": "",
+    "imageUrl": "/images/gyokuro.jpg",
     "tastingNotes": ""
   },
   {
@@ -236,7 +236,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "comfort",
     "tags": ["green", "comfort"],
-    "imageUrl": "",
+    "imageUrl": "/images/genmaicha.jpg",
     "tastingNotes": ""
   },
   {
@@ -252,7 +252,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "evening drink",
     "tags": ["green", "evening-drink"],
-    "imageUrl": "",
+    "imageUrl": "/images/hojicha.jpg",
     "tastingNotes": ""
   },
   {
@@ -268,7 +268,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "gentle wake-up",
     "tags": ["green", "gentle-wake-up"],
-    "imageUrl": "",
+    "imageUrl": "/images/biluochun.jpg",
     "tastingNotes": ""
   },
   {
@@ -284,7 +284,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "hydration",
     "tags": ["green", "hydration"],
-    "imageUrl": "",
+    "imageUrl": "/images/bancha.jpg",
     "tastingNotes": ""
   },
   {
