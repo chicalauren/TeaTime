@@ -49,7 +49,7 @@ function App() {
         <Navbar />
         <main style={{ paddingTop: "64px" }}>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<Login />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/favorites" element={<Favorites />} />
