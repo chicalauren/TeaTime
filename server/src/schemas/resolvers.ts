@@ -9,7 +9,7 @@ import { generateRecommendations } from "../utils/generateTeaRecomendations";
 const resolvers = {
   Query: {
     userByUsername: async (_: any, { username }: any) => {
-    return User.findOne({ username });
+    return User.findOne({ username }).populate("favoriteTeas");
     },
     me: async (_: any, __: any, context: any) => {
       if (context.user) {

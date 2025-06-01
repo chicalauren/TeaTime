@@ -1,8 +1,7 @@
 import { useParams } from "react-router-dom";
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import { GET_USER_BY_USERNAME, GET_ME_WITH_FRIENDS } from "../utils/queries";
 import { SEND_FRIEND_REQUEST } from "../utils/mutations";
-import { useMutation } from "@apollo/client";
 
 function UserProfile() {
   const { username } = useParams();
@@ -20,6 +19,8 @@ function UserProfile() {
   const isMe = me && user._id === me._id;
   const isFriend = (me?.friends ?? []).some((f: any) => f._id === user._id);
   const requestSent = (me?.friendRequestsSent ?? []).some((f: any) => f._id === user._id);
+
+  const favoriteTeas = user.favoriteTeas ?? [];
 
   return (
     <div className="d-flex flex-column align-items-center min-vh-100 py-5 mt-5">
@@ -54,6 +55,44 @@ function UserProfile() {
           {!isMe && requestSent && <span>Friend request sent!</span>}
           {!isMe && isFriend && <span>You are friends!</span>}
         </div>
+      </div>
+
+      {/* Favorite Teas Section */}
+      <div className="w-100 mb-5" style={{ maxWidth: "1000px" }}>
+        <h2 className="text-center mb-4">
+          {isMe ? "Your Favorite Teas ❤️" : `${user.username}'s Favorite Teas ❤️`}
+        </h2>
+        {favoriteTeas.length === 0 ? (
+          <p className="text-center text-muted">
+            {isMe ? "You haven't saved any teas yet." : "No favorites yet."}
+          </p>
+        ) : (
+          <div className="row g-4">
+            {favoriteTeas.map((tea: any) => (
+              <div key={tea._id} className="col-md-4 col-sm-6">
+                <div className="card shadow-sm h-100">
+                  <div
+                    className="ratio ratio-1x1 rounded-top overflow-hidden"
+                    style={{
+                      backgroundImage: `url(${tea.imageUrl || "/default-tea.jpg"})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  ></div>
+                  <div className="card-body">
+                    <h5 className="card-title">{tea.name}</h5>
+                    <p className="card-text">
+                      <strong>Type:</strong> {tea.type}
+                      <br />
+                      <strong>Brand:</strong> {tea.brand || "N/A"}
+                    </p>
+                    <p className="small text-muted">{tea.tags?.join(", ")}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
