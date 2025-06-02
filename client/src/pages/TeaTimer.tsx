@@ -27,7 +27,7 @@ function TeaTimer() {
   const [customMinutes, setCustomMinutes] = useState("");
 
   useEffect(() => {
-    let timer;
+    let timer: ReturnType<typeof setTimeout>;
     if (running && !paused && timeLeft > 0) {
       timer = setTimeout(() => {
         setTimeLeft((prev) => prev - 1);
@@ -68,7 +68,7 @@ function TeaTimer() {
     setPaused((prev) => !prev);
   };
 
-  const handleTeaChange = (e) => {
+  const handleTeaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const tea = teaOptions.find((t) => t.type === e.target.value);
     if (tea) {
       setSelectedTea(tea);
@@ -133,7 +133,7 @@ function TeaTimer() {
               type="number"
               className="form-control"
               value={customMinutes}
-              onChange={(e) => setCustomMinutes(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCustomMinutes(e.target.value)}
               min="1"
             />
           </div>
