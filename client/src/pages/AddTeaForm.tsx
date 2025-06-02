@@ -39,7 +39,7 @@ function AddTeaForm() {
     "Blooming",
     "Blend",
   ];
-  //TODO: the teaTypes in addTeam form do not match the dropdown on the dashboard page
+
 
   useEffect(() => {
     nameInputRef.current?.focus();
