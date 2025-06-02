@@ -9,7 +9,7 @@ import { generateRecommendations } from "../utils/generateTeaRecomendations";
 const resolvers = {
   Query: {
     userByUsername: async (_: any, { username }: any) => {
-    return User.findOne({ username }).populate("favoriteTeas");
+      return User.findOne({ username }).populate("favoriteTeas");
     },
     me: async (_: any, __: any, context: any) => {
       if (context.user) {
@@ -53,23 +53,37 @@ const resolvers = {
       const comment = post.comments.id(commentId);
       if (!comment) throw new Error("Comment not found");
 
-      if (!comment.reactions) comment.reactions = (post as any).comments.id(commentId).reactions || [];
+      if (!Array.isArray(comment.reactions)) comment.reactions = (post as any).comments.id(commentId).reactions || post.schema.path("comments").schema.path("reactions");
 
-      // Find if this emoji already exists
       let reaction = comment.reactions.find((r: any) => r.emoji === emoji);
+
+      // Use Mongoose's create method for subdocs if available
       if (!reaction) {
-        reaction = comment.reactions.create({ emoji, users: [] });
+        if (typeof comment.reactions.create === "function") {
+          reaction = comment.reactions.create({ emoji, users: [] });
+        } else {
+          reaction = { emoji, users: [] };
+        }
         comment.reactions.push(reaction);
+        // Re-fetch the reaction from the array to ensure it's defined
+        reaction = comment.reactions.find((r: any) => r.emoji === emoji);
       }
 
-      // Toggle user reaction
+      // If still not found, throw an error (should not happen)
+      if (!reaction) throw new Error("Failed to create or find reaction");
+
+      if (!Array.isArray(reaction.users)) reaction.users = [];
+
       const username = context.user.username;
+
+      // Toggle reaction
       if (reaction.users.includes(username)) {
         reaction.users = reaction.users.filter((u: string) => u !== username);
       } else {
         reaction.users.push(username);
       }
 
+      comment.markModified("reactions");
       await post.save();
       return post;
     },
@@ -102,36 +116,36 @@ const resolvers = {
     },
 
     acceptFriendRequest: async (_: any, { userId }: any, context: any) => {
-    if (!context.user) throw new AuthenticationError("You must be logged in");
+      if (!context.user) throw new AuthenticationError("You must be logged in");
 
-    const user = await User.findById(context.user._id);
-    const requester = await User.findById(userId);
+      const user = await User.findById(context.user._id);
+      const requester = await User.findById(userId);
 
-    if (!user || !requester) throw new Error("User not found");
+      if (!user || !requester) throw new Error("User not found");
 
-    // Remove from requests
-    (user as any).friendRequestsReceived = (user as any).friendRequestsReceived.filter(
-      (id: any) => id.toString() !== userId
-    );
-    (requester as any).friendRequestsSent = (requester as any).friendRequestsSent.filter(
-      (id: any) => id.toString() !== context.user._id
-    );
+      // Remove from requests
+      (user as any).friendRequestsReceived = (user as any).friendRequestsReceived.filter(
+        (id: any) => id.toString() !== userId
+      );
+      (requester as any).friendRequestsSent = (requester as any).friendRequestsSent.filter(
+        (id: any) => id.toString() !== context.user._id
+      );
 
-    // Add to friends
-    (user as any).friends.push(userId);
-    (requester as any).friends.push(context.user._id);
+      // Add to friends
+      (user as any).friends.push(userId);
+      (requester as any).friends.push(context.user._id);
 
-    await user.save();
-    await requester.save();
+      await user.save();
+      await requester.save();
 
-    // Fetch and return the updated, fully populated user
-    const updatedUser = await User.findById(context.user._id)
-      .populate("friends")
-      .populate("friendRequestsSent")
-      .populate("friendRequestsReceived");
+      // Fetch and return the updated, fully populated user
+      const updatedUser = await User.findById(context.user._id)
+        .populate("friends")
+        .populate("friendRequestsSent")
+        .populate("friendRequestsReceived");
 
-    return updatedUser;
-  },
+      return updatedUser;
+    },
 
     declineFriendRequest: async (_: any, { userId }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("You must be logged in");
@@ -404,7 +418,6 @@ const resolvers = {
       }
 
       await post.save();
-
 
       return post;
     },

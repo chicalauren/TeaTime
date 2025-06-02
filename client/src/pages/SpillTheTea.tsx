@@ -11,6 +11,132 @@ import {
 } from "../utils/mutations";
 import { useState } from "react";
 
+const emojiOptions = ["🌟", "☕️", "🍵", "🌼", "😍", "😂"];
+
+function CommentReactions({
+  comment,
+  postId,
+  currentUsername,
+  reactToComment,
+}: {
+  comment: any;
+  postId: string;
+  currentUsername: string | null;
+  reactToComment: any;
+}) {
+  const [showPicker, setShowPicker] = useState(false);
+
+  const userReacted = (emoji: string) => {
+    const reaction = comment.reactions?.find((r: any) => r.emoji === emoji);
+    return reaction ? reaction.users.includes(currentUsername) : false;
+  };
+
+  const emojiCount = (emoji: string) => {
+    const reaction = comment.reactions?.find((r: any) => r.emoji === emoji);
+    return reaction ? reaction.users.length : 0;
+  };
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
+      {/* React Button */}
+      <div style={{ position: "relative" }}>
+        <button
+          onClick={() => setShowPicker((prev) => !prev)}
+          style={{
+            background: "#f0f0f0",
+            border: "none",
+            borderRadius: "12px",
+            cursor: "pointer",
+            padding: "4px 10px",
+            fontWeight: 600,
+          }}
+        >
+          {showPicker ? "Pick Emoji" : "React"}
+        </button>
+        {/* Emoji Picker Dropdown */}
+        {showPicker && (
+          <div
+            style={{
+              position: "absolute",
+              top: "110%",
+              left: 0,
+              background: "#fff",
+              border: "1px solid #ccc",
+              borderRadius: 8,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              zIndex: 10,
+              padding: 6,
+              display: "flex",
+              gap: 6,
+            }}
+          >
+            {emojiOptions.map((emoji) => (
+              <button
+                key={emoji}
+                onClick={() => {
+                  reactToComment({
+                    variables: {
+                      spillPostId: postId,
+                      commentId: comment._id,
+                      emoji,
+                    },
+                  });
+                  setShowPicker(false);
+                }}
+                style={{
+                  fontSize: 22,
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: 2,
+                }}
+                aria-label={`React with ${emoji}`}
+              >
+                {emoji}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+      {/* Display selected emojis with counts */}
+      {emojiOptions.map((emoji) => {
+        const count = emojiCount(emoji);
+        const reacted = userReacted(emoji);
+        if (count === 0) return null;
+        return (
+          <button
+            key={emoji}
+            onClick={async () =>
+              await reactToComment({
+                variables: {
+                  spillPostId: postId,
+                  commentId: comment._id,
+                  emoji,
+                },
+              })
+            }
+            style={{
+              margin: "0 2px",
+              background: reacted ? "#ffe082" : "#f0f0f0",
+              border: "none",
+              borderRadius: "12px",
+              cursor: "pointer",
+              fontWeight: reacted ? "bold" : "normal",
+              fontSize: 18,
+              display: "inline-flex",
+              alignItems: "center",
+              padding: "2px 8px",
+            }}
+            aria-label={`React with ${emoji}`}
+          >
+            {emoji} <span style={{ marginLeft: 2 }}>{count}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 function SpillTheTea() {
   const currentUserId = localStorage.getItem("userId");
   const currentUsername = localStorage.getItem("username");
@@ -75,9 +201,6 @@ function SpillTheTea() {
       : spillPosts.filter((post: any) =>
           friendUsernames.includes(post.createdByUsername)
         );
-
-  // Emoji options for reactions
-  const emojiOptions = ["🌟", "☕️", "🍵", "🌼", "🌼😍", "😂"];
 
   return (
     <div style={{ padding: "2rem" }}>
@@ -284,39 +407,13 @@ function SpillTheTea() {
                             "en-US"
                           )}
                         </small>
-                        {/* Emoji Reactions */}
-                        <div style={{ marginTop: "6px" }}>
-                          {emojiOptions.map((emoji) => {
-                            const reaction = comment.reactions?.find((r: any) => r.emoji === emoji);
-                            const count = reaction ? reaction.users.length : 0;
-                            const reacted = reaction ? reaction.users.includes(currentUsername) : false;
-                            return (
-                              <button
-                                key={emoji}
-                                onClick={() =>
-                                  reactToComment({
-                                    variables: {
-                                      spillPostId: post._id,
-                                      commentId: comment._id,
-                                      emoji,
-                                    },
-                                  })
-                                }
-                                style={{
-                                  margin: "0 4px",
-                                  background: reacted ? "#ffe082" : "#f0f0f0",
-                                  border: "none",
-                                  borderRadius: "12px",
-                                  cursor: "pointer",
-                                  fontWeight: reacted ? "bold" : "normal",
-                                }}
-                                aria-label={`React with ${emoji}`}
-                              >
-                                {emoji} {count > 0 ? count : ""}
-                              </button>
-                            );
-                          })}
-                        </div>
+                        {/* Emoji Reactions as React Button */}
+                        <CommentReactions
+                          comment={comment}
+                          postId={post._id}
+                          currentUsername={currentUsername}
+                          reactToComment={reactToComment}
+                        />
                         {/* Delete comment button */}
                         {comment.createdByUsername === currentUsername && (
                           <button
