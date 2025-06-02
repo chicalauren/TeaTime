@@ -15,9 +15,9 @@ export interface IUser extends Document {
 
   bio?: string;
   favoriteTeaSource?: string;
+  profileImage?: string;
   isCorrectPassword: (password: string) => Promise<boolean>;
 }
-
 
 const userSchema = new Schema<IUser>(
   {
@@ -61,7 +61,6 @@ const userSchema = new Schema<IUser>(
       required: true,
       minlength: 8,
     },
-    
 
     favoriteTeas: [
       {
@@ -78,7 +77,12 @@ const userSchema = new Schema<IUser>(
       type: String,
       default: "",
     },
+    profileImage: {
+      type: String,
+      default: "",
+    },
   },
+
   {
     timestamps: true,
   }

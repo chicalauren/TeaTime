@@ -39,6 +39,7 @@ function AddTeaForm() {
     "Blooming",
     "Blend",
   ];
+  //TODO: the teaTypes in addTeam form do not match the dropdown on the dashboard page
 
   useEffect(() => {
     nameInputRef.current?.focus();
@@ -164,9 +165,30 @@ function AddTeaForm() {
       toast.error("Failed to add tea. Please try again.");
     }
   };
+  const [customType, setCustomType] = useState("");
 
   return (
-    <div className="container py-5 mt-5 d-flex justify-content-center">
+    <div
+      className="d-flex justify-content-center align-items-center min-vh-100"
+      style={{
+        backgroundImage: 'url("/your-image.jpg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        position: "relative",
+      }}
+    >
+      {/* Overlay */}
+      <div
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.75)",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
+        }}
+      />
       {showConfetti && (
         <Confetti width={window.innerWidth} height={window.innerHeight} />
       )}
@@ -236,7 +258,18 @@ function AddTeaForm() {
                     {teaType}
                   </option>
                 ))}
+                <option value="custom">Other (input)</option>
               </select>
+              {type === "custom" && (
+                <input
+                  type="text"
+                  className="form-control mt-2"
+                  placeholder="Enter custom tea type"
+                  value={customType}
+                  onChange={(e) => setCustomType(e.target.value)}
+                  required
+                />
+              )}
 
               <textarea
                 className="form-control"

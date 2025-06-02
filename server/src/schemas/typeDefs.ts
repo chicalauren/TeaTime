@@ -5,6 +5,7 @@ const typeDefs = gql`
     _id: ID!
     username: String!
     email: String!
+    profileImage: String
     favoriteTeas: [TeaCategory]
     friends: [User]
     friendRequestsSent: [User]
@@ -79,7 +80,7 @@ const typeDefs = gql`
     declineFriendRequest(userId: ID!): User
     removeFriend(userId: ID!): User
     register(username: String!, email: String!, password: String!): Auth
-    updateUser(bio: String, favoriteTeaSource: String): User
+    updateUser(bio: String, favoriteTeaSource: String, profileImage: String): User
 
     addTea(
       name: String!

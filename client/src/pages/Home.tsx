@@ -14,3 +14,4 @@ export default Home;
 
 
 //TODO: delete home.tsx file; not being used in the code any longer
+//TODO: Update the App.tsx file to remove the Home route

@@ -186,6 +186,7 @@ export const GET_ME = gql`
     me {
       _id
       username
+      profileImageUrl
       favoriteTeas {
         _id
         name
@@ -268,12 +269,14 @@ export const REMOVE_TEA_FROM_FAVORITES = gql`
   }
 `;
 export const UPDATE_USER = gql`
-  mutation UpdateUser($bio: String, $favoriteTeaSource: String) {
-    updateUser(bio: $bio, favoriteTeaSource: $favoriteTeaSource) {
+  mutation updateUser($bio: String, $favoriteTeaSource: String, $profileImage: String) {
+    updateUser(bio: $bio, favoriteTeaSource: $favoriteTeaSource, profileImage: $profileImage) {
       _id
       username
+      email
       bio
       favoriteTeaSource
+      profileImage
     }
   }
 `;

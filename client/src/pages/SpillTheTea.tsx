@@ -147,7 +147,8 @@ function SpillTheTea() {
                 {post.title}
               </h3>
               <p style={{ fontStyle: "italic", color: "#000000" }}>
-                by {post.createdByUsername === currentUsername ? (
+                by{" "}
+                {post.createdByUsername === currentUsername ? (
                   post.createdByUsername || "Anonymous"
                 ) : (
                   <Link to={`/user/${post.createdByUsername}`}>
@@ -214,10 +215,14 @@ function SpillTheTea() {
                           <Link to={`/user/${comment.createdByUsername}`}>
                             {comment.createdByUsername || "Anonymous"}
                             {isFriend(comment.createdByUsername) && (
-                              <span style={{ color: "#72a85a", fontWeight: 500 }}> (Friend) </span>
+                              <span
+                                style={{ color: "#72a85a", fontWeight: 500 }}
+                              >
+                                {" "}
+                                (Friend){" "}
+                              </span>
                             )}
                           </Link>
-                  
                         )}
                       </p>
                       <p style={{ margin: "5px 0" }}>{comment.content}</p>
