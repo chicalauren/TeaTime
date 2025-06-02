@@ -97,11 +97,11 @@ function Profile() {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "unsignedProfilePictures");
-    formData.append("folder", "user_profile_pictures"); 
+    formData.append("folder", "user_profile_pictures");
 
     try {
       const res = await fetch(
-        "https://api.cloudinary.com/v1_1/dcaivdnrk/image/upload", 
+        "https://api.cloudinary.com/v1_1/dcaivdnrk/image/upload",
         {
           method: "POST",
           body: formData,
@@ -202,12 +202,20 @@ function Profile() {
             <strong>Email:</strong> {user.email}
           </p>
 
-          <input
-            type="file"
-            accept="image/*"
-            className="form-control mt-3"
-            onChange={handleProfileImageChange}
-          />
+          {isEditing && (
+            <div className="mb-3 text-start">
+              <label htmlFor="profileImage" className="form-label">
+                <strong>Upload a Profile Photo</strong>
+              </label>
+              <input
+                type="file"
+                id="profileImage"
+                accept="image/*"
+                className="form-control"
+                onChange={handleProfileImageChange}
+              />
+            </div>
+          )}
 
           {!isEditing ? (
             <>
