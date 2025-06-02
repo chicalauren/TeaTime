@@ -62,6 +62,11 @@ function Navbar() {
                   </Link>
                 </li>
                 <li className="nav-item">
+                  <Link className="nav-link" to="/friends">
+                    👥 Friends
+                  </Link>
+                </li>
+                <li className="nav-item">
                   <button
                     className="btn btn-outline-danger ms-2"
                     onClick={handleLogout}

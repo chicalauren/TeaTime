@@ -22,6 +22,8 @@ import SpillTheTea from "./pages/SpillTheTea";
 import TeaTimer from "./pages/TeaTimer";
 import Favorites from "./pages/Favorites";
 //import { Dash } from "react-bootstrap-icons";
+import UserProfile from "./pages/UserProfile.tsx";
+import Friends from "./pages/Friends";
 
 const httpLink = createHttpLink({
   uri: "/graphql",
@@ -68,7 +70,15 @@ function App() {
             <Route path="/spill" element={<SpillTheTea />} />
             <Route path="/teatimer" element={<TeaTimer />} />
             <Route path="/favorites" element={<Favorites />} />
-
+            <Route
+              path="/friends"
+              element={
+                <ProtectedRoute>
+                  <Friends />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/user/:username" element={<UserProfile />} />
             <Route
               path="/dashboard"
               element={

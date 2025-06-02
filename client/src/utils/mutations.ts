@@ -84,8 +84,8 @@ export const DELETE_SPILL_POST = gql`
   }
 `;
 export const LOGIN = gql`
-  mutation login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
+  mutation login($login: String!, $password: String!) {
+    login(login: $login, password: $password) {
       token
       user {
         _id
@@ -212,6 +212,43 @@ export const ADD_TEA_TO_FAVORITES = gql`
         type
         tags
       }
+    }
+  }
+`;
+
+export const SEND_FRIEND_REQUEST = gql`
+  mutation SendFriendRequest($userId: ID!) {
+    sendFriendRequest(userId: $userId) {
+      _id
+      username
+    }
+  }
+`;
+
+export const ACCEPT_FRIEND_REQUEST = gql`
+  mutation AcceptFriendRequest($userId: ID!) {
+    acceptFriendRequest(userId: $userId) {
+      _id
+      username
+      friends { _id username }
+    }
+  }
+`;
+
+export const DECLINE_FRIEND_REQUEST = gql`
+  mutation DeclineFriendRequest($userId: ID!) {
+    declineFriendRequest(userId: $userId) {
+      _id
+      username
+    }
+  }
+`;
+
+export const REMOVE_FRIEND = gql`
+  mutation RemoveFriend($userId: ID!) {
+    removeFriend(userId: $userId) {
+      _id
+      username
     }
   }
 `;
