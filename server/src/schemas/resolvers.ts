@@ -44,6 +44,36 @@ const resolvers = {
 
   Mutation: {
 
+    reactToComment: async (_: any, { spillPostId, commentId, emoji }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("Authentication required");
+
+      const post = await SpillPost.findById(spillPostId);
+      if (!post) throw new Error("Spill post not found");
+
+      const comment = post.comments.id(commentId);
+      if (!comment) throw new Error("Comment not found");
+
+      if (!comment.reactions) comment.reactions = (post as any).comments.id(commentId).reactions || [];
+
+      // Find if this emoji already exists
+      let reaction = comment.reactions.find((r: any) => r.emoji === emoji);
+      if (!reaction) {
+        reaction = comment.reactions.create({ emoji, users: [] });
+        comment.reactions.push(reaction);
+      }
+
+      // Toggle user reaction
+      const username = context.user.username;
+      if (reaction.users.includes(username)) {
+        reaction.users = reaction.users.filter((u: string) => u !== username);
+      } else {
+        reaction.users.push(username);
+      }
+
+      await post.save();
+      return post;
+    },
+
     sendFriendRequest: async (_: any, { userId }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("You must be logged in");
       if (context.user._id === userId) throw new Error("Cannot friend yourself");

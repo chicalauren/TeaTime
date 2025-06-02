@@ -31,11 +31,17 @@ const typeDefs = gql`
     favorite: Boolean
   }
 
+  type Reaction {
+    emoji: String!
+    users: [String!]!
+  }
+
   type Comment {
     _id: ID!
     content: String!
     createdByUsername: String!
     createdAt: String!
+    reactions: [Reaction]
   }
 
   type SpillPost {
@@ -80,6 +86,7 @@ const typeDefs = gql`
     removeFriend(userId: ID!): User
     register(username: String!, email: String!, password: String!): Auth
     updateUser(bio: String, favoriteTeaSource: String): User
+    reactToComment(spillPostId: ID!, commentId: ID!, emoji: String!): SpillPost
 
     addTea(
       name: String!
