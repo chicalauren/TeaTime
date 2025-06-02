@@ -77,7 +77,7 @@ function SpillTheTea() {
         );
 
   // Emoji options for reactions
-  const emojiOptions = ["👍", "😂", "😍", "😮", "😢", "🔥"];
+  const emojiOptions = ["🌟", "☕️", "🍵", "🌼", "🌼😍", "😂"];
 
   return (
     <div style={{ padding: "2rem" }}>
