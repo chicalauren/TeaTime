@@ -22,7 +22,7 @@ import {
 } from "react-bootstrap";
 import { Eye, Pencil, Trash } from "react-bootstrap-icons";
 
-//TODO: Is there a way to make the favorite teas load first, and the other teas load after, in the display?  So favorites are always at the top of the list?
+
 
 interface Tea {
   _id: string;
@@ -224,16 +224,23 @@ function Dashboard() {
                       </Link>
                     </OverlayTrigger>
 
-                    <FavoriteButton
-                      teaId={tea._id}
-                      initialFavorite={userFavorites.includes(tea._id)}
-                      addToFavorites={(id) =>
-                        addToFavorites({ variables: { teaId: id } })
-                      }
-                      removeFromFavorites={(id) =>
-                        removeFromFavorites({ variables: { teaId: id } })
-                      }
-                    />
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={<Tooltip id={`tooltip-favorite-${tea._id}`}>Favorite</Tooltip>}
+                    >
+                      <span>
+                        <FavoriteButton
+                          teaId={tea._id}
+                          initialFavorite={userFavorites.includes(tea._id)}
+                          addToFavorites={(id) =>
+                            addToFavorites({ variables: { teaId: id } })
+                          }
+                          removeFromFavorites={(id) =>
+                            removeFromFavorites({ variables: { teaId: id } })
+                          }
+                        />
+                      </span>
+                    </OverlayTrigger>  
 
                     <OverlayTrigger
                       placement="top"
