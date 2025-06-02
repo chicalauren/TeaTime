@@ -185,7 +185,7 @@ function EditTeaForm() {
           <h1 className="card-title text-center mb-4">Edit Tea 🍵</h1>
           <form onSubmit={handleSubmit} className="d-flex flex-column gap-3 text-white">
             <input type="text" className="form-control" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
-            <input type="text" className="form-control" placeholder="Brand" value={brand} onChange={(e) => setBrand(e.target.value)} required />
+            <input type="text" className="form-control" placeholder="Brand (optional)" value={brand} onChange={(e) => setBrand(e.target.value)} />
             <select className="form-select" value={type} onChange={(e) => setType(e.target.value)} required>
               <option value="">Select Tea Type</option>
               {teaTypes.map((teaType) => (
@@ -235,7 +235,7 @@ function EditTeaForm() {
               </div>
             )}
             {uploading && <p className="text-primary">Uploading image, please wait...</p>}
-            <button type="submit" className="btn btn-light w-100" disabled={uploading || !name || !brand || !type || rating === ""}>
+            <button type="submit" className="btn btn-light w-100" disabled={uploading || !name || !type || rating === ""}>
               {uploading ? (
                 <div className="spinner-border spinner-border-sm" role="status">
                   <span className="visually-hidden">Uploading...</span>
