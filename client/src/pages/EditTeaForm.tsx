@@ -227,7 +227,19 @@ function EditTeaForm() {
               />
             </div>
 
-            <input type="file" className="form-control" accept="image/*" onChange={handleImageChange} />
+            <div>
+                <label htmlFor="imageUpload" className="form-label">
+                  Upload a photo of your tea (optional)
+                </label>
+                <input
+                  id="imageUpload"
+                  type="file"
+                  className="form-control"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+                <small className="text-white-50">Accepted formats: JPG, PNG, GIF</small>
+              </div>
             {imagePreview && (
               <div className="text-center">
                 <p><strong>Image Preview:</strong></p>
