@@ -39,7 +39,7 @@ function AddTeaForm() {
     "Blooming",
     "Blend",
   ];
-  //TODO: the teaTypes in addTeam form do not match the dropdown on the dashboard page
+
 
   useEffect(() => {
     nameInputRef.current?.focus();
@@ -334,12 +334,19 @@ function AddTeaForm() {
                 </button>
               </div>
 
-              <input
-                type="file"
-                className="form-control"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
+              <div>
+                <label htmlFor="imageUpload" className="form-label">
+                  Upload a photo of your tea (optional)
+                </label>
+                <input
+                  id="imageUpload"
+                  type="file"
+                  className="form-control"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+                <small className="text-white-50">Accepted formats: JPG, PNG, GIF</small>
+              </div>
 
               {imagePreview && (
                 <div className="text-center">
@@ -354,6 +361,7 @@ function AddTeaForm() {
                   />
                 </div>
               )}
+
 
               {uploading && (
                 <p className="text-primary">Uploading image, please wait...</p>

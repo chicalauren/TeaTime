@@ -8,7 +8,9 @@ import axios from "axios";
 import Select from "react-select";
 import FavoriteButton from "../components/FavoriteButton";
 
-//TODO: Brand is required in the EditTeaForm; I can't save without it.
+//TOOD: the tags label is black 
+
+
 
 function EditTeaForm() {
   const params = useParams();
@@ -185,7 +187,7 @@ function EditTeaForm() {
           <h1 className="card-title text-center mb-4">Edit Tea 🍵</h1>
           <form onSubmit={handleSubmit} className="d-flex flex-column gap-3 text-white">
             <input type="text" className="form-control" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
-            <input type="text" className="form-control" placeholder="Brand" value={brand} onChange={(e) => setBrand(e.target.value)} required />
+            <input type="text" className="form-control" placeholder="Brand (optional)" value={brand} onChange={(e) => setBrand(e.target.value)} />
             <select className="form-select" value={type} onChange={(e) => setType(e.target.value)} required>
               <option value="">Select Tea Type</option>
               {teaTypes.map((teaType) => (
@@ -207,8 +209,8 @@ function EditTeaForm() {
               />
             </div>
             <div>
-              <label className="form-label">Rating (1–5 Stars)</label>
-              <select className="form-select" value={rating} onChange={(e) => setRating(e.target.value === "" ? "" : Number(e.target.value))} required>
+              <label htmlFor="rating" className="form-label">Rating (1–5 Stars)</label>
+              <select id="rating" className="form-select" value={rating} onChange={(e) => setRating(e.target.value === "" ? "" : Number(e.target.value))} required>
                 <option value="">Select Rating</option>
                 {[5, 4, 3, 2, 1].map((num) => (
                   <option key={num} value={num}>{"⭐".repeat(num)}</option>
@@ -227,7 +229,19 @@ function EditTeaForm() {
               />
             </div>
 
-            <input type="file" className="form-control" accept="image/*" onChange={handleImageChange} />
+            <div>
+                <label htmlFor="imageUpload" className="form-label">
+                  Upload a photo of your tea (optional)
+                </label>
+                <input
+                  id="imageUpload"
+                  type="file"
+                  className="form-control"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+                <small className="text-white-50">Accepted formats: JPG, PNG, GIF</small>
+              </div>
             {imagePreview && (
               <div className="text-center">
                 <p><strong>Image Preview:</strong></p>
@@ -235,7 +249,7 @@ function EditTeaForm() {
               </div>
             )}
             {uploading && <p className="text-primary">Uploading image, please wait...</p>}
-            <button type="submit" className="btn btn-light w-100" disabled={uploading || !name || !brand || !type || rating === ""}>
+            <button type="submit" className="btn btn-light w-100" disabled={uploading || !name || !type || rating === ""}>
               {uploading ? (
                 <div className="spinner-border spinner-border-sm" role="status">
                   <span className="visually-hidden">Uploading...</span>
