@@ -9,6 +9,7 @@ export interface IUser extends Document {
   favoriteTeas: mongoose.Types.ObjectId[]; // to see the users fav teas
   bio?: string;
   favoriteTeaSource?: string;
+  profileImage?: string;
   isCorrectPassword: (password: string) => Promise<boolean>;
 }
 

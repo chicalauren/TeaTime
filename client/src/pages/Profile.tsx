@@ -96,11 +96,12 @@ function Profile() {
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "your_upload_preset"); // Update with your actual Cloudinary preset
+    formData.append("upload_preset", "unsignedProfilePictures");
+    formData.append("folder", "user_profile_pictures"); 
 
     try {
       const res = await fetch(
-        "https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload", // Replace with your Cloudinary cloud name
+        "https://api.cloudinary.com/v1_1/dcaivdnrk/image/upload", 
         {
           method: "POST",
           body: formData,
@@ -111,7 +112,7 @@ function Profile() {
       const imageUrl = data.secure_url;
 
       await updateUser({
-        variables: { profileImageUrl: imageUrl },
+        variables: { profileImage: imageUrl },
       });
 
       await refetch();
@@ -190,7 +191,7 @@ function Profile() {
       >
         <div className="ratio ratio-1x1">
           <img
-            src={user.profileImageUrl || "/teacup.jpg"}
+            src={user.profileImage || "/teacup.jpg"}
             alt="User profile"
             className="img-fluid object-fit-cover rounded-top"
           />

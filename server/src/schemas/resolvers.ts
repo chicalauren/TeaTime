@@ -46,13 +46,9 @@ const resolvers = {
     },
     updateUser: async (
       _: any,
-      {
-        bio,
-        favoriteTeaSource,
-        profileImage,
-      }: { bio?: string; favoriteTeaSource?: string; profileImage?: string },
-      context: any
-    ) => {
+        { bio, favoriteTeaSource, profileImage }: { bio?: string; favoriteTeaSource?: string; profileImage?: string },
+        context: any
+      ) => {
       if (!context.user) {
         throw new AuthenticationError("You must be logged in");
       }

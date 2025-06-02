@@ -8,7 +8,7 @@ export const GET_ME = gql`
       email
       bio
       favoriteTeaSource
-      profileImageUrl
+      profileImage
       favoriteTeas {
         _id
         name
