@@ -27,7 +27,7 @@ function TeaTimer() {
   const [customMinutes, setCustomMinutes] = useState("");
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer;
     if (running && !paused && timeLeft > 0) {
       timer = setTimeout(() => {
         setTimeLeft((prev) => prev - 1);
@@ -68,7 +68,7 @@ function TeaTimer() {
     setPaused((prev) => !prev);
   };
 
-  const handleTeaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleTeaChange = (e) => {
     const tea = teaOptions.find((t) => t.type === e.target.value);
     if (tea) {
       setSelectedTea(tea);
@@ -80,21 +80,34 @@ function TeaTimer() {
 
   return (
     <div
-      className="d-flex justify-content-center align-items-start"
+      className="position-relative min-vh-100 d-flex justify-content-center align-items-start"
       style={{
-        minHeight: "100vh",
         backgroundImage: `url(${backgroundImageUrl})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         paddingTop: "5rem",
       }}
     >
+      {/* Overlay */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(255, 255, 255, 0.75)",
+          zIndex: 0,
+        }}
+      />
+
       <div
         className="card shadow p-4 text-center"
         style={{
           maxWidth: "500px",
           width: "100%",
           backgroundColor: "rgba(255,255,255,0.9)",
+          zIndex: 1,
         }}
       >
         <h2 className="mb-4">Tea Timer ⏱️</h2>
