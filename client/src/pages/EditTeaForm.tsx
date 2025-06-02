@@ -8,6 +8,8 @@ import axios from "axios";
 import Select from "react-select";
 import FavoriteButton from "../components/FavoriteButton";
 
+//TOOD: the tags label is black 
+
 
 
 function EditTeaForm() {
@@ -207,8 +209,8 @@ function EditTeaForm() {
               />
             </div>
             <div>
-              <label className="form-label">Rating (1–5 Stars)</label>
-              <select className="form-select" value={rating} onChange={(e) => setRating(e.target.value === "" ? "" : Number(e.target.value))} required>
+              <label htmlFor="rating" className="form-label">Rating (1–5 Stars)</label>
+              <select id="rating" className="form-select" value={rating} onChange={(e) => setRating(e.target.value === "" ? "" : Number(e.target.value))} required>
                 <option value="">Select Rating</option>
                 {[5, 4, 3, 2, 1].map((num) => (
                   <option key={num} value={num}>{"⭐".repeat(num)}</option>

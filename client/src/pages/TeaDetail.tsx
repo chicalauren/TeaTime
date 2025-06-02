@@ -18,7 +18,7 @@ import {
   OverlayTrigger,
   Tooltip,
 } from "react-bootstrap";
-import { ArrowLeft, Pencil, Trash, Heart, HeartFill } from "react-bootstrap-icons";
+import { ArrowLeft, Pencil, Trash } from "react-bootstrap-icons";
 import { motion } from "framer-motion";
 
 function TeaDetail() {
