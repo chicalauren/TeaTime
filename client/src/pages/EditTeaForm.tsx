@@ -8,7 +8,7 @@ import axios from "axios";
 import Select from "react-select";
 import FavoriteButton from "../components/FavoriteButton";
 
-//TODO: Brand is required in the EditTeaForm; I can't save without it.
+
 
 function EditTeaForm() {
   const params = useParams();
