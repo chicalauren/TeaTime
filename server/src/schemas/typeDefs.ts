@@ -12,6 +12,7 @@ const typeDefs = gql`
     friendRequestsReceived: [User]
     bio: String
     favoriteTeaSource: String
+    securityQuestion: String
   }
 
   type TeaCategory {
@@ -60,8 +61,8 @@ const typeDefs = gql`
   type AuthPayload {
     token: String!
     user: User!
-}
-  
+  }
+
   # Queries
   type Query {
     me: User
@@ -70,6 +71,11 @@ const typeDefs = gql`
     spillPosts: [SpillPost]
     recommendTeas(tags: [String!]!): [TeaCategory]
     userByUsername(username: String!): User
+    getSecurityQuestion(email: String!): SecurityQuestion
+  }
+  type SecurityQuestion {
+    _id: ID
+    securityQuestion: String
   }
 
   # Mutations
@@ -78,9 +84,27 @@ const typeDefs = gql`
     sendFriendRequest(userId: ID!): User
     acceptFriendRequest(userId: ID!): User
     declineFriendRequest(userId: ID!): User
+    getSecurityQuestion(email: String!): User
     removeFriend(userId: ID!): User
-    register(username: String!, email: String!, password: String!): Auth
-    updateUser(bio: String, favoriteTeaSource: String, profileImage: String): User
+
+    updateUser(
+      bio: String
+      favoriteTeaSource: String
+      profileImage: String
+    ): User
+    register(
+      username: String!
+      email: String!
+      password: String!
+      securityQuestion: String!
+      securityAnswer: String!
+    ): AuthPayload!
+
+    resetPasswordWithSecurity(
+      email: String!
+      securityAnswer: String!
+      newPassword: String!
+    ): Boolean!
 
     addTea(
       name: String!

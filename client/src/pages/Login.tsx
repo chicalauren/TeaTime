@@ -51,6 +51,21 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button type="submit">Login</button>
+        <p>
+          Forgot password?{" "}
+          <button
+            onClick={() => navigate("/reset-password")}
+            style={{
+              color: "blue",
+              cursor: "pointer",
+              background: "none",
+              border: "none",
+              padding: 0,
+            }}
+          >
+            Reset here
+          </button>
+        </p>
       </form>
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
     </div>

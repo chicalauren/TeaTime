@@ -154,11 +154,56 @@ const resolvers = {
       return user;
     },
 
-    register: async (_: any, { username, email, password }: any) => {
-      const user = await User.create({ username, email, password });
-      const token = signToken(user);
-      return { token, user };
+    register: async (
+      _: any,
+      { username, email, password, securityQuestion, securityAnswer }: any
+    ) => {
+      try {
+        const existingUser = await User.findOne({
+          $or: [{ username }, { email }],
+        });
+        if (existingUser) {
+          throw new Error("Username or email already exists");
+        }
+
+        const user = await User.create({
+          username,
+          email,
+          password,
+          securityQuestion,
+          securityAnswer,
+        });
+
+        const token = signToken(user);
+
+        return { token, user };
+      } catch (error: any) {
+        throw new Error(error.message || "Failed to register user");
+      }
     },
+    getSecurityQuestion: async (
+      _: any,
+      { email }: { email: string },
+      { dataSources }: { dataSources: { userAPI: any } }
+    ) => {
+      try {
+        const user = await dataSources.userAPI.findByEmail(email);
+        if (!user) {
+          console.warn(`User not found for email: ${email}`);
+
+          return null;
+        }
+
+        return {
+          _id: user._id,
+          securityQuestion: user.securityQuestion,
+        };
+      } catch (error) {
+        console.error("getSecurityQuestion error:", error);
+        throw new Error("Failed to fetch security question.");
+      }
+    },
+
     updateUser: async (
       _: any,
       {

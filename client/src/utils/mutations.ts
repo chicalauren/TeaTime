@@ -97,17 +97,31 @@ export const LOGIN = gql`
 `;
 
 export const REGISTER = gql`
-  mutation register($username: String!, $email: String!, $password: String!) {
-    register(username: $username, email: $email, password: $password) {
+  mutation register(
+    $username: String!
+    $email: String!
+    $password: String!
+    $securityQuestion: String!
+    $securityAnswer: String!
+  ) {
+    register(
+      username: $username
+      email: $email
+      password: $password
+      securityQuestion: $securityQuestion
+      securityAnswer: $securityAnswer
+    ) {
       token
       user {
         _id
         username
         email
+        securityQuestion
       }
     }
   }
 `;
+
 export const ADD_TEA = gql`
   mutation addTea(
     $name: String!
@@ -230,7 +244,10 @@ export const ACCEPT_FRIEND_REQUEST = gql`
     acceptFriendRequest(userId: $userId) {
       _id
       username
-      friends { _id username }
+      friends {
+        _id
+        username
+      }
     }
   }
 `;
@@ -269,8 +286,16 @@ export const REMOVE_TEA_FROM_FAVORITES = gql`
   }
 `;
 export const UPDATE_USER = gql`
-  mutation updateUser($bio: String, $favoriteTeaSource: String, $profileImage: String) {
-    updateUser(bio: $bio, favoriteTeaSource: $favoriteTeaSource, profileImage: $profileImage) {
+  mutation updateUser(
+    $bio: String
+    $favoriteTeaSource: String
+    $profileImage: String
+  ) {
+    updateUser(
+      bio: $bio
+      favoriteTeaSource: $favoriteTeaSource
+      profileImage: $profileImage
+    ) {
       _id
       username
       email
@@ -278,5 +303,33 @@ export const UPDATE_USER = gql`
       favoriteTeaSource
       profileImage
     }
+  }
+`;
+export const GET_SECURITY_QUESTION = gql`
+  query GetSecurityQuestion($email: String!) {
+    getSecurityQuestion(email: $email) {
+      _id
+      securityQuestion
+    }
+  }
+`;
+
+export const RESET_PASSWORD_WITH_SECURITY = gql`
+  mutation resetPasswordWithSecurity(
+    $email: String!
+    $securityAnswer: String!
+    $newPassword: String!
+  ) {
+    resetPasswordWithSecurity(
+      email: $email
+      securityAnswer: $securityAnswer
+      newPassword: $newPassword
+    )
+  }
+`;
+
+export const RESET_PASSWORD = gql`
+  mutation resetPassword($token: String!, $newPassword: String!) {
+    resetPassword(token: $token, newPassword: $newPassword)
   }
 `;

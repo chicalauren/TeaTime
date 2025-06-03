@@ -24,6 +24,7 @@ import Favorites from "./pages/Favorites";
 //import { Dash } from "react-bootstrap-icons";
 import UserProfile from "./pages/UserProfile.tsx";
 import Friends from "./pages/Friends";
+import Reset from "./pages/Reset";
 
 const httpLink = createHttpLink({
   uri: "/graphql",
@@ -64,6 +65,7 @@ function App() {
               }
             />
             <Route path="/teas/:id" element={<TeaDetail />} />
+            <Route path="/reset-password" element={<Reset />} />
             <Route path="/teas" element={<TeaList />} />
             <Route path="/teas/:id" element={<TeaDetail />} />
             <Route path="/edit-tea/:id" element={<EditTeaForm />} />

@@ -3,7 +3,6 @@ import { useMutation } from "@apollo/client";
 import { REGISTER } from "../utils/mutations";
 import { useNavigate } from "react-router-dom";
 
-
 function Register() {
   const navigate = useNavigate();
   const [register] = useMutation(REGISTER);
@@ -12,12 +11,20 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [securityQuestion, setSecurityQuestion] = useState("");
+  const [securityAnswer, setSecurityAnswer] = useState("");
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const { data } = await register({
-        variables: { username, email, password },
+        variables: {
+          username,
+          email,
+          password,
+          securityQuestion,
+          securityAnswer,
+        },
       });
 
       // ✅ Save the token and username
@@ -61,6 +68,21 @@ function Register() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button type="submit">Register</button>
+        <input
+          type="text"
+          placeholder="Security Question"
+          value={securityQuestion}
+          required
+          onChange={(e) => setSecurityQuestion(e.target.value)}
+        />
+
+        <input
+          type="text"
+          placeholder="Security Answer"
+          value={securityAnswer}
+          required
+          onChange={(e) => setSecurityAnswer(e.target.value)}
+        />
       </form>
 
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}

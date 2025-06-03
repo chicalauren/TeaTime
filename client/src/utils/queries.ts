@@ -126,3 +126,12 @@ export const RECOMMEND_TEAS = gql`
     }
   }
 `;
+
+export const GET_SECURITY_QUESTION = gql`
+  query GetSecurityQuestion($email: String!) {
+    getSecurityQuestion(email: $email) {
+      _id
+      securityQuestion
+    }
+  }
+`;
