@@ -64,7 +64,7 @@ const resolvers = {
         if (typeof comment.reactions.create === "function") {
           reaction = comment.reactions.create({ emoji, users: [] });
         } else {
-          reaction = { emoji, users: [] };
+          reaction = comment.reactions.create({ emoji, users: [] });
         }
         comment.reactions.push(reaction);
         // Re-fetch the reaction from the array to ensure it's defined
