@@ -147,7 +147,7 @@ function TeaDetail() {
                   )}
                 </Card.Body>
 
-                <Card.Footer className="d-flex justify-content-between align-items-center p-2">
+                <Card.Footer className="d-flex justify-content-between align-items-center p-2 flex-wrap gap-2">
                   <OverlayTrigger
                     placement="top"
                     overlay={<Tooltip id={`tooltip-edit-${tea._id}`}>Edit</Tooltip>}
@@ -201,6 +201,26 @@ function TeaDetail() {
                       </Button>
                     </Link>
                   </OverlayTrigger>
+
+                  {/* Brew Now! Button */}
+                  <Button
+                    variant="success"
+                    size="sm"
+                    style={{
+                      fontWeight: 600,
+                      borderRadius: "8px",
+                      background: "#72a85a",
+                      border: "none",
+                      marginLeft: "8px",
+                    }}
+                    onClick={() =>
+                      navigate("/teatimer", {
+                        state: { teaName: tea.name, teaType: tea.type },
+                      })
+                    }
+                  >
+                    Brew Now!
+                  </Button>
                 </Card.Footer>
               </Card>
             </motion.div>
