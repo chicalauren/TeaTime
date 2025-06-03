@@ -96,6 +96,46 @@ export const LOGIN = gql`
   }
 `;
 
+export const SEND_MESSAGE = gql`
+  mutation SendMessage($toUserId: ID!, $content: String!) {
+    sendMessage(toUserId: $toUserId, content: $content) {
+      _id
+      participants {
+        _id
+        username
+        profileImage
+      }
+      messages {
+        _id
+        sender {
+          _id
+          username
+        }
+        content
+        timestamp
+        readBy {
+          _id
+        }
+      }
+      updatedAt
+    }
+  }
+`;
+
+export const MARK_THREAD_AS_READ = gql`
+  mutation MarkThreadAsRead($threadId: ID!) {
+    markThreadAsRead(threadId: $threadId) {
+      _id
+      messages {
+        _id
+        readBy {
+          _id
+        }
+      }
+    }
+  }
+`;
+
 export const REGISTER = gql`
   mutation register($username: String!, $email: String!, $password: String!) {
     register(username: $username, email: $email, password: $password) {

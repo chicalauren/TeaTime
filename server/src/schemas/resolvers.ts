@@ -2,6 +2,7 @@ import User from "../models/User";
 import { IUser } from "../models/User";
 import TeaCategory from "../models/TeaCategory";
 import SpillPost from "../models/SpillPost";
+import MessageThread from "../models/MessageThread";
 import { signToken } from "../utils/auth";
 import { AuthenticationError } from "apollo-server-express";
 import { generateRecommendations } from "../utils/generateTeaRecomendations";
@@ -24,6 +25,25 @@ const resolvers = {
       }
       throw new AuthenticationError("You must be logged in");
     },
+
+    myMessageThreads: async (_: any, __: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("You must be logged in");
+      return MessageThread.find({ participants: context.user._id })
+        .populate("participants")
+        .populate("messages.sender")
+        .populate("messages.readBy")
+        .sort({ updatedAt: -1 });
+    },
+    messageThreadWith: async (_: any, { userId }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("You must be logged in");
+      return MessageThread.findOne({
+        participants: { $all: [context.user._id, userId] },
+      })
+        .populate("participants")
+        .populate("messages.sender")
+        .populate("messages.readBy");
+    },
+
     teas: async () => TeaCategory.find(),
     tea: async (_: any, { id }: { id: string }) => TeaCategory.findById(id),
     spillPosts: async () => SpillPost.find().sort({ createdAt: -1 }),
@@ -45,50 +65,69 @@ const resolvers = {
   },
 
   Mutation: {
-    reactToComment: async (_: any, { spillPostId, commentId, emoji }: any, context: any) => {
-      if (!context.user) throw new AuthenticationError("Authentication required");
+    sendMessage: async (_: any, { toUserId, content }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("You must be logged in");
+      if (toUserId === context.user._id)
+        throw new Error("Cannot message yourself");
 
-      const post = await SpillPost.findById(spillPostId);
-      if (!post) throw new Error("Spill post not found");
-
-      const comment = post.comments.id(commentId);
-      if (!comment) throw new Error("Comment not found");
-
-      if (!Array.isArray(comment.reactions)) comment.reactions = (post as any).comments.id(commentId).reactions || post.schema.path("comments").schema.path("reactions");
-
-      let reaction = comment.reactions.find((r: any) => r.emoji === emoji);
-
-      // Use Mongoose's create method for subdocs if available
-      if (!reaction) {
-        if (typeof comment.reactions.create === "function") {
-          reaction = comment.reactions.create({ emoji, users: [] });
-        } else {
-          reaction = { emoji, users: [] };
-        }
-        comment.reactions.push(reaction);
-        // Re-fetch the reaction from the array to ensure it's defined
-        reaction = comment.reactions.find((r: any) => r.emoji === emoji);
+      // Only allow messaging friends
+      const user = await User.findById(context.user._id);
+      if (!user.friends.map(String).includes(String(toUserId))) {
+        throw new AuthenticationError("You can only message friends.");
       }
 
-      // If still not found, throw an error (should not happen)
-      if (!reaction) throw new Error("Failed to create or find reaction");
+      let thread = await MessageThread.findOne({
+        participants: { $all: [context.user._id, toUserId] },
+      });
 
-      if (!Array.isArray(reaction.users)) reaction.users = [];
+      const message = {
+        sender: context.user._id,
+        content,
+        timestamp: new Date(),
+        readBy: [context.user._id],
+      };
 
-      const username = context.user.username;
-
-      // Toggle reaction
-      if (reaction.users.includes(username)) {
-        reaction.users = reaction.users.filter((u: string) => u !== username);
+      if (!thread) {
+        thread = await MessageThread.create({
+          participants: [context.user._id, toUserId],
+          messages: [message],
+          updatedAt: new Date(),
+        });
       } else {
-        reaction.users.push(username);
+        thread.messages.push(message);
+        thread.updatedAt = new Date();
+        await thread.save();
       }
 
-      comment.markModified("reactions");
-      await post.save();
-      return post;
+      // Always re-fetch and populate after save/create
+      const populatedThread = await MessageThread.findById(thread._id)
+        .populate("participants")
+        .populate("messages.sender")
+        .populate("messages.readBy");
+
+      return populatedThread;
     },
-      
+
+    markThreadAsRead: async (_: any, { threadId }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("You must be logged in");
+      const thread = await MessageThread.findById(threadId);
+      if (!thread) throw new Error("Thread not found");
+      thread.messages.forEach((msg: any) => {
+        if (!msg.readBy.map(String).includes(String(context.user._id))) {
+          msg.readBy.push(context.user._id);
+        }
+      });
+      await thread.save();
+
+      // Always re-fetch and populate after save
+      const populatedThread = await MessageThread.findById(thread._id)
+        .populate("participants")
+        .populate("messages.sender")
+        .populate("messages.readBy");
+
+      return populatedThread;
+    },
+
     sendFriendRequest: async (_: any, { userId }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("You must be logged in");
       if (context.user._id === userId)
@@ -128,11 +167,12 @@ const resolvers = {
       if (!user || !requester) throw new Error("User not found");
 
       // Remove from requests
-      (user as any).friendRequestsReceived = (user as any).friendRequestsReceived.filter(
-        (id: any) => id.toString() !== userId
-      );
-      (requester as any).friendRequestsSent = (requester as any).friendRequestsSent.filter(
-
+      (user as any).friendRequestsReceived = (
+        user as any
+      ).friendRequestsReceived.filter((id: any) => id.toString() !== userId);
+      (requester as any).friendRequestsSent = (
+        requester as any
+      ).friendRequestsSent.filter(
         (id: any) => id.toString() !== context.user._id
       );
 

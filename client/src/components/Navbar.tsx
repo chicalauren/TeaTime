@@ -7,6 +7,7 @@ function Navbar() {
 
   const handleLogout = () => {
     removeToken();
+    window.dispatchEvent(new Event("teatime-logout"));
     navigate("/");
   };
 
