@@ -3,7 +3,7 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useLocation } from "react-router-dom";
-import { isStatefulPromise } from "@apollo/client/utilities";
+//import { isStatefulPromise } from "@apollo/client/utilities";
 
 const beepSound = new Audio(
   "https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
