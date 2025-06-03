@@ -45,8 +45,6 @@ const resolvers = {
   },
 
   Mutation: {
-<<<<<<< HEAD
-=======
 
     reactToComment: async (_: any, { spillPostId, commentId, emoji }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("Authentication required");
@@ -92,7 +90,6 @@ const resolvers = {
       return post;
     },
 
->>>>>>> origin/feature/reactions
     sendFriendRequest: async (_: any, { userId }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("You must be logged in");
       if (context.user._id === userId)
@@ -132,19 +129,10 @@ const resolvers = {
       if (!user || !requester) throw new Error("User not found");
 
       // Remove from requests
-<<<<<<< HEAD
-      (user as any).friendRequestsReceived = (
-        user as any
-      ).friendRequestsReceived.filter((id: any) => id.toString() !== userId);
-      (requester as any).friendRequestsSent = (
-        requester as any
-      ).friendRequestsSent.filter(
-=======
       (user as any).friendRequestsReceived = (user as any).friendRequestsReceived.filter(
         (id: any) => id.toString() !== userId
       );
       (requester as any).friendRequestsSent = (requester as any).friendRequestsSent.filter(
->>>>>>> origin/feature/reactions
         (id: any) => id.toString() !== context.user._id
       );
 
