@@ -8,6 +8,7 @@ function ChatWidget() {
   const [activeUserId, setActiveUserId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
 
   // Get friends list
   const { data: meData } = useQuery(GET_ME_WITH_FRIENDS, { skip: !open });
@@ -33,6 +34,32 @@ function ChatWidget() {
     setMessage("");
     await refetchThread();
   };
+
+  // Close chat when clicking outside
+  useEffect(() => {
+    if (!open) return;
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+        setActiveUserId(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [open]);
+
+  // Close chat on logout (listen for a custom event)
+  useEffect(() => {
+    function handleLogout() {
+      setOpen(false);
+      setActiveUserId(null);
+    }
+    window.addEventListener("teatime-logout", handleLogout);
+    return () => window.removeEventListener("teatime-logout", handleLogout);
+  }, []);
 
   useEffect(() => {
     if (threadData?.messageThreadWith?._id) {
@@ -74,6 +101,7 @@ function ChatWidget() {
       {/* Chat Popup */}
       {open && (
         <div
+          ref={popupRef}
           style={{
             position: "fixed",
             bottom: 90,
