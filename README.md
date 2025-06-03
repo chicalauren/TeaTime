@@ -77,8 +77,10 @@ Cloudinary API is only needed if the site will be deployed to a web server; it i
 - Save posts for later 
 - Favorite posts
 - Add profile image to the comments and the post on the social page 
-- For running the code locally and testing, add a test user to the seed data
 - Being able to add hyperlinks in the comments, like referral links for free tea for example 
+- Being able to exit from editing tea without saving
+- Light and Dark Mode 
+- For running the code locally and testing, add a test user to the seed data
 
 ## Resources 
 - [Cloudinary](https://cloudinary.com/) for hosting images that users upload for teas and for profile pictures
