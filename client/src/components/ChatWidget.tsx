@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_MY_THREADS, GET_THREAD_WITH } from "../utils/queries";
+import { GET_ME_WITH_FRIENDS, GET_THREAD_WITH } from "../utils/queries";
 import { SEND_MESSAGE, MARK_THREAD_AS_READ } from "../utils/mutations";
 
 function ChatWidget() {
@@ -9,31 +9,38 @@ function ChatWidget() {
   const [message, setMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { data: threadsData, refetch: refetchThreads } = useQuery(GET_MY_THREADS, { skip: !open });
+  // Get friends list
+  const { data: meData } = useQuery(GET_ME_WITH_FRIENDS, { skip: !open });
+  const friends = meData?.me?.friends ?? [];
+  const myUserId = meData?.me?._id;
+
+  // Get thread with selected friend
   const { data: threadData, refetch: refetchThread } = useQuery(GET_THREAD_WITH, {
     variables: { userId: activeUserId },
     skip: !activeUserId,
+    fetchPolicy: "network-only",
   });
+
   const [sendMessage] = useMutation(SEND_MESSAGE);
   const [markAsRead] = useMutation(MARK_THREAD_AS_READ);
+
+  const handleSend = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!message.trim() || !activeUserId) return;
+    await sendMessage({
+      variables: { toUserId: activeUserId, content: message }
+    });
+    setMessage("");
+    await refetchThread();
+  };
 
   useEffect(() => {
     if (threadData?.messageThreadWith?._id) {
       markAsRead({ variables: { threadId: threadData.messageThreadWith._id } });
     }
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [threadData]);
+  }, [threadData?.messageThreadWith?.messages.length]);
 
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!message.trim() || !activeUserId) return;
-    await sendMessage({ variables: { toUserId: activeUserId, content: message } });
-    setMessage("");
-    refetchThread();
-    refetchThreads();
-  };
-
-  // UI
   return (
     <div>
       {/* Floating Button */}
@@ -95,9 +102,16 @@ function ChatWidget() {
               justifyContent: "space-between",
             }}
           >
-            <span style={{ fontWeight: 600 }}>Direct Messages</span>
+            <span style={{ fontWeight: 600 }}>
+            {activeUserId
+                ? friends.find((f: any) => f._id === activeUserId)?.username || "Chat"
+                : "Direct Messages"}
+            </span>
             <button
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                if (activeUserId) setActiveUserId(null);
+                else setOpen(false);
+              }}
               style={{
                 background: "none",
                 border: "none",
@@ -105,82 +119,38 @@ function ChatWidget() {
                 fontSize: 20,
                 cursor: "pointer",
               }}
-              aria-label="Close chat"
+              aria-label={activeUserId ? "Back to friends" : "Close chat"}
             >
-              ×
+              {activeUserId ? "←" : "×"}
             </button>
           </div>
 
-          {/* Thread List or Chat */}
+          {/* Friend List or Chat */}
           {!activeUserId ? (
             <div style={{ overflowY: "auto", flex: 1 }}>
-              {threadsData?.myMessageThreads?.length === 0 ? (
-                <p style={{ padding: 16, color: "#888" }}>No conversations yet.</p>
+              {friends.length === 0 ? (
+                <p style={{ padding: 16, color: "#888" }}>No friends to message.</p>
               ) : (
                 <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                  {threadsData?.myMessageThreads.map((thread: any) => {
-                    const me = localStorage.getItem("userId");
-                    const other = thread.participants.find((p: any) => p._id !== me);
-                    const lastMsg = thread.messages[thread.messages.length - 1];
-                    return (
-                      <li
-                        key={thread._id}
-                        style={{
-                          padding: "12px 16px",
-                          borderBottom: "1px solid #eee",
-                          cursor: "pointer",
-                          background: "#fff",
-                        }}
-                        onClick={() => setActiveUserId(other._id)}
-                      >
-                        <div style={{ fontWeight: 600 }}>{other.username}</div>
-                        <div style={{ fontSize: "0.9em", color: "#888" }}>
-                          {lastMsg ? `${lastMsg.sender.username}: ${lastMsg.content}` : "No messages yet."}
-                        </div>
-                        <div style={{ fontSize: "0.8em", color: "#aaa" }}>
-                          {lastMsg ? new Date(Number(lastMsg.timestamp)).toLocaleString() : ""}
-                        </div>
-                      </li>
-                    );
-                  })}
+                  {friends.map((friend: any) => (
+                    <li
+                      key={friend._id}
+                      style={{
+                        padding: "12px 16px",
+                        borderBottom: "1px solid #eee",
+                        cursor: "pointer",
+                        background: "#fff",
+                      }}
+                      onClick={() => setActiveUserId(friend._id)}
+                    >
+                      <div style={{ fontWeight: 600 }}>{friend.username}</div>
+                    </li>
+                  ))}
                 </ul>
               )}
             </div>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-              {/* Chat Header */}
-              <div
-                style={{
-                  padding: "8px 16px",
-                  borderBottom: "1px solid #eee",
-                  background: "#f6fff6",
-                  fontWeight: 600,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span>
-                  {
-                    threadData?.messageThreadWith?.participants.find(
-                      (p: any) => p._id !== localStorage.getItem("userId")
-                    )?.username
-                  }
-                </span>
-                <button
-                  onClick={() => setActiveUserId(null)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "#1976d2",
-                    fontSize: 18,
-                    cursor: "pointer",
-                  }}
-                  aria-label="Back to threads"
-                >
-                  ←
-                </button>
-              </div>
+            <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
               {/* Messages */}
               <div
                 style={{
@@ -188,46 +158,50 @@ function ChatWidget() {
                   overflowY: "auto",
                   padding: 12,
                   background: "#f9f9f9",
+                  minHeight: 0,
                 }}
               >
                 {threadData?.messageThreadWith?.messages.length === 0 ? (
                   <p style={{ color: "#888" }}>No messages yet.</p>
                 ) : (
-                  threadData?.messageThreadWith?.messages.map((msg: any) => (
-                    <div
-                      key={msg._id}
-                      style={{
-                        textAlign:
-                          msg.sender._id === localStorage.getItem("userId")
-                            ? "right"
-                            : "left",
-                        marginBottom: 8,
-                      }}
-                    >
-                      <span
+                  threadData?.messageThreadWith?.messages.map((msg: any) => {
+                    const isMe = msg.sender._id === myUserId;
+                    return (
+                      <div
+                        key={msg._id}
                         style={{
-                          display: "inline-block",
-                          background:
-                            msg.sender._id === localStorage.getItem("userId")
-                              ? "#72a85a"
-                              : "#e0e0e0",
-                          color:
-                            msg.sender._id === localStorage.getItem("userId")
-                              ? "#fff"
-                              : "#333",
-                          borderRadius: 12,
-                          padding: "6px 12px",
-                          maxWidth: "70%",
-                          wordBreak: "break-word",
+                          display: "flex",
+                          justifyContent: isMe ? "flex-start" : "flex-end",
+                          marginBottom: 8,
                         }}
                       >
-                        {msg.content}
-                      </span>
-                      <div style={{ fontSize: "0.8em", color: "#888" }}>
-                        {new Date(Number(msg.timestamp)).toLocaleString()}
+                        <span
+                          style={{
+                            display: "inline-block",
+                            background: isMe ? "#e0e0e0" : "#72a85a",
+                            color: isMe ? "#333" : "#fff",
+                            borderRadius: 12,
+                            padding: "6px 12px",
+                            maxWidth: "70%",
+                            wordBreak: "break-word",
+                            textAlign: "left",
+                          }}
+                        >
+                          {msg.content}
+                          <div
+                            style={{
+                              fontSize: "0.8em",
+                              color: isMe ? "#888" : "#e0ffe0",
+                              marginTop: 4,
+                              textAlign: isMe ? "left" : "right",
+                            }}
+                          >
+                            {new Date(Number(msg.timestamp)).toLocaleString()}
+                          </div>
+                        </span>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
                 <div ref={messagesEndRef} />
               </div>

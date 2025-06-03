@@ -100,10 +100,13 @@ const resolvers = {
         await thread.save();
       }
 
-      return thread
+      // Always re-fetch and populate after save/create
+      const populatedThread = await MessageThread.findById(thread._id)
         .populate("participants")
         .populate("messages.sender")
         .populate("messages.readBy");
+
+      return populatedThread;
     },
 
     markThreadAsRead: async (_: any, { threadId }: any, context: any) => {
@@ -116,10 +119,14 @@ const resolvers = {
         }
       });
       await thread.save();
-      return thread
+
+      // Always re-fetch and populate after save
+      const populatedThread = await MessageThread.findById(thread._id)
         .populate("participants")
         .populate("messages.sender")
         .populate("messages.readBy");
+
+      return populatedThread;
     },
 
     sendFriendRequest: async (_: any, { userId }: any, context: any) => {
