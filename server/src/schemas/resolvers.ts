@@ -45,10 +45,6 @@ const resolvers = {
   },
 
   Mutation: {
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/develop
     reactToComment: async (_: any, { spillPostId, commentId, emoji }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("Authentication required");
 
@@ -93,11 +89,7 @@ const resolvers = {
       await post.save();
       return post;
     },
-<<<<<<< HEAD
-
-=======
       
->>>>>>> origin/develop
     sendFriendRequest: async (_: any, { userId }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("You must be logged in");
       if (context.user._id === userId)
@@ -141,10 +133,6 @@ const resolvers = {
         (id: any) => id.toString() !== userId
       );
       (requester as any).friendRequestsSent = (requester as any).friendRequestsSent.filter(
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/develop
         (id: any) => id.toString() !== context.user._id
       );
 
