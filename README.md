@@ -1,8 +1,24 @@
 # TeaTime
+
+## Table of Contents
+- [Group Members](#group-members)
+- [Sites](#sites)
+- [Description](#description)
+- [Installation](#installation)
+- [Environment Variables](#environmental-variables)
+- [Technologies Used](#technologies-used)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Future Work](#future-work)
+- [Resources](#resources)
+- [License](#license)
+
+## Sites
+
 - [GitHub Repository](https://github.com/chicalauren/TeaTime)
 - [Live Website](https://teatime-wcue.onrender.com/login)
 
-# Group Members
+## Group Members
 - Eldrish
 - Lauren
 - Liz
