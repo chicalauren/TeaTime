@@ -216,6 +216,21 @@ export const ADD_TEA_TO_FAVORITES = gql`
   }
 `;
 
+export const REACT_TO_COMMENT = gql`
+  mutation ReactToComment($spillPostId: ID!, $commentId: ID!, $emoji: String!) {
+    reactToComment(spillPostId: $spillPostId, commentId: $commentId, emoji: $emoji) {
+      _id
+      comments {
+        _id
+        reactions {
+          emoji
+          users
+        }
+      }
+    }
+  }
+`;
+
 export const SEND_FRIEND_REQUEST = gql`
   mutation SendFriendRequest($userId: ID!) {
     sendFriendRequest(userId: $userId) {

@@ -13,6 +13,12 @@ const commentSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+   reactions: [
+    {
+      emoji: String, 
+      users: [String],
+    },
+  ],
 });
 
 const spillPostSchema = new Schema(
