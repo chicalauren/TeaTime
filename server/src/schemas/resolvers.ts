@@ -2,6 +2,7 @@ import User from "../models/User";
 import { IUser } from "../models/User";
 import TeaCategory from "../models/TeaCategory";
 import SpillPost from "../models/SpillPost";
+import MessageThread from "../models/MessageThread";
 import { signToken } from "../utils/auth";
 import { AuthenticationError } from "apollo-server-express";
 import { generateRecommendations } from "../utils/generateTeaRecomendations";
@@ -24,6 +25,25 @@ const resolvers = {
       }
       throw new AuthenticationError("You must be logged in");
     },
+
+    myMessageThreads: async (_: any, __: any, context: any) => {
+    if (!context.user) throw new AuthenticationError("You must be logged in");
+    return MessageThread.find({ participants: context.user._id })
+      .populate("participants")
+      .populate("messages.sender")
+      .populate("messages.readBy")
+      .sort({ updatedAt: -1 });
+    },
+    messageThreadWith: async (_: any, { userId }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("You must be logged in");
+      return MessageThread.findOne({
+        participants: { $all: [context.user._id, userId] },
+      })
+        .populate("participants")
+        .populate("messages.sender")
+        .populate("messages.readBy");
+    },
+
     teas: async () => TeaCategory.find(),
     tea: async (_: any, { id }: { id: string }) => TeaCategory.findById(id),
     spillPosts: async () => SpillPost.find().sort({ createdAt: -1 }),
@@ -45,6 +65,63 @@ const resolvers = {
   },
 
   Mutation: {
+
+    sendMessage: async (_: any, { toUserId, content }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("You must be logged in");
+      if (toUserId === context.user._id)
+        throw new Error("Cannot message yourself");
+
+      // Only allow messaging friends
+      const user = await User.findById(context.user._id);
+      if (!user.friends.map(String).includes(String(toUserId))) {
+        throw new AuthenticationError("You can only message friends.");
+      }
+
+      let thread = await MessageThread.findOne({
+        participants: { $all: [context.user._id, toUserId] },
+      });
+
+      const message = {
+        sender: context.user._id,
+        content,
+        timestamp: new Date(),
+        readBy: [context.user._id],
+      };
+
+      if (!thread) {
+        thread = await MessageThread.create({
+          participants: [context.user._id, toUserId],
+          messages: [message],
+          updatedAt: new Date(),
+        });
+      } else {
+        thread.messages.push(message);
+        thread.updatedAt = new Date();
+        await thread.save();
+      }
+
+      return thread
+        .populate("participants")
+        .populate("messages.sender")
+        .populate("messages.readBy");
+    },
+
+    markThreadAsRead: async (_: any, { threadId }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("You must be logged in");
+      const thread = await MessageThread.findById(threadId);
+      if (!thread) throw new Error("Thread not found");
+      thread.messages.forEach((msg: any) => {
+        if (!msg.readBy.map(String).includes(String(context.user._id))) {
+          msg.readBy.push(context.user._id);
+        }
+      });
+      await thread.save();
+      return thread
+        .populate("participants")
+        .populate("messages.sender")
+        .populate("messages.readBy");
+    },
+
     sendFriendRequest: async (_: any, { userId }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("You must be logged in");
       if (context.user._id === userId)

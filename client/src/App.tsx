@@ -24,6 +24,7 @@ import Favorites from "./pages/Favorites";
 //import { Dash } from "react-bootstrap-icons";
 import UserProfile from "./pages/UserProfile.tsx";
 import Friends from "./pages/Friends";
+import ChatWidget from "./components/ChatWidget";
 
 const httpLink = createHttpLink({
   uri: "/graphql",
@@ -97,6 +98,7 @@ function App() {
             />
           </Routes>
         </main>
+        <ChatWidget />
         <Footer />
       </Router>
     </ApolloProvider>

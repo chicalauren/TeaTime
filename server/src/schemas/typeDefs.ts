@@ -13,6 +13,21 @@ const typeDefs = gql`
     bio: String
     favoriteTeaSource: String
   }
+  
+  type Message {
+    _id: ID!
+    sender: User!
+    content: String!
+    timestamp: String!
+    readBy: [User!]!
+  }
+
+  type MessageThread {
+    _id: ID!
+    participants: [User!]!
+    messages: [Message!]!
+    updatedAt: String!
+  }
 
   type TeaCategory {
     _id: ID!
@@ -70,6 +85,8 @@ const typeDefs = gql`
     spillPosts: [SpillPost]
     recommendTeas(tags: [String!]!): [TeaCategory]
     userByUsername(username: String!): User
+    myMessageThreads: [MessageThread!]!
+    messageThreadWith(userId: ID!): MessageThread
   }
 
   # Mutations
@@ -81,6 +98,8 @@ const typeDefs = gql`
     removeFriend(userId: ID!): User
     register(username: String!, email: String!, password: String!): Auth
     updateUser(bio: String, favoriteTeaSource: String, profileImage: String): User
+    sendMessage(toUserId: ID!, content: String!): MessageThread!
+    markThreadAsRead(threadId: ID!): MessageThread!
 
     addTea(
       name: String!
