@@ -330,6 +330,7 @@ function SpillTheTea() {
                 </h3>
                 <p style={{ fontStyle: "italic", color: "#000000" }}>
                   by {post.createdByUsername === currentUsername ? (
+                 
                     post.createdByUsername || "Anonymous"
                   ) : (
                     <Link to={`/user/${post.createdByUsername}`}>

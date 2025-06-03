@@ -45,7 +45,10 @@ const resolvers = {
   },
 
   Mutation: {
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/develop
     reactToComment: async (_: any, { spillPostId, commentId, emoji }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("Authentication required");
 
@@ -63,10 +66,11 @@ const resolvers = {
       if (!reaction) {
         if (typeof comment.reactions.create === "function") {
           reaction = comment.reactions.create({ emoji, users: [] });
+          comment.reactions.push(reaction);
         } else {
-          reaction = comment.reactions.create({ emoji, users: [] });
+          // Fallback: push directly, but ensure the schema expects this
+          comment.reactions.push({ emoji, users: [] });
         }
-        comment.reactions.push(reaction);
         // Re-fetch the reaction from the array to ensure it's defined
         reaction = comment.reactions.find((r: any) => r.emoji === emoji);
       }
@@ -89,7 +93,11 @@ const resolvers = {
       await post.save();
       return post;
     },
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> origin/develop
     sendFriendRequest: async (_: any, { userId }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("You must be logged in");
       if (context.user._id === userId)
@@ -133,6 +141,10 @@ const resolvers = {
         (id: any) => id.toString() !== userId
       );
       (requester as any).friendRequestsSent = (requester as any).friendRequestsSent.filter(
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/develop
         (id: any) => id.toString() !== context.user._id
       );
 
