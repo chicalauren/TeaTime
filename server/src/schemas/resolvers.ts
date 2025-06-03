@@ -62,10 +62,11 @@ const resolvers = {
       if (!reaction) {
         if (typeof comment.reactions.create === "function") {
           reaction = comment.reactions.create({ emoji, users: [] });
+          comment.reactions.push(reaction);
         } else {
-          reaction = { emoji, users: [] };
+          // Fallback: push directly, but ensure the schema expects this
+          comment.reactions.push({ emoji, users: [] });
         }
-        comment.reactions.push(reaction);
         // Re-fetch the reaction from the array to ensure it's defined
         reaction = comment.reactions.find((r: any) => r.emoji === emoji);
       }
