@@ -14,7 +14,9 @@ const resolvers = {
     me: async (_: any, __: any, context: any) => {
       if (context.user) {
         return User.findById(context.user._id)
-          .select("_id username email bio favoriteTeaSource favoriteTeas")
+          .select(
+            "_id username email bio favoriteTeaSource favoriteTeas profileImage"
+          )
           .populate("favoriteTeas")
           .populate("friends")
           .populate("friendRequestsSent")
@@ -43,7 +45,6 @@ const resolvers = {
   },
 
   Mutation: {
-
     reactToComment: async (_: any, { spillPostId, commentId, emoji }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("Authentication required");
 
@@ -87,10 +88,11 @@ const resolvers = {
       await post.save();
       return post;
     },
-
+      
     sendFriendRequest: async (_: any, { userId }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("You must be logged in");
-      if (context.user._id === userId) throw new Error("Cannot friend yourself");
+      if (context.user._id === userId)
+        throw new Error("Cannot friend yourself");
 
       const user = await User.findById(context.user._id);
       const target = await User.findById(userId);
@@ -101,7 +103,9 @@ const resolvers = {
       if (
         (user as any).friends.map(String).includes(String(userId)) ||
         (user as any).friendRequestsSent.map(String).includes(String(userId)) ||
-        (target as any).friendRequestsReceived.map(String).includes(String(context.user._id))
+        (target as any).friendRequestsReceived
+          .map(String)
+          .includes(String(context.user._id))
       ) {
         throw new Error("Already friends or request pending");
       }
@@ -128,6 +132,7 @@ const resolvers = {
         (id: any) => id.toString() !== userId
       );
       (requester as any).friendRequestsSent = (requester as any).friendRequestsSent.filter(
+
         (id: any) => id.toString() !== context.user._id
       );
 
@@ -156,10 +161,12 @@ const resolvers = {
       if (!user || !requester) throw new Error("User not found");
 
       // Remove from requests
-      (user as any).friendRequestsReceived = (user as any).friendRequestsReceived.filter(
-        (id: any) => id.toString() !== userId
-      );
-      (requester as any).friendRequestsSent = (requester as any).friendRequestsSent.filter(
+      (user as any).friendRequestsReceived = (
+        user as any
+      ).friendRequestsReceived.filter((id: any) => id.toString() !== userId);
+      (requester as any).friendRequestsSent = (
+        requester as any
+      ).friendRequestsSent.filter(
         (id: any) => id.toString() !== context.user._id
       );
 
@@ -177,7 +184,9 @@ const resolvers = {
 
       if (!user || !friend) throw new Error("User not found");
 
-      (user as any).friends = (user as any).friends.filter((id: any) => id.toString() !== userId);
+      (user as any).friends = (user as any).friends.filter(
+        (id: any) => id.toString() !== userId
+      );
       (friend as any).friends = (friend as any).friends.filter(
         (id: any) => id.toString() !== context.user._id
       );
@@ -195,7 +204,11 @@ const resolvers = {
     },
     updateUser: async (
       _: any,
-      { bio, favoriteTeaSource }: { bio?: string; favoriteTeaSource?: string },
+      {
+        bio,
+        favoriteTeaSource,
+        profileImage,
+      }: { bio?: string; favoriteTeaSource?: string; profileImage?: string },
       context: any
     ) => {
       if (!context.user) {
@@ -206,6 +219,7 @@ const resolvers = {
       if (bio !== undefined) updatedFields.bio = bio;
       if (favoriteTeaSource !== undefined)
         updatedFields.favoriteTeaSource = favoriteTeaSource;
+      if (profileImage !== undefined) updatedFields.profileImage = profileImage;
 
       const updatedUser = await User.findByIdAndUpdate(
         context.user._id,
@@ -217,9 +231,9 @@ const resolvers = {
     },
 
     login: async (_: any, { login, password }: any) => {
-      const user = await User.findOne({
+      const user = (await User.findOne({
         $or: [{ email: login }, { username: login }],
-      }) as IUser;
+      })) as IUser;
 
       if (!user) {
         throw new AuthenticationError("Incorrect credentials");
@@ -410,7 +424,6 @@ const resolvers = {
         // User already liked: unlike
         post.likedBy.splice(likedIndex, 1);
         post.likes = Math.max((post.likes || 1) - 1, 0);
-
       } else {
         // User has not liked: like
         post.likedBy.push(userId);

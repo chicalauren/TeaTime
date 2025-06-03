@@ -8,6 +8,7 @@ export const GET_ME = gql`
       email
       bio
       favoriteTeaSource
+      profileImage
       favoriteTeas {
         _id
         name
@@ -36,8 +37,6 @@ export const GET_TEAS = gql`
     }
   }
 `;
-
-
 
 export const GET_TEA = gql`
   query GetTea($id: ID!) {
@@ -81,9 +80,18 @@ export const GET_ME_WITH_FRIENDS = gql`
     me {
       _id
       username
-      friends { _id username }
-      friendRequestsSent { _id username }
-      friendRequestsReceived { _id username }
+      friends {
+        _id
+        username
+      }
+      friendRequestsSent {
+        _id
+        username
+      }
+      friendRequestsReceived {
+        _id
+        username
+      }
     }
   }
 `;

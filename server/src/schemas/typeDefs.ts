@@ -5,6 +5,7 @@ const typeDefs = gql`
     _id: ID!
     username: String!
     email: String!
+    profileImage: String
     favoriteTeas: [TeaCategory]
     friends: [User]
     friendRequestsSent: [User]

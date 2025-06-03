@@ -40,6 +40,7 @@ function AddTeaForm() {
     "Blend",
   ];
 
+
   useEffect(() => {
     nameInputRef.current?.focus();
   }, []);
@@ -61,8 +62,10 @@ function AddTeaForm() {
       formData.append("file", imageFile);
       formData.append("upload_preset", "tea_uploads");
 
+      const uploadUrl = process.env.REACT_APP_CLOUDINARY_UPLOAD_URL;
+
       const response = await axios.post(
-        `https://api.cloudinary.com/v1_1/dcaivdnrk/image/upload`,
+        `${uploadUrl}`,
         formData
       );
 
@@ -164,9 +167,30 @@ function AddTeaForm() {
       toast.error("Failed to add tea. Please try again.");
     }
   };
+  const [customType, setCustomType] = useState("");
 
   return (
-    <div className="container py-5 mt-5 d-flex justify-content-center">
+    <div
+      className="d-flex justify-content-center align-items-center min-vh-100"
+      style={{
+        backgroundImage: 'url("/your-image.jpg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        position: "relative",
+      }}
+    >
+      {/* Overlay */}
+      <div
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.75)",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
+        }}
+      />
       {showConfetti && (
         <Confetti width={window.innerWidth} height={window.innerHeight} />
       )}
@@ -236,7 +260,18 @@ function AddTeaForm() {
                     {teaType}
                   </option>
                 ))}
+                <option value="custom">Other (input)</option>
               </select>
+              {type === "custom" && (
+                <input
+                  type="text"
+                  className="form-control mt-2"
+                  placeholder="Enter custom tea type"
+                  value={customType}
+                  onChange={(e) => setCustomType(e.target.value)}
+                  required
+                />
+              )}
 
               <textarea
                 className="form-control"
@@ -301,12 +336,19 @@ function AddTeaForm() {
                 </button>
               </div>
 
-              <input
-                type="file"
-                className="form-control"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
+              <div>
+                <label htmlFor="imageUpload" className="form-label">
+                  Upload a photo of your tea (optional)
+                </label>
+                <input
+                  id="imageUpload"
+                  type="file"
+                  className="form-control"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+                <small className="text-white-50">Accepted formats: JPG, PNG, GIF</small>
+              </div>
 
               {imagePreview && (
                 <div className="text-center">
@@ -321,6 +363,7 @@ function AddTeaForm() {
                   />
                 </div>
               )}
+
 
               {uploading && (
                 <p className="text-primary">Uploading image, please wait...</p>
