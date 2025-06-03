@@ -133,7 +133,6 @@ const resolvers = {
         (id: any) => id.toString() !== userId
       );
       (requester as any).friendRequestsSent = (requester as any).friendRequestsSent.filter(
-
         (id: any) => id.toString() !== context.user._id
       );
 

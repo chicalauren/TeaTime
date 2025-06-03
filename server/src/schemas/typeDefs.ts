@@ -86,7 +86,7 @@ const typeDefs = gql`
     declineFriendRequest(userId: ID!): User
     removeFriend(userId: ID!): User
     register(username: String!, email: String!, password: String!): Auth
-    updateUser(bio: String, favoriteTeaSource: String): User
+    updateUser(bio: String, favoriteTeaSource: String, profileImage: String): User
     reactToComment(spillPostId: ID!, commentId: ID!, emoji: String!): SpillPost
 
     addTea(
