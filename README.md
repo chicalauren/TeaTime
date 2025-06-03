@@ -63,7 +63,6 @@ Cloudinary API is only needed if the site will be deployed to a web server; it i
 - Add, edit, and delete teas from your collection
 - Upload photos and write tasting notes
 - Mark teas as favorites
-- Like, comment, and react to "Spill the Tea" posts
 - Search teas by tags or type
 - Connect with other users by sending friend requests
 
@@ -74,7 +73,12 @@ Cloudinary API is only needed if the site will be deployed to a web server; it i
 
 ## Future Work 
 - Notifications from friends, etc
+- Editing posts and comments 
 - Save posts for later 
+- Favorite posts
+- Add profile image to the comments and the post on the social page 
+- For running the code locally and testing, add a test user to the seed data
+- Being able to add hyperlinks in the comments, like referral links for free tea for example 
 
 ## Resources 
 - [Cloudinary](https://cloudinary.com/) for hosting images that users upload for teas and for profile pictures
