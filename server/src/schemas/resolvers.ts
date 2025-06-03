@@ -65,6 +65,59 @@ const resolvers = {
   },
 
   Mutation: {
+    reactToComment: async (
+      _: any,
+      { spillPostId, commentId, emoji }: any,
+      context: any
+    ) => {
+      if (!context.user)
+        throw new AuthenticationError("Authentication required");
+
+      const post = await SpillPost.findById(spillPostId);
+      if (!post) throw new Error("Spill post not found");
+
+      const comment = post.comments.id(commentId);
+      if (!comment) throw new Error("Comment not found");
+
+      if (!Array.isArray(comment.reactions))
+        comment.reactions =
+          (post as any).comments.id(commentId).reactions ||
+          post.schema.path("comments").schema.path("reactions");
+
+      let reaction = comment.reactions.find((r: any) => r.emoji === emoji);
+
+      // Use Mongoose's create method for subdocs if available
+      if (!reaction) {
+        if (typeof comment.reactions.create === "function") {
+          reaction = comment.reactions.create({ emoji, users: [] });
+          comment.reactions.push(reaction);
+        } else {
+          // Fallback: push directly, but ensure the schema expects this
+          comment.reactions.push({ emoji, users: [] });
+        }
+        // Re-fetch the reaction from the array to ensure it's defined
+        reaction = comment.reactions.find((r: any) => r.emoji === emoji);
+      }
+
+      // If still not found, throw an error (should not happen)
+      if (!reaction) throw new Error("Failed to create or find reaction");
+
+      if (!Array.isArray(reaction.users)) reaction.users = [];
+
+      const username = context.user.username;
+
+      // Toggle reaction
+      if (reaction.users.includes(username)) {
+        reaction.users = reaction.users.filter((u: string) => u !== username);
+      } else {
+        reaction.users.push(username);
+      }
+
+      comment.markModified("reactions");
+      await post.save();
+      return post;
+    },
+
     sendMessage: async (_: any, { toUserId, content }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("You must be logged in");
       if (toUserId === context.user._id)

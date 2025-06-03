@@ -463,6 +463,7 @@ function SpillTheTea() {
                           marginBottom: "0.5rem",
                           maxWidth: "75%",
                           animation: "fadeIn 0.5s ease forwards",
+                          position: "relative",
                         }}
                       >
                         <p style={{ margin: 0, fontWeight: "bold" }}>
@@ -509,12 +510,22 @@ function SpillTheTea() {
                               }}
                             />
                             {/* Emoji Reactions as React Button */}
-                            <CommentReactions
-                              comment={comment}
-                              postId={post._id}
-                              currentUsername={currentUsername}
-                              reactToComment={reactToComment}
-                            />
+                            <div style={{ position: "relative" }}>
+                              <div
+                                style={{
+                                  position: "absolute",
+                                  top: -32,
+                                  right: 0,
+                                }}
+                              >
+                                <CommentReactions
+                                  comment={comment}
+                                  postId={post._id}
+                                  currentUsername={currentUsername}
+                                  reactToComment={reactToComment}
+                                />
+                              </div>
+                            </div>
                             <button type="submit" style={{ marginRight: 8 }}>
                               Save
                             </button>
@@ -533,6 +544,23 @@ function SpillTheTea() {
                                 Number(comment.createdAt)
                               ).toLocaleString("en-US")}
                             </small>
+                            {/* Emoji Reactions as React Button */}
+                            <div style={{ position: "relative" }}>
+                              <div
+                                style={{
+                                  position: "absolute",
+                                  top: -32,
+                                  right: 0,
+                                }}
+                              >
+                                <CommentReactions
+                                  comment={comment}
+                                  postId={post._id}
+                                  currentUsername={currentUsername}
+                                  reactToComment={reactToComment}
+                                />
+                              </div>
+                            </div>
                             {/* Edit/Delete comment buttons */}
                             {comment.createdByUsername === currentUsername && (
                               <div style={{ marginTop: "5px" }}>

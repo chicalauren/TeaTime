@@ -107,6 +107,7 @@ const typeDefs = gql`
     editComment(spillPostId: ID!, commentId: ID!, content: String!): SpillPost
     sendMessage(toUserId: ID!, content: String!): MessageThread!
     markThreadAsRead(threadId: ID!): MessageThread!
+    reactToComment(spillPostId: ID!, commentId: ID!, emoji: String!): SpillPost
     updateUser(
       bio: String
       favoriteTeaSource: String
