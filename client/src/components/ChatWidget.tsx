@@ -89,6 +89,7 @@ function ChatWidget() {
             flexDirection: "column",
           }}
         >
+          {/* Chat Header with avatar */}
           <div
             style={{
               padding: "10px 16px",
@@ -100,12 +101,32 @@ function ChatWidget() {
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
+              gap: 10,
             }}
           >
-            <span style={{ fontWeight: 600 }}>
-            {activeUserId
-                ? friends.find((f: any) => f._id === activeUserId)?.username || "Chat"
-                : "Direct Messages"}
+            <span style={{ fontWeight: 600, display: "flex", alignItems: "center", gap: 10 }}>
+              {activeUserId ? (
+                <>
+                  <img
+                    src={
+                      friends.find((f: any) => f._id === activeUserId)?.profileImage ||
+                      "/teacup.jpg"
+                    }
+                    alt="avatar"
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      marginRight: 6,
+                      border: "2px solid #fff",
+                    }}
+                  />
+                  {friends.find((f: any) => f._id === activeUserId)?.username || "Chat"}
+                </>
+              ) : (
+                "Direct Messages"
+              )}
             </span>
             <button
               onClick={() => {
@@ -140,9 +161,23 @@ function ChatWidget() {
                         borderBottom: "1px solid #eee",
                         cursor: "pointer",
                         background: "#fff",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
                       }}
                       onClick={() => setActiveUserId(friend._id)}
                     >
+                      <img
+                        src={friend.profileImage || "/teacup.jpg"}
+                        alt={friend.username}
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: "50%",
+                          objectFit: "cover",
+                          marginRight: 8,
+                        }}
+                      />
                       <div style={{ fontWeight: 600 }}>{friend.username}</div>
                     </li>
                   ))}
