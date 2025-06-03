@@ -45,6 +45,54 @@ const resolvers = {
   },
 
   Mutation: {
+<<<<<<< HEAD
+=======
+
+    reactToComment: async (_: any, { spillPostId, commentId, emoji }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("Authentication required");
+
+      const post = await SpillPost.findById(spillPostId);
+      if (!post) throw new Error("Spill post not found");
+
+      const comment = post.comments.id(commentId);
+      if (!comment) throw new Error("Comment not found");
+
+      if (!Array.isArray(comment.reactions)) comment.reactions = (post as any).comments.id(commentId).reactions || post.schema.path("comments").schema.path("reactions");
+
+      let reaction = comment.reactions.find((r: any) => r.emoji === emoji);
+
+      // Use Mongoose's create method for subdocs if available
+      if (!reaction) {
+        if (typeof comment.reactions.create === "function") {
+          reaction = comment.reactions.create({ emoji, users: [] });
+        } else {
+          reaction = { emoji, users: [] };
+        }
+        comment.reactions.push(reaction);
+        // Re-fetch the reaction from the array to ensure it's defined
+        reaction = comment.reactions.find((r: any) => r.emoji === emoji);
+      }
+
+      // If still not found, throw an error (should not happen)
+      if (!reaction) throw new Error("Failed to create or find reaction");
+
+      if (!Array.isArray(reaction.users)) reaction.users = [];
+
+      const username = context.user.username;
+
+      // Toggle reaction
+      if (reaction.users.includes(username)) {
+        reaction.users = reaction.users.filter((u: string) => u !== username);
+      } else {
+        reaction.users.push(username);
+      }
+
+      comment.markModified("reactions");
+      await post.save();
+      return post;
+    },
+
+>>>>>>> origin/feature/reactions
     sendFriendRequest: async (_: any, { userId }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("You must be logged in");
       if (context.user._id === userId)
@@ -84,12 +132,19 @@ const resolvers = {
       if (!user || !requester) throw new Error("User not found");
 
       // Remove from requests
+<<<<<<< HEAD
       (user as any).friendRequestsReceived = (
         user as any
       ).friendRequestsReceived.filter((id: any) => id.toString() !== userId);
       (requester as any).friendRequestsSent = (
         requester as any
       ).friendRequestsSent.filter(
+=======
+      (user as any).friendRequestsReceived = (user as any).friendRequestsReceived.filter(
+        (id: any) => id.toString() !== userId
+      );
+      (requester as any).friendRequestsSent = (requester as any).friendRequestsSent.filter(
+>>>>>>> origin/feature/reactions
         (id: any) => id.toString() !== context.user._id
       );
 
