@@ -98,10 +98,11 @@ function Profile() {
     formData.append("file", file);
     formData.append("upload_preset", "unsignedProfilePictures");
     formData.append("folder", "user_profile_pictures");
-
+    
+    const uploadUrl = process.env.REACT_APP_CLOUDINARY_URL || "";
     try {
       const res = await fetch(
-        "https://api.cloudinary.com/v1_1/dcaivdnrk/image/upload",
+        `${uploadUrl}`,
         {
           method: "POST",
           body: formData,
