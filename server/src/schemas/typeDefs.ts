@@ -103,13 +103,13 @@ const typeDefs = gql`
     declineFriendRequest(userId: ID!): User
     removeFriend(userId: ID!): User
     register(username: String!, email: String!, password: String!): Auth
+    editSpillPost(spillPostId: ID!, title: String, content: String): SpillPost
+    editComment(spillPostId: ID!, commentId: ID!, content: String!): SpillPost
     updateUser(
       bio: String
       favoriteTeaSource: String
       profileImage: String
     ): User
-    sendMessage(toUserId: ID!, content: String!): MessageThread!
-    markThreadAsRead(threadId: ID!): MessageThread!
 
     addTea(
       name: String!

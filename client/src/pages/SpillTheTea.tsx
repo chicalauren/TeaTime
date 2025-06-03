@@ -7,7 +7,8 @@ import {
   LIKE_SPILL_POST,
   DELETE_COMMENT,
   DELETE_SPILL_POST,
-  REACT_TO_COMMENT,
+  EDIT_SPILL_POST,
+  EDIT_COMMENT,
 } from "../utils/mutations";
 import { useState } from "react";
 
@@ -37,7 +38,9 @@ function CommentReactions({
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}>
+    <div
+      style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 6 }}
+    >
       {/* React Button */}
       <div style={{ position: "relative" }}>
         <button
@@ -158,6 +161,12 @@ function SpillTheTea() {
   const [likeSpillPost] = useMutation(LIKE_SPILL_POST, {
     refetchQueries: [{ query: GET_SPILL_POSTS }],
   });
+  const [editSpillPost] = useMutation(EDIT_SPILL_POST, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
+  const [editComment] = useMutation(EDIT_COMMENT, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
   const [deleteComment] = useMutation(DELETE_COMMENT, {
     refetchQueries: [{ query: GET_SPILL_POSTS }],
   });
@@ -173,6 +182,12 @@ function SpillTheTea() {
   const [commentContent, setCommentContent] = useState("");
   const [commentingOn, setCommentingOn] = useState<string | null>(null);
 
+  const [editingPostId, setEditingPostId] = useState<string | null>(null);
+  const [editPostTitle, setEditPostTitle] = useState("");
+  const [editPostContent, setEditPostContent] = useState("");
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editCommentContent, setEditCommentContent] = useState("");
+
   // Feed toggle state
   const [feedType, setFeedType] = useState<"public" | "friends">("public");
 
@@ -182,7 +197,6 @@ function SpillTheTea() {
       await addSpillPost({ variables: { title, content } });
       setTitle("");
       setContent("");
-      console.log("post time,", new Date().toLocaleString());
     } catch (err) {
       console.error("Failed to post spill", err);
     }
@@ -292,59 +306,119 @@ function SpillTheTea() {
                   backgroundColor: "#f0fff0",
                 }}
               >
-                {/* Delete button only if post is by current user */}
+                {/* Edit/Delete buttons only if post is by current user */}
                 {post.createdByUsername === currentUsername && (
-                  <button
-                    onClick={async () => {
-                      const confirmed = window.confirm("Delete this spill?");
-                      if (confirmed) {
-                        try {
-                          await deleteSpillPost({
-                            variables: { spillPostId: post._id },
-                          });
-                        } catch (err) {
-                          console.error("Error deleting spill post:", err);
-                          alert("Failed to delete post.");
+                  <div style={{ float: "right" }}>
+                    <button
+                      onClick={() => {
+                        setEditingPostId(post._id);
+                        setEditPostTitle(post.title);
+                        setEditPostContent(post.content);
+                      }}
+                      style={{
+                        backgroundColor: "#1976d2",
+                        color: "#fff",
+                        border: "none",
+                        padding: "6px 10px",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        marginRight: "0.5rem",
+                        fontSize: "14px",
+                      }}
+                      aria-label="Edit Spill Post"
+                    >
+                      ✏️ Edit
+                    </button>
+                    <button
+                      onClick={async () => {
+                        const confirmed = window.confirm("Delete this spill?");
+                        if (confirmed) {
+                          try {
+                            await deleteSpillPost({
+                              variables: { spillPostId: post._id },
+                            });
+                          } catch (err) {
+                            console.error("Error deleting spill post:", err);
+                            alert("Failed to delete post.");
+                          }
                         }
-                      }
-                    }}
-                    style={{
-                      backgroundColor: "#d32f2f",
-                      color: "#fff",
-                      border: "none",
-                      padding: "6px 10px",
-                      borderRadius: "6px",
-                      cursor: "pointer",
-                      marginBottom: "0.5rem",
-                      fontSize: "14px",
-                      float: "right",
-                    }}
-                    aria-label="Delete Spill Post"
-                  >
-                    🗑 Delete Post
-                  </button>
+                      }}
+                      style={{
+                        backgroundColor: "#d32f2f",
+                        color: "#fff",
+                        border: "none",
+                        padding: "6px 10px",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        fontSize: "14px",
+                      }}
+                      aria-label="Delete Spill Post"
+                    >
+                      🗑 Delete
+                    </button>
+                  </div>
                 )}
 
-                <h3 style={{ color: "#72a85a", fontWeight: "bold" }}>
-                  {post.title}
-                </h3>
-                <p style={{ fontStyle: "italic", color: "#000000" }}>
-                  by {post.createdByUsername === currentUsername ? (
-                 
-                    post.createdByUsername || "Anonymous"
-                  ) : (
-                    <Link to={`/user/${post.createdByUsername}`}>
-                      {post.createdByUsername || "Anonymous"}
-                    </Link>
-                  )}
-                </p>
-                <p style={{ color: "#72a85a", fontWeight: "bold" }}>
-                  {post.content}
-                </p>
-                <p style={{ fontSize: "0.8rem", color: "#777" }}>
-                  Posted on{" "}
-                  {new Date(Number(post.createdAt)).toLocaleString("en-US")}
-                </p>
+                {editingPostId === post._id ? (
+                  <form
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      await editSpillPost({
+                        variables: {
+                          spillPostId: post._id,
+                          title: editPostTitle,
+                          content: editPostContent,
+                        },
+                      });
+                      setEditingPostId(null);
+                    }}
+                    style={{ marginBottom: "1rem" }}
+                  >
+                    <input
+                      type="text"
+                      value={editPostTitle}
+                      onChange={(e) => setEditPostTitle(e.target.value)}
+                      style={{ width: "100%", marginBottom: "0.5rem" }}
+                    />
+                    <textarea
+                      value={editPostContent}
+                      onChange={(e) => setEditPostContent(e.target.value)}
+                      style={{ width: "100%", marginBottom: "0.5rem" }}
+                    />
+                    <button type="submit" style={{ marginRight: 8 }}>
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditingPostId(null)}
+                    >
+                      Cancel
+                    </button>
+                  </form>
+                ) : (
+                  <>
+                    <h3 style={{ color: "#72a85a", fontWeight: "bold" }}>
+                      {post.title}
+                    </h3>
+                    <p style={{ fontStyle: "italic", color: "#000000" }}>
+                      by{" "}
+                      {post.createdByUsername === currentUsername ? (
+                        post.createdByUsername || "Anonymous"
+                      ) : (
+                        <Link to={`/user/${post.createdByUsername}`}>
+                          {post.createdByUsername || "Anonymous"}
+                        </Link>
+                      )}
+                    </p>
+                    <p style={{ color: "#72a85a", fontWeight: "bold" }}>
+                      {post.content}
+                    </p>
+                    <p style={{ fontSize: "0.8rem", color: "#777" }}>
+                      Posted on{" "}
+                      {new Date(Number(post.createdAt)).toLocaleString("en-US")}
+                    </p>
+                  </>
+                )}
 
                 {/* ❤️ Like Button */}
                 <button
@@ -397,59 +471,120 @@ function SpillTheTea() {
                             <Link to={`/user/${comment.createdByUsername}`}>
                               {comment.createdByUsername || "Anonymous"}
                               {isFriend(comment.createdByUsername) && (
-                                <span style={{ color: "#72a85a", fontWeight: 500 }}> (Friend) </span>
+                                <span
+                                  style={{ color: "#72a85a", fontWeight: 500 }}
+                                >
+                                  {" "}
+                                  (Friend){" "}
+                                </span>
                               )}
                             </Link>
                           )}
                         </p>
-                        <p style={{ margin: "5px 0" }}>{comment.content}</p>
-                        <small style={{ color: "#777" }}>
-                          {new Date(Number(comment.createdAt)).toLocaleString(
-                            "en-US"
-                          )}
-                        </small>
-                        {/* Emoji Reactions as React Button */}
-                        <CommentReactions
-                          comment={comment}
-                          postId={post._id}
-                          currentUsername={currentUsername}
-                          reactToComment={reactToComment}
-                        />
-                        {/* Delete comment button */}
-                        {comment.createdByUsername === currentUsername && (
-                          <button
-                            onClick={async () => {
-                              const confirmed = window.confirm(
-                                "Are you sure you want to delete this comment?"
-                              );
-                              if (confirmed) {
-                                try {
-                                  await deleteComment({
-                                    variables: {
-                                      spillPostId: post._id,
-                                      commentId: comment._id,
-                                    },
-                                  });
-                                } catch (err) {
-                                  console.error("Error deleting comment:", err);
-                                  alert("Failed to delete comment.");
-                                }
-                              }
+                        {editingCommentId === comment._id ? (
+                          <form
+                            onSubmit={async (e) => {
+                              e.preventDefault();
+                              await editComment({
+                                variables: {
+                                  spillPostId: post._id,
+                                  commentId: comment._id,
+                                  content: editCommentContent,
+                                },
+                              });
+                              setEditingCommentId(null);
                             }}
-                            style={{
-                              marginTop: "5px",
-                              backgroundColor: "red",
-                              color: "white",
-                              border: "none",
-                              padding: "5px 8px",
-                              borderRadius: "6px",
-                              cursor: "pointer",
-                              fontSize: "12px",
-                            }}
-                            aria-label="Delete Comment"
+                            style={{ marginTop: "0.5rem" }}
                           >
-                            Delete
-                          </button>
+                            <input
+                              type="text"
+                              value={editCommentContent}
+                              onChange={(e) =>
+                                setEditCommentContent(e.target.value)
+                              }
+                              style={{
+                                width: "100%",
+                                marginBottom: "0.5rem",
+                              }}
+                            />
+                            <button type="submit" style={{ marginRight: 8 }}>
+                              Save
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setEditingCommentId(null)}
+                            >
+                              Cancel
+                            </button>
+                          </form>
+                        ) : (
+                          <>
+                            <p style={{ margin: "5px 0" }}>{comment.content}</p>
+                            <small style={{ color: "#777" }}>
+                              {new Date(
+                                Number(comment.createdAt)
+                              ).toLocaleString("en-US")}
+                            </small>
+                            {/* Edit/Delete comment buttons */}
+                            {comment.createdByUsername === currentUsername && (
+                              <div style={{ marginTop: "5px" }}>
+                                <button
+                                  onClick={() => {
+                                    setEditingCommentId(comment._id);
+                                    setEditCommentContent(comment.content);
+                                  }}
+                                  style={{
+                                    backgroundColor: "#1976d2",
+                                    color: "#fff",
+                                    border: "none",
+                                    padding: "5px 8px",
+                                    borderRadius: "6px",
+                                    cursor: "pointer",
+                                    fontSize: "12px",
+                                    marginRight: "0.5rem",
+                                  }}
+                                  aria-label="Edit Comment"
+                                >
+                                  ✏️ Edit
+                                </button>
+                                <button
+                                  onClick={async () => {
+                                    const confirmed = window.confirm(
+                                      "Are you sure you want to delete this comment?"
+                                    );
+                                    if (confirmed) {
+                                      try {
+                                        await deleteComment({
+                                          variables: {
+                                            spillPostId: post._id,
+                                            commentId: comment._id,
+                                          },
+                                        });
+                                      } catch (err) {
+                                        console.error(
+                                          "Error deleting comment:",
+                                          err
+                                        );
+                                        alert("Failed to delete comment.");
+                                      }
+                                    }
+                                  }}
+                                  style={{
+                                    backgroundColor: "red",
+                                    color: "white",
+                                    border: "none",
+                                    padding: "5px 8px",
+                                    borderRadius: "6px",
+                                    cursor: "pointer",
+                                    fontSize: "12px",
+                                  }}
+                                  aria-label="Delete Comment"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            )}
+                          </>
                         )}
                       </div>
                     ))

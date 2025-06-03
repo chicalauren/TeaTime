@@ -237,6 +237,29 @@ const resolvers = {
       return user;
     },
 
+    editSpillPost: async (_: any, { spillPostId, title, content }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("Authentication required");
+      const post = await SpillPost.findById(spillPostId);
+      if (!post) throw new Error("Post not found");
+      if (String(post.createdBy) !== String(context.user._id)) throw new AuthenticationError("Not authorized");
+      if (title !== undefined) post.title = title;
+      if (content !== undefined) post.content = content;
+      await post.save();
+      return post;
+    },
+    
+    editComment: async (_: any, { spillPostId, commentId, content }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("Authentication required");
+      const post = await SpillPost.findById(spillPostId);
+      if (!post) throw new Error("Post not found");
+      const comment = post.comments.id(commentId);
+      if (!comment) throw new Error("Comment not found");
+      if (comment.createdByUsername !== context.user.username) throw new AuthenticationError("Not authorized");
+      comment.content = content;
+      await post.save();
+      return post;
+    },
+
     register: async (_: any, { username, email, password }: any) => {
       const user = await User.create({ username, email, password });
       const token = signToken(user);
