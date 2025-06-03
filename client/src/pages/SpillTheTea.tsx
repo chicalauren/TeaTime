@@ -9,6 +9,7 @@ import {
   DELETE_SPILL_POST,
   EDIT_SPILL_POST,
   EDIT_COMMENT,
+  REACT_TO_COMMENT,
 } from "../utils/mutations";
 import { useState } from "react";
 
@@ -506,6 +507,13 @@ function SpillTheTea() {
                                 width: "100%",
                                 marginBottom: "0.5rem",
                               }}
+                            />
+                            {/* Emoji Reactions as React Button */}
+                            <CommentReactions
+                              comment={comment}
+                              postId={post._id}
+                              currentUsername={currentUsername}
+                              reactToComment={reactToComment}
                             />
                             <button type="submit" style={{ marginRight: 8 }}>
                               Save

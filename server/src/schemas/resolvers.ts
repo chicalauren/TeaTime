@@ -72,7 +72,11 @@ const resolvers = {
 
       // Only allow messaging friends
       const user = await User.findById(context.user._id);
-      if (!user.friends.map(String).includes(String(toUserId))) {
+      if (
+        !user ||
+        !Array.isArray(user.friends) ||
+        !user.friends.map((id: any) => String(id)).includes(String(toUserId))
+      ) {
         throw new AuthenticationError("You can only message friends.");
       }
 
@@ -94,7 +98,8 @@ const resolvers = {
           updatedAt: new Date(),
         });
       } else {
-        thread.messages.push(message);
+        // Use mongoose's push method for subdocuments
+        (thread as any).messages.push(message);
         thread.updatedAt = new Date();
         await thread.save();
       }
@@ -237,24 +242,36 @@ const resolvers = {
       return user;
     },
 
-    editSpillPost: async (_: any, { spillPostId, title, content }: any, context: any) => {
-      if (!context.user) throw new AuthenticationError("Authentication required");
+    editSpillPost: async (
+      _: any,
+      { spillPostId, title, content }: any,
+      context: any
+    ) => {
+      if (!context.user)
+        throw new AuthenticationError("Authentication required");
       const post = await SpillPost.findById(spillPostId);
       if (!post) throw new Error("Post not found");
-      if (String(post.createdBy) !== String(context.user._id)) throw new AuthenticationError("Not authorized");
+      if (String(post.createdBy) !== String(context.user._id))
+        throw new AuthenticationError("Not authorized");
       if (title !== undefined) post.title = title;
       if (content !== undefined) post.content = content;
       await post.save();
       return post;
     },
-    
-    editComment: async (_: any, { spillPostId, commentId, content }: any, context: any) => {
-      if (!context.user) throw new AuthenticationError("Authentication required");
+
+    editComment: async (
+      _: any,
+      { spillPostId, commentId, content }: any,
+      context: any
+    ) => {
+      if (!context.user)
+        throw new AuthenticationError("Authentication required");
       const post = await SpillPost.findById(spillPostId);
       if (!post) throw new Error("Post not found");
       const comment = post.comments.id(commentId);
       if (!comment) throw new Error("Comment not found");
-      if (comment.createdByUsername !== context.user.username) throw new AuthenticationError("Not authorized");
+      if (comment.createdByUsername !== context.user.username)
+        throw new AuthenticationError("Not authorized");
       comment.content = content;
       await post.save();
       return post;

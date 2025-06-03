@@ -105,6 +105,8 @@ const typeDefs = gql`
     register(username: String!, email: String!, password: String!): Auth
     editSpillPost(spillPostId: ID!, title: String, content: String): SpillPost
     editComment(spillPostId: ID!, commentId: ID!, content: String!): SpillPost
+    sendMessage(toUserId: ID!, content: String!): MessageThread!
+    markThreadAsRead(threadId: ID!): MessageThread!
     updateUser(
       bio: String
       favoriteTeaSource: String

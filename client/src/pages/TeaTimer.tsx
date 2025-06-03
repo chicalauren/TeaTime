@@ -3,7 +3,7 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useLocation } from "react-router-dom";
-import { isStatefulPromise } from "@apollo/client/utilities";
+//import { isStatefulPromise } from "@apollo/client/utilities";
 
 const beepSound = new Audio(
   "https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
@@ -22,7 +22,9 @@ const backgroundImageUrl = "/images/tea-background.jpg";
 
 function TeaTimer() {
   const location = useLocation();
-  const state = location.state as { teaName?: string; teaType?: string } | undefined;
+  const state = location.state as
+    | { teaName?: string; teaType?: string }
+    | undefined;
 
   // Use a function for initial state so it only runs once
   const [selectedTea, setSelectedTea] = useState(() => {
@@ -41,10 +43,7 @@ function TeaTimer() {
 
   // Sync selectedTea with navigation state on every navigation
   useEffect(() => {
-    if (
-      state?.teaType &&
-      teaOptions.some((t) => t.type === state.teaType)
-    ) {
+    if (state?.teaType && teaOptions.some((t) => t.type === state.teaType)) {
       setSelectedTea(teaOptions.find((t) => t.type === state.teaType)!);
       setRunning(false);
       setProgress(0);
@@ -78,7 +77,9 @@ function TeaTimer() {
     const minutes =
       selectedTea.type === "Custom" ? parseInt(customMinutes) : null;
     const time =
-      selectedTea.type === "Custom" && typeof minutes === "number" && !isNaN(minutes)
+      selectedTea.type === "Custom" &&
+      typeof minutes === "number" &&
+      !isNaN(minutes)
         ? minutes * 60
         : selectedTea.time;
 
@@ -139,9 +140,7 @@ function TeaTimer() {
         }}
       >
         <h2 className="mb-4">Tea Timer ⏱️</h2>
-        {state?.teaName && (
-          <h4 className="mb-3">Brewing: {state.teaName}</h4>
-        )}
+        {state?.teaName && <h4 className="mb-3">Brewing: {state.teaName}</h4>}
 
         <div className="mb-3">
           <select
@@ -164,7 +163,9 @@ function TeaTimer() {
               type="number"
               className="form-control"
               value={customMinutes}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCustomMinutes(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setCustomMinutes(e.target.value)
+              }
               min="1"
             />
           </div>
