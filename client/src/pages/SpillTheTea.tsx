@@ -1,4 +1,3 @@
-// ...imports remain unchanged
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_SPILL_POSTS, GET_ME_WITH_FRIENDS } from "../utils/queries";
 import { Link } from "react-router-dom";
@@ -283,7 +282,14 @@ function SpillTheTea() {
                     <h5 className="card-title">
                       {post.title}
                       <small className="text-muted d-block">
-                        by {post.createdByUsername}
+                        by{" "}
+                        {post.createdByUsername === currentUsername ? (
+                          <span>{post.createdByUsername}</span>
+                        ) : (
+                          <Link to={`/user/${post.createdByUsername}`}>
+                            {post.createdByUsername}
+                          </Link>
+                        )}
                         {showFriendLabel(post.createdByUsername)}
                       </small>
                     </h5>
@@ -386,8 +392,20 @@ function SpillTheTea() {
                         ) : (
                           <>
                             <p className="mb-1">
+                              <strong>
+                                {comment.createdByUsername ===
+                                currentUsername ? (
+                                  <span>{comment.createdByUsername}</span>
+                                ) : (
+                                  <Link
+                                    to={`/user/${comment.createdByUsername}`}
+                                  >
+                                    {comment.createdByUsername}
+                                  </Link>
+                                )}
+                              </strong>
+                              {showFriendLabel(comment.createdByUsername)}:{" "}
                               {comment.content}
-                              {showFriendLabel(comment.createdByUsername)}
                             </p>
                             {comment.createdByUsername === currentUsername && (
                               <>

@@ -84,6 +84,7 @@ export const GET_ME_WITH_FRIENDS = gql`
       friends {
         _id
         username
+        profileImage
       }
       friendRequestsSent {
         _id
