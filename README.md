@@ -43,15 +43,20 @@ npm run dev
 
 ## Environmental Variables
 
-Add a .env file with the following:
+Add a server .env file with the following:
 
 ```
 MONGODB_URI=your-mongodb-connection-string
 JWT_SECRET=your-secret-key
-CLOUDINARY_CLOUD_NAME=your-cloud-name
-CLOUDINARY_API_KEY=your-api-key
-CLOUDINARY_API_SECRET=your-api-secret
+CLOUDINARY_UPLOAD_URL=your-api-key
 ```
+
+Add a client .env file with the following:
+
+```
+VITE_CLOUDINARY_UPLOAD_URL=your api-key
+```
+
 
 - Test User for logging into the DB unless you make your own!
 
