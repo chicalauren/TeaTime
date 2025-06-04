@@ -1,6 +1,7 @@
 # TeaTime
 
 ## Table of Contents
+
 - [Group Members](#group-members)
 - [Sites](#sites)
 - [Description](#description)
@@ -19,25 +20,31 @@
 - [Live Website](https://teatime-wcue.onrender.com/login)
 
 ## Group Members
-- Eldrish
-- Lauren
-- Liz
-- Tiffany
+
+- Eldrish https://github.com/Eldrish-Ramos
+- Lauren https://github.com/chicalauren
+- Liz https://github.com/Liz-Melcher
+- Tiffany https://github.com/TiffanyMClark
 
 ## Description
-Tea Time is a web app built in React for tea lovers who want a smarter way to keep track of their collection. The goal is simple: help users log, rate, and rediscover their favorite teas, all while socializing with fellow tea lovers!  Whether you’re into fine oolongs or herbal blends, Tea Time makes it easy to store tasting notes, brew settings, ratings, and more—so no great cup is ever forgotten
+
+Tea Time is a web app built in React for tea lovers who want a smarter way to keep track of their collection. The goal is simple: help users log, rate, and rediscover their favorite teas, all while socializing with fellow tea lovers! Whether you’re into fine oolongs or herbal blends, Tea Time makes it easy to store tasting notes, brew settings, ratings, and more—so no great cup is ever forgotten
 
 ## Installation
-To install and run on a local machine: 
+
+To install and run on a local machine:
+
 ```
 npm i
 npm run build
 npm run seed
-npm run dev 
+npm run dev
 ```
 
-## Environmental Variables 
-Add a .env file with the following: 
+## Environmental Variables
+
+Add a .env file with the following:
+
 ```
 MONGODB_URI=your-mongodb-connection-string
 JWT_SECRET=your-secret-key
@@ -45,9 +52,19 @@ CLOUDINARY_CLOUD_NAME=your-cloud-name
 CLOUDINARY_API_KEY=your-api-key
 CLOUDINARY_API_SECRET=your-api-secret
 ```
-Cloudinary API is only needed if the site will be deployed to a web server; it is not necessary if images will be hosted locally. 
+
+- Test User for logging into the DB unless you make your own!
+
+  username: "test",
+
+  email: "test@example.com",
+
+  password: "password123",
+
+Cloudinary API is only needed if the site will be deployed to a web server; it is not necessary if images will be hosted locally.
 
 ## Technologies Used
+
 - React (TypeScript)
 - GraphQL + Apollo Server/Client
 - Node.js + Express
@@ -57,8 +74,8 @@ Cloudinary API is only needed if the site will be deployed to a web server; it i
 - Vite (Frontend bundler)
 - Render (Hosting)
 
-
 ## Features
+
 - User authentication (register/login)
 - Add, edit, and delete teas from your collection
 - Upload photos and write tasting notes
@@ -67,22 +84,26 @@ Cloudinary API is only needed if the site will be deployed to a web server; it i
 - Connect with other users by sending friend requests
 
 ## Screen Shots
+
 ### Dashboard view
+
 ![Dashboard](client/public/screenshots/dashboard.png)
 
+## Future Work
 
-## Future Work 
 - Notifications from friends, etc
-- Editing posts and comments 
-- Save posts for later 
+- Editing posts and comments
+- Save posts for later
 - Favorite posts
-- Add profile image to the comments and the post on the social page 
+- Add profile image to the comments and the post on the social page
 - For running the code locally and testing, add a test user to the seed data
-- Being able to add hyperlinks in the comments, like referral links for free tea for example 
+- Being able to add hyperlinks in the comments, like referral links for free tea for example
 
-## Resources 
+## Resources
+
 - [Cloudinary](https://cloudinary.com/) for hosting images that users upload for teas and for profile pictures
 - [UnSplash](https://unsplash.com/) for stock images of teas; all images used are under a free license
 
-## License 
+## License
+
 MIT License
