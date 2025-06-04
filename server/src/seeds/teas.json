@@ -1,11 +1,5 @@
 [
   {
-    "username": "testuser",
-    "email": "testuser@example.com",
-    "password": "password123"
-  },
-
-  {
     "name": "Earl Grey",
     "type": "Black",
     "brand": "",
