@@ -2,6 +2,7 @@ import User from "../models/User";
 import { IUser } from "../models/User";
 import TeaCategory from "../models/TeaCategory";
 import SpillPost from "../models/SpillPost";
+import MessageThread from "../models/MessageThread";
 import { signToken } from "../utils/auth";
 import { AuthenticationError } from "apollo-server-express";
 import { generateRecommendations } from "../utils/generateTeaRecomendations";
@@ -24,6 +25,25 @@ const resolvers = {
       }
       throw new AuthenticationError("You must be logged in");
     },
+
+    myMessageThreads: async (_: any, __: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("You must be logged in");
+      return MessageThread.find({ participants: context.user._id })
+        .populate("participants")
+        .populate("messages.sender")
+        .populate("messages.readBy")
+        .sort({ updatedAt: -1 });
+    },
+    messageThreadWith: async (_: any, { userId }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("You must be logged in");
+      return MessageThread.findOne({
+        participants: { $all: [context.user._id, userId] },
+      })
+        .populate("participants")
+        .populate("messages.sender")
+        .populate("messages.readBy");
+    },
+
     teas: async () => TeaCategory.find(),
     tea: async (_: any, { id }: { id: string }) => TeaCategory.findById(id),
     spillPosts: async () => SpillPost.find().sort({ createdAt: -1 }),
@@ -45,8 +65,13 @@ const resolvers = {
   },
 
   Mutation: {
-    reactToComment: async (_: any, { spillPostId, commentId, emoji }: any, context: any) => {
-      if (!context.user) throw new AuthenticationError("Authentication required");
+    reactToComment: async (
+      _: any,
+      { spillPostId, commentId, emoji }: any,
+      context: any
+    ) => {
+      if (!context.user)
+        throw new AuthenticationError("Authentication required");
 
       const post = await SpillPost.findById(spillPostId);
       if (!post) throw new Error("Spill post not found");
@@ -54,7 +79,10 @@ const resolvers = {
       const comment = post.comments.id(commentId);
       if (!comment) throw new Error("Comment not found");
 
-      if (!Array.isArray(comment.reactions)) comment.reactions = (post as any).comments.id(commentId).reactions || post.schema.path("comments").schema.path("reactions");
+      if (!Array.isArray(comment.reactions))
+        comment.reactions =
+          (post as any).comments.id(commentId).reactions ||
+          post.schema.path("comments").schema.path("reactions");
 
       let reaction = comment.reactions.find((r: any) => r.emoji === emoji);
 
@@ -89,7 +117,75 @@ const resolvers = {
       await post.save();
       return post;
     },
-      
+
+    sendMessage: async (_: any, { toUserId, content }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("You must be logged in");
+      if (toUserId === context.user._id)
+        throw new Error("Cannot message yourself");
+
+      // Only allow messaging friends
+      const user = await User.findById(context.user._id);
+      if (
+        !user ||
+        !Array.isArray(user.friends) ||
+        !user.friends.map((id: any) => String(id)).includes(String(toUserId))
+      ) {
+        throw new AuthenticationError("You can only message friends.");
+      }
+
+      let thread = await MessageThread.findOne({
+        participants: { $all: [context.user._id, toUserId] },
+      });
+
+      const message = {
+        sender: context.user._id,
+        content,
+        timestamp: new Date(),
+        readBy: [context.user._id],
+      };
+
+      if (!thread) {
+        thread = await MessageThread.create({
+          participants: [context.user._id, toUserId],
+          messages: [message],
+          updatedAt: new Date(),
+        });
+      } else {
+        // Use mongoose's push method for subdocuments
+        (thread as any).messages.push(message);
+        thread.updatedAt = new Date();
+        await thread.save();
+      }
+
+      // Always re-fetch and populate after save/create
+      const populatedThread = await MessageThread.findById(thread._id)
+        .populate("participants")
+        .populate("messages.sender")
+        .populate("messages.readBy");
+
+      return populatedThread;
+    },
+
+    markThreadAsRead: async (_: any, { threadId }: any, context: any) => {
+      if (!context.user) throw new AuthenticationError("You must be logged in");
+      const thread = await MessageThread.findById(threadId);
+      if (!thread) throw new Error("Thread not found");
+      thread.messages.forEach((msg: any) => {
+        if (!msg.readBy.map(String).includes(String(context.user._id))) {
+          msg.readBy.push(context.user._id);
+        }
+      });
+      await thread.save();
+
+      // Always re-fetch and populate after save
+      const populatedThread = await MessageThread.findById(thread._id)
+        .populate("participants")
+        .populate("messages.sender")
+        .populate("messages.readBy");
+
+      return populatedThread;
+    },
+
     sendFriendRequest: async (_: any, { userId }: any, context: any) => {
       if (!context.user) throw new AuthenticationError("You must be logged in");
       if (context.user._id === userId)
@@ -129,10 +225,12 @@ const resolvers = {
       if (!user || !requester) throw new Error("User not found");
 
       // Remove from requests
-      (user as any).friendRequestsReceived = (user as any).friendRequestsReceived.filter(
-        (id: any) => id.toString() !== userId
-      );
-      (requester as any).friendRequestsSent = (requester as any).friendRequestsSent.filter(
+      (user as any).friendRequestsReceived = (
+        user as any
+      ).friendRequestsReceived.filter((id: any) => id.toString() !== userId);
+      (requester as any).friendRequestsSent = (
+        requester as any
+      ).friendRequestsSent.filter(
         (id: any) => id.toString() !== context.user._id
       );
 
@@ -195,6 +293,41 @@ const resolvers = {
       await friend.save();
 
       return user;
+    },
+
+    editSpillPost: async (
+      _: any,
+      { spillPostId, title, content }: any,
+      context: any
+    ) => {
+      if (!context.user)
+        throw new AuthenticationError("Authentication required");
+      const post = await SpillPost.findById(spillPostId);
+      if (!post) throw new Error("Post not found");
+      if (String(post.createdBy) !== String(context.user._id))
+        throw new AuthenticationError("Not authorized");
+      if (title !== undefined) post.title = title;
+      if (content !== undefined) post.content = content;
+      await post.save();
+      return post;
+    },
+
+    editComment: async (
+      _: any,
+      { spillPostId, commentId, content }: any,
+      context: any
+    ) => {
+      if (!context.user)
+        throw new AuthenticationError("Authentication required");
+      const post = await SpillPost.findById(spillPostId);
+      if (!post) throw new Error("Post not found");
+      const comment = post.comments.id(commentId);
+      if (!comment) throw new Error("Comment not found");
+      if (comment.createdByUsername !== context.user.username)
+        throw new AuthenticationError("Not authorized");
+      comment.content = content;
+      await post.save();
+      return post;
     },
 
     register: async (_: any, { username, email, password }: any) => {

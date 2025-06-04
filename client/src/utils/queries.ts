@@ -96,6 +96,58 @@ export const GET_ME_WITH_FRIENDS = gql`
   }
 `;
 
+export const GET_MY_THREADS = gql`
+  query MyMessageThreads {
+    myMessageThreads {
+      _id
+      participants {
+        _id
+        username
+        profileImage
+      }
+      messages {
+        _id
+        sender {
+          _id
+          username
+        }
+        content
+        timestamp
+        readBy {
+          _id
+        }
+      }
+      updatedAt
+    }
+  }
+`;
+
+export const GET_THREAD_WITH = gql`
+  query MessageThreadWith($userId: ID!) {
+    messageThreadWith(userId: $userId) {
+      _id
+      participants {
+        _id
+        username
+        profileImage
+      }
+      messages {
+        _id
+        sender {
+          _id
+          username
+        }
+        content
+        timestamp
+        readBy {
+          _id
+        }
+      }
+      updatedAt
+    }
+  }
+`;
+
 export const GET_SPILL_POSTS = gql`
   query GetSpillPosts {
     spillPosts {
