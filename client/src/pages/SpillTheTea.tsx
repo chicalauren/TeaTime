@@ -184,6 +184,7 @@ function SpillTheTea() {
   return (
     <div className="text-light min-vh-100">
       <div className="container py-4">
+        <h2 className="text-light mb-4">🫖 Spill the Tea</h2>
         <div className="mb-4">
           <OverlayTrigger overlay={<Tooltip>View public posts</Tooltip>}>
             <button
@@ -279,7 +280,13 @@ function SpillTheTea() {
                   </form>
                 ) : (
                   <>
-                    <h5 className="card-title">{post.title}</h5>
+                    <h5 className="card-title">
+                      {post.title}
+                      <small className="text-muted d-block">
+                        by {post.createdByUsername}
+                        {showFriendLabel(post.createdByUsername)}
+                      </small>
+                    </h5>
                     <p className="card-text">{post.content}</p>
                     {post.createdByUsername === currentUsername && (
                       <>
