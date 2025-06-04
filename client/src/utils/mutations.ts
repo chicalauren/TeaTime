@@ -83,6 +83,31 @@ export const DELETE_SPILL_POST = gql`
     }
   }
 `;
+
+export const EDIT_SPILL_POST = gql`
+  mutation EditSpillPost($spillPostId: ID!, $title: String, $content: String) {
+    editSpillPost(spillPostId: $spillPostId, title: $title, content: $content) {
+      _id
+      title
+      content
+    }
+  }
+`;
+
+export const EDIT_COMMENT = gql`
+  mutation EditComment($spillPostId: ID!, $commentId: ID!, $content: String!) {
+    editComment(spillPostId: $spillPostId, commentId: $commentId, content: $content) {
+      _id
+      comments {
+        _id
+        content
+        createdByUsername
+        createdAt
+      }
+    }
+  }
+`;
+
 export const LOGIN = gql`
   mutation login($login: String!, $password: String!) {
     login(login: $login, password: $password) {
@@ -91,6 +116,46 @@ export const LOGIN = gql`
         _id
         username
         email
+      }
+    }
+  }
+`;
+
+export const SEND_MESSAGE = gql`
+  mutation SendMessage($toUserId: ID!, $content: String!) {
+    sendMessage(toUserId: $toUserId, content: $content) {
+      _id
+      participants {
+        _id
+        username
+        profileImage
+      }
+      messages {
+        _id
+        sender {
+          _id
+          username
+        }
+        content
+        timestamp
+        readBy {
+          _id
+        }
+      }
+      updatedAt
+    }
+  }
+`;
+
+export const MARK_THREAD_AS_READ = gql`
+  mutation MarkThreadAsRead($threadId: ID!) {
+    markThreadAsRead(threadId: $threadId) {
+      _id
+      messages {
+        _id
+        readBy {
+          _id
+        }
       }
     }
   }

@@ -7,6 +7,8 @@ import {
   LIKE_SPILL_POST,
   DELETE_COMMENT,
   DELETE_SPILL_POST,
+  EDIT_SPILL_POST,
+  EDIT_COMMENT,
   REACT_TO_COMMENT,
 } from "../utils/mutations";
 import { useState } from "react";
@@ -99,17 +101,43 @@ function SpillTheTea() {
   const isFriend = (username: string) =>
     myFriends.some((f: any) => f.username === username);
 
-  const [addSpillPost] = useMutation(ADD_SPILL_POST, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
-  const [addComment] = useMutation(ADD_COMMENT, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
-  const [likeSpillPost] = useMutation(LIKE_SPILL_POST, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
-  const [deleteComment] = useMutation(DELETE_COMMENT, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
-  const [deleteSpillPost] = useMutation(DELETE_SPILL_POST, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
-  const [reactToComment] = useMutation(REACT_TO_COMMENT, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
+  const [addSpillPost] = useMutation(ADD_SPILL_POST, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
+  const [addComment] = useMutation(ADD_COMMENT, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
+  const [likeSpillPost] = useMutation(LIKE_SPILL_POST, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
+  const [editSpillPost] = useMutation(EDIT_SPILL_POST, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
+  const [editComment] = useMutation(EDIT_COMMENT, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
+  const [deleteComment] = useMutation(DELETE_COMMENT, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
+  const [deleteSpillPost] = useMutation(DELETE_SPILL_POST, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
+  const [reactToComment] = useMutation(REACT_TO_COMMENT, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [commentContent, setCommentContent] = useState("");
   const [commentingOn, setCommentingOn] = useState<string | null>(null);
+
+  const [editingPostId, setEditingPostId] = useState<string | null>(null);
+  const [editPostTitle, setEditPostTitle] = useState("");
+  const [editPostContent, setEditPostContent] = useState("");
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editCommentContent, setEditCommentContent] = useState("");
+
+  // Feed toggle state
   const [feedType, setFeedType] = useState<"public" | "friends">("public");
 
   const handlePostSubmit = async (e: React.FormEvent) => {
