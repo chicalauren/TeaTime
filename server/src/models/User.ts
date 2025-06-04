@@ -1,4 +1,4 @@
-import mongoose, { Document, model, Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 
 export interface IUser extends Document {
@@ -6,12 +6,43 @@ export interface IUser extends Document {
   username: string;
   email: string;
   password: string;
+
+  //TESTING FRIENDS
   favoriteTeas: mongoose.Types.ObjectId[]; // to see the users fav teas
+  friends: { type: [Schema.Types.ObjectId], ref: "User", default: [] },
+  friendRequestsSent: { type: [Schema.Types.ObjectId], ref: "User", default: [] },
+  friendRequestsReceived: { type: [Schema.Types.ObjectId], ref: "User", default: [] },
+
+  bio?: string;
+  favoriteTeaSource?: string;
+  profileImage?: string;
   isCorrectPassword: (password: string) => Promise<boolean>;
 }
 
 const userSchema = new Schema<IUser>(
   {
+    friends: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      default: [],
+    },
+  ],
+// Add this after the array definition:
+    friendRequestsSent: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        default: [],
+      },
+    ],
+    friendRequestsReceived: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        default: [],
+      },
+    ],
     username: {
       type: String,
       required: true,
@@ -22,6 +53,7 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
       match: [/.+@.+\..+/, "Must use a valid email address"],
     },
     password: {
@@ -29,6 +61,7 @@ const userSchema = new Schema<IUser>(
       required: true,
       minlength: 8,
     },
+
     favoriteTeas: [
       {
         // adding a fav category so it SHOULD pull reccomendations from the DB based on these
@@ -36,7 +69,20 @@ const userSchema = new Schema<IUser>(
         ref: "TeaCategory",
       },
     ],
+    bio: {
+      type: String,
+      default: "",
+    },
+    favoriteTeaSource: {
+      type: String,
+      default: "",
+    },
+    profileImage: {
+      type: String,
+      default: "",
+    },
   },
+
   {
     timestamps: true,
   }

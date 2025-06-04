@@ -3,18 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "cd server && npm run start",
-    "test": "npx cypress run --browser electron",
-    "test-component": "npx cypress run --component",
-    "test-gui": "npx cypress open",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cd client && npm run build && cd ../server && npm run build",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-
-    "seed": "npm run build && npx ts-node server/dist/seeds/seed.ts",
-    "render-build": "npm install && npm run build",
+    "dev": "concurrently \"npm run server\" \"wait-on tcp:4000 && npm run client\"",
+    "seed": "cd server && npm run seed",
+    "install": "cd server && npm i && cd ../client && npm i",
     "server": "cd server && npm run dev",
     "client": "cd client && npm run dev",
-    "install": "cd server && npm i && cd ../client && npm i"
+    "render-build": "npm run install && npm run build",
+    "start": "node server/dist/server.js"
   },
   "keywords": [],
   "author": "",
@@ -24,15 +21,16 @@
     "@vitejs/plugin-react": "^4.4.1",
     "apollo-server": "^3.13.0",
     "axios": "^1.9.0",
-    "bootstrap": "^5.3.6",
+    "bootstrap-icons": "^1.13.1",
     "dotenv": "^16.5.0",
-    "react-bootstrap": "^2.10.9",
     "react-circular-progressbar": "^2.2.0",
     "react-confetti": "^6.4.0",
-    "react-hot-toast": "^2.5.2"
+    "react-hot-toast": "^2.5.2",
+    "wait-on": "^8.0.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/graphql": "^14.2.3",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",

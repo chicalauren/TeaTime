@@ -10,6 +10,7 @@ interface ITea {
 interface IUser {
   _id: string;
   favoriteTeas?: string[];
+  profileImage?: string;
 }
 
 export const generateRecommendations = async (userId: string) => {

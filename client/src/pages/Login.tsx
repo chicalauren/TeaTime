@@ -1,60 +1,92 @@
 import { useState } from "react";
-import { useMutation } from "@apollo/client";
-import { LOGIN } from "../utils/mutations"; // Your GraphQL mutation
-import { useNavigate } from "react-router-dom"; // if you want to redirect after login
+import { useMutation, useApolloClient } from "@apollo/client";
+import { LOGIN } from "../utils/mutations";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
-  const [login] = useMutation(LOGIN);
+  const [loginMutation] = useMutation(LOGIN);
+  const client = useApolloClient();
 
-  const [email, setEmail] = useState("");
+  const [loginInput, setLoginInput] = useState(""); // email or username
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { data } = await login({
-        variables: { email, password },
+      const { data } = await loginMutation({
+        variables: { login: loginInput, password },
       });
 
-      // ✅ Save the token and username
       localStorage.setItem("id_token", data.login.token);
       localStorage.setItem("username", data.login.user.username);
 
-      // ✅ Redirect to dashboard or homepage
+      await client.resetStore();
       navigate("/dashboard");
     } catch (err: any) {
-      console.error("Login error:", err);
       setErrorMessage("Failed to login. Please check your credentials.");
     }
   };
 
   return (
-    <div className="auth-container">
-      <h2>Login</h2>
-      <form
-        onSubmit={handleLogin}
-        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-      >
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          required
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          required
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Login</button>
-      </form>
+    <div
+      className="d-flex justify-content-center align-items-center min-vh-100"
+      style={{
+        backgroundImage: 'url("/your-image.jpg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        position: "relative",
+      }}
+    >
+      {/* Translucent overlay */}
+      <div
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.75)",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
+        }}
+      />
 
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+      <div className="card shadow w-100" style={{ maxWidth: "500px", zIndex: 1 }}>
+        <div
+          className="d-flex flex-column justify-content-center text-white p-4"
+          style={{ backgroundColor: "#222", borderRadius: "0.5rem" }}
+        >
+          <h2 className="text-center mb-4">Login</h2>
+
+          <form onSubmit={handleLogin} className="d-flex flex-column gap-3">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Email or Username"
+              value={loginInput}
+              required
+              onChange={(e) => setLoginInput(e.target.value)}
+            />
+            <input
+              type="password"
+              className="form-control"
+              placeholder="Password"
+              value={password}
+              required
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {errorMessage && (
+              <div className="alert alert-danger p-2 text-center mb-0">
+                {errorMessage}
+              </div>
+            )}
+            <button type="submit" className="btn btn-light w-100 mt-2">
+              ✅ Login
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }

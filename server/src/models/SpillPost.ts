@@ -1,21 +1,25 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model } from "mongoose";
 
-const commentSchema = new Schema(
-  {
-    content: {
-      type: String,
-      required: true,
+const commentSchema = new Schema({
+  content: {
+    type: String,
+    required: true,
+  },
+  createdByUsername: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+   reactions: [
+    {
+      emoji: String, 
+      users: [String],
     },
-    createdByUsername: {
-      type: String,
-      required: true,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-  }
-);
+  ],
+});
 
 const spillPostSchema = new Schema(
   {
@@ -29,7 +33,7 @@ const spillPostSchema = new Schema(
     },
     createdBy: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
     },
     createdByUsername: {
       type: String,
@@ -40,6 +44,12 @@ const spillPostSchema = new Schema(
       type: Number,
       default: 0,
     },
+    likedBy: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     createdAt: {
       type: Date,
       default: Date.now,
@@ -50,5 +60,5 @@ const spillPostSchema = new Schema(
   }
 );
 
-const SpillPost = model('SpillPost', spillPostSchema);
+const SpillPost = model("SpillPost", spillPostSchema);
 export default SpillPost;

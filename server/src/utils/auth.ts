@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import { Request } from "express";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -21,12 +20,14 @@ export function signToken({ _id, email, username }: UserPayload) {
 export function authMiddleware({ req }: { req: any }) {
   const token = req.headers.authorization?.split(" ")[1]; // Extract the token
   if (!token) {
-    return { req }; // No token, user is not authenticated
+    req.user = null;
+    return req; // No token, user is not authenticated
   }
+
   console.log("Received token:", token);
 
   try {
-    const { data } = jwt.verify(token, process.env.JWT_SECRET!) as {
+    const { data } = jwt.verify(token, secret) as {
       data: { _id: string; username: string; email: string };
     };
     console.log("Decoded token data:", data);
@@ -34,6 +35,7 @@ export function authMiddleware({ req }: { req: any }) {
     console.log("User from token:", req.user); // Debugging
   } catch (err) {
     console.error("Invalid or expired token");
+    req.user = null;
   }
 
   return req;
