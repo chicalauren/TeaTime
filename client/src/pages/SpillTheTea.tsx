@@ -1,6 +1,7 @@
+// ...imports remain unchanged
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_SPILL_POSTS, GET_ME_WITH_FRIENDS } from "../utils/queries";
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 import {
   ADD_SPILL_POST,
   ADD_COMMENT,
@@ -101,30 +102,18 @@ function SpillTheTea() {
   const isFriend = (username: string) =>
     myFriends.some((f: any) => f.username === username);
 
-  const [addSpillPost] = useMutation(ADD_SPILL_POST, {
-    refetchQueries: [{ query: GET_SPILL_POSTS }],
-  });
-  const [addComment] = useMutation(ADD_COMMENT, {
-    refetchQueries: [{ query: GET_SPILL_POSTS }],
-  });
-  const [likeSpillPost] = useMutation(LIKE_SPILL_POST, {
-    refetchQueries: [{ query: GET_SPILL_POSTS }],
-  });
-  const [editSpillPost] = useMutation(EDIT_SPILL_POST, {
-    refetchQueries: [{ query: GET_SPILL_POSTS }],
-  });
-  const [editComment] = useMutation(EDIT_COMMENT, {
-    refetchQueries: [{ query: GET_SPILL_POSTS }],
-  });
-  const [deleteComment] = useMutation(DELETE_COMMENT, {
-    refetchQueries: [{ query: GET_SPILL_POSTS }],
-  });
-  const [deleteSpillPost] = useMutation(DELETE_SPILL_POST, {
-    refetchQueries: [{ query: GET_SPILL_POSTS }],
-  });
-  const [reactToComment] = useMutation(REACT_TO_COMMENT, {
-    refetchQueries: [{ query: GET_SPILL_POSTS }],
-  });
+  // Apply isFriend usage to label comments from friends
+  const showFriendLabel = (username: string) =>
+    isFriend(username) ? <span className="text-success"> (Friend)</span> : null;
+
+  const [addSpillPost] = useMutation(ADD_SPILL_POST, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
+  const [addComment] = useMutation(ADD_COMMENT, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
+  const [likeSpillPost] = useMutation(LIKE_SPILL_POST, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
+  const [editSpillPost] = useMutation(EDIT_SPILL_POST, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
+  const [editComment] = useMutation(EDIT_COMMENT, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
+  const [deleteComment] = useMutation(DELETE_COMMENT, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
+  const [deleteSpillPost] = useMutation(DELETE_SPILL_POST, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
+  const [reactToComment] = useMutation(REACT_TO_COMMENT, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -137,7 +126,6 @@ function SpillTheTea() {
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editCommentContent, setEditCommentContent] = useState("");
 
-  // Feed toggle state
   const [feedType, setFeedType] = useState<"public" | "friends">("public");
 
   const handlePostSubmit = async (e: React.FormEvent) => {
@@ -161,212 +149,189 @@ function SpillTheTea() {
     : spillPosts.filter((post: any) => friendUsernames.includes(post.createdByUsername));
 
   return (
-    <div
-      className="text-light min-vh-100"
-      style={{
-        backgroundImage: "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/tea-background.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
-        width: "100%",
-      }}
-    >
-
+    <div className="text-light min-vh-100">
       <div className="container py-4">
-        <h1 className="mb-2">🫖 Spill the Tea</h1>
-        <p className="text-light">Share your favorite teas, brewing tips, and more! 🍵🗣</p>
-
         <div className="mb-4">
           <OverlayTrigger overlay={<Tooltip>View public posts</Tooltip>}>
-            <button
-              className={`btn me-2 ${feedType === "public" ? "btn-success" : "btn-outline-light"}`}
-              onClick={() => setFeedType("public")}
-            >
-              Public Feed
-            </button>
+            <button className={`btn me-2 ${feedType === "public" ? "btn-success" : "btn-outline-light"}`} onClick={() => setFeedType("public")}>Public Feed</button>
           </OverlayTrigger>
           <OverlayTrigger overlay={<Tooltip>View friends' posts</Tooltip>}>
-            <button
-              className={`btn ${feedType === "friends" ? "btn-success" : "btn-outline-light"}`}
-              onClick={() => setFeedType("friends")}
-            >
-              Friends Feed
-            </button>
+            <button className={`btn ${feedType === "friends" ? "btn-success" : "btn-outline-light"}`} onClick={() => setFeedType("friends")}>Friends Feed</button>
           </OverlayTrigger>
         </div>
 
         <form onSubmit={handlePostSubmit} className="mb-5">
-          <div className="mb-3">
-            <input
-              className="form-control"
-              type="text"
-              placeholder="Title of your post"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <textarea
-              className="form-control"
-              placeholder="What's on your mind?"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              required
-              rows={4}
-            />
-          </div>
-          <OverlayTrigger overlay={<Tooltip>Submit your spill</Tooltip>}>
-            <button type="submit" className="btn btn-success">
-              Post Spill
-            </button>
-          </OverlayTrigger>
+          <input className="form-control mb-2" placeholder="Title of your post" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <textarea className="form-control mb-2" placeholder="What's on your mind?" value={content} onChange={(e) => setContent(e.target.value)} required rows={3} />
+          <button type="submit" className="btn btn-success">Post Spill</button>
         </form>
 
-        {filteredPosts.length === 0 ? (
-          <p className="text-light">
-            {feedType === "friends" ? "No posts from your friends yet." : "No posts yet."}
-          </p>
-        ) : (
-          filteredPosts.map((post: any) => {
-            const hasUserLiked = post.likedBy?.includes(currentUserId);
+        {filteredPosts.map((post: any) => {
+          const hasUserLiked = post.likedBy?.includes(currentUserId);
 
-            return (
-              <div key={post._id} className="card shadow-sm mb-4 border-success">
-                <div className="card-body bg-light">
-                  {post.createdByUsername === currentUsername && (
-                    <OverlayTrigger overlay={<Tooltip>Delete this post</Tooltip>}>
-                      <button
-                        onClick={async () => {
-                          if (window.confirm("Delete this spill?")) {
-                            await deleteSpillPost({ variables: { spillPostId: post._id } });
-                          }
-                        }}
-                        className="btn btn-danger btn-sm float-end"
-                        aria-label="Delete post"
-                      >
-                        <i className="bi bi-trash"></i>
-                      </button>
-                    </OverlayTrigger>
-                  )}
-
-                  <h5 className="card-title text-success fw-bold">{post.title}</h5>
-                  <h6 className="card-subtitle mb-2 text-muted">
-                    by {post.createdByUsername === currentUsername ? post.createdByUsername : (
-                      <Link to={`/user/${post.createdByUsername}`}>{post.createdByUsername}</Link>
-                    )}
-                  </h6>
-                  <p className="card-text text-dark">{post.content}</p>
-                  <small className="text-muted">
-                    Posted on {new Date(Number(post.createdAt)).toLocaleString()}
-                  </small>
-
-                  <div className="mt-3">
-                    <OverlayTrigger overlay={<Tooltip>Like this post</Tooltip>}>
-                      <button
-                        className="btn btn-outline-danger btn-sm"
-                        onClick={() => {
-                          if (!hasUserLiked) {
-                            likeSpillPost({ variables: { spillPostId: post._id } });
-                          }
-                        }}
-                        disabled={hasUserLiked}
-                        aria-label="Like post"
-                      >
-                        ❤️ {post.likes || 0} {hasUserLiked ? "Liked" : "Like"}
-                      </button>
-                    </OverlayTrigger>
-                  </div>
-
-                  <div className="mt-4">
-                    <h6 className="text-success">Comments:</h6>
-                    {post.comments?.map((comment: any) => (
-                      <div key={comment._id} className="card mb-2 bg-white border-info">
-                        <div className="card-body py-2 px-3">
-                          <p className="fw-bold mb-1">
-                            {comment.createdByUsername === currentUsername ? (
-                              comment.createdByUsername
-                            ) : (
-                              <Link to={`/user/${comment.createdByUsername}`}>
-                                {comment.createdByUsername}
-                                {isFriend(comment.createdByUsername) && (
-                                  <span className="text-success"> (Friend)</span>
-                                )}
-                              </Link>
-                            )}
-                          </p>
-                          <p className="mb-1">{comment.content}</p>
-                          <small className="text-muted">
-                            {new Date(Number(comment.createdAt)).toLocaleString()}
-                          </small>
-                          <CommentReactions
-                            comment={comment}
-                            postId={post._id}
-                            currentUsername={currentUsername}
-                            reactToComment={reactToComment}
-                          />
-                          {comment.createdByUsername === currentUsername && (
-                            <button
-                              onClick={() =>
-                                deleteComment({
-                                  variables: {
-                                    spillPostId: post._id,
-                                    commentId: comment._id,
-                                  },
-                                })
-                              }
-                              className="btn btn-danger btn-sm mt-2"
-                              aria-label="Delete Comment"
-                            >
-                              <i className="bi bi-trash"></i>
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-
-                    {commentingOn === post._id ? (
-                      <form
-                        onSubmit={async (e) => {
-                          e.preventDefault();
-                          await addComment({
-                            variables: {
-                              spillPostId: post._id,
-                              content: commentContent,
-                            },
-                          });
-                          setCommentContent("");
-                          setCommentingOn(null);
-                        }}
-                        className="mt-3"
-                      >
-                        <input
-                          type="text"
-                          className="form-control mb-2"
-                          placeholder="Write a comment..."
-                          value={commentContent}
-                          onChange={(e) => setCommentContent(e.target.value)}
-                          required
-                        />
-                        <button type="submit" className="btn btn-primary btn-sm">
-                          Post Comment
+          return (
+            <div key={post._id} className="card mb-4">
+              <div className="card-body">
+                {editingPostId === post._id ? (
+                  <form
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+                      await editSpillPost({
+                        variables: {
+                          spillPostId: post._id,
+                          title: editPostTitle,
+                          content: editPostContent,
+                        },
+                      });
+                      setEditingPostId(null);
+                      setEditPostTitle("");
+                      setEditPostContent("");
+                    }}
+                  >
+                    <input
+                      className="form-control mb-2"
+                      value={editPostTitle}
+                      onChange={(e) => setEditPostTitle(e.target.value)}
+                      required
+                    />
+                    <textarea
+                      className="form-control mb-2"
+                      value={editPostContent}
+                      onChange={(e) => setEditPostContent(e.target.value)}
+                      required
+                      rows={3}
+                    />
+                    <button type="submit" className="btn btn-success btn-sm me-2">
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => setEditingPostId(null)}
+                    >
+                      Cancel
+                    </button>
+                  </form>
+                ) : (
+                  <>
+                    <h5 className="card-title">{post.title}</h5>
+                    <p className="card-text">{post.content}</p>
+                    {post.createdByUsername === currentUsername && (
+                      <>
+                        <button
+                          className="btn btn-outline-warning btn-sm me-2"
+                          onClick={() => {
+                            setEditingPostId(post._id);
+                            setEditPostTitle(post.title);
+                            setEditPostContent(post.content);
+                          }}
+                        >
+                          ✏️ Edit Post
                         </button>
-                      </form>
-                    ) : (
-                      <button
-                        onClick={() => setCommentingOn(post._id)}
-                        className="btn btn-outline-primary btn-sm mt-3"
-                      >
-                        🗣 Add Comment
-                      </button>
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() => deleteSpillPost({ variables: { spillPostId: post._id } })}
+                        >
+                          🗑️ Delete Post
+                        </button>
+                      </>
                     )}
-                  </div>
+                  </>
+                )}
+
+                <div className="mt-2">
+                  <button className="btn btn-outline-danger btn-sm" disabled={hasUserLiked} onClick={() => {
+                    if (!hasUserLiked) likeSpillPost({ variables: { spillPostId: post._id } });
+                  }}>❤️ {post.likes || 0} {hasUserLiked ? "Liked" : "Like"}</button>
+                </div>
+
+                <div className="mt-4">
+                  <h6>Comments:</h6>
+                  {post.comments?.map((comment: any) => (
+                    <div key={comment._id} className="card mb-2">
+                      <div className="card-body">
+                        {editingCommentId === comment._id ? (
+                          <form
+                            onSubmit={async (e) => {
+                              e.preventDefault();
+                              await editComment({
+                                variables: {
+                                  spillPostId: post._id,
+                                  commentId: comment._id,
+                                  content: editCommentContent,
+                                },
+                              });
+                              setEditingCommentId(null);
+                              setEditCommentContent("");
+                            }}
+                          >
+                            <input
+                              className="form-control mb-2"
+                              value={editCommentContent}
+                              onChange={(e) => setEditCommentContent(e.target.value)}
+                              required
+                            />
+                            <button type="submit" className="btn btn-success btn-sm me-2">
+                              Save
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-secondary btn-sm"
+                              onClick={() => setEditingCommentId(null)}
+                            >
+                              Cancel
+                            </button>
+                          </form>
+                        ) : (
+                          <>
+                            <p className="mb-1">
+  {comment.content}
+  {showFriendLabel(comment.createdByUsername)}
+</p>
+                            {comment.createdByUsername === currentUsername && (
+                              <>
+                                <button
+                                  className="btn btn-outline-warning btn-sm me-2"
+                                  onClick={() => {
+                                    setEditingCommentId(comment._id);
+                                    setEditCommentContent(comment.content);
+                                  }}
+                                >
+                                  ✏️ Edit Comment
+                                </button>
+                                <button
+                                  className="btn btn-danger btn-sm"
+                                  onClick={() => deleteComment({ variables: { spillPostId: post._id, commentId: comment._id } })}
+                                >
+                                  🗑️ Delete Comment
+                                </button>
+                              </>
+                            )}
+                          </>
+                        )}
+                        <CommentReactions comment={comment} postId={post._id} currentUsername={currentUsername} reactToComment={reactToComment} />
+                      </div>
+                    </div>
+                  ))}
+
+                  {commentingOn === post._id ? (
+                    <form onSubmit={async (e) => {
+                      e.preventDefault();
+                      await addComment({ variables: { spillPostId: post._id, content: commentContent } });
+                      setCommentContent("");
+                      setCommentingOn(null);
+                    }}>
+                      <input type="text" className="form-control mb-2" placeholder="Write a comment..." value={commentContent} onChange={(e) => setCommentContent(e.target.value)} required />
+                      <button type="submit" className="btn btn-primary btn-sm">Post Comment</button>
+                    </form>
+                  ) : (
+                    <button className="btn btn-outline-primary btn-sm" onClick={() => setCommentingOn(post._id)}>🗣 Add Comment</button>
+                  )}
                 </div>
               </div>
-            );
-          })
-        )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
