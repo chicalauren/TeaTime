@@ -94,28 +94,30 @@ function EditTeaForm() {
   };
 
   const handleImageUpload = async () => {
-    if (!imageFile) return null;
-    setUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append("file", imageFile);
-      formData.append("upload_preset", "tea_uploads");
+  if (!imageFile) return null;
+  setUploading(true);
+  try {
+    const formData = new FormData();
+    formData.append("file", imageFile);
+    formData.append("upload_preset", "tea_uploads");
 
-      const uploadUrl = process.env.REACT_APP_CLOUDINARY_UPLOAD_URL
-      const response = await axios.post(
-        `${uploadUrl}`,
-        formData
-      );
+    const uploadUrl = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL;
+    const response = await axios.post(
+      `${uploadUrl}`,
+      formData
+    );
 
-      return response.data.secure_url;
-    } catch (error) {
-      console.error("Image upload failed", error);
-      toast.error("Image upload failed. Please try again.");
-      return null;
-    } finally {
-      setUploading(false);
-    }
-  };
+    setImagePreview(response.data.secure_url);
+
+    return response.data.secure_url;
+  } catch (error) {
+    console.error("Image upload failed", error);
+    toast.error("Image upload failed. Please try again.");
+    return null;
+  } finally {
+    setUploading(false);
+  }
+};
 
   const { data, loading, error } = useQuery(GET_TEA, { variables: { id } });
   const [updateTea] = useMutation(UPDATE_TEA, {
@@ -142,29 +144,35 @@ function EditTeaForm() {
   if (error) return <p>Error loading tea.</p>;
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const uploadedImageUrl = await handleImageUpload();
-      await updateTea({
-        variables: {
-          teaId: id,
-          name,
-          brand,
-          type,
-          imageUrl: uploadedImageUrl ?? imagePreview,
-          tastingNotes,
-          tags: tags.map((tag) => tag.value),
-          rating: rating === "" ? null : rating,
-          favorite,
-        },
-      });
-      toast.success("Tea updated successfully!");
-      navigate("/dashboard");
-    } catch (error: any) {
-      console.error("Update failed", error);
-      toast.error("Update failed. Please try again.");
+  e.preventDefault();
+  try {
+    let uploadedImageUrl = null;
+    if (imageFile) {
+      uploadedImageUrl = await handleImageUpload();
+      if (!uploadedImageUrl) {
+        return;
+      }
     }
-  };
+    await updateTea({
+      variables: {
+        teaId: id,
+        name,
+        brand,
+        type,
+        imageUrl: uploadedImageUrl ?? imagePreview,
+        tastingNotes,
+        tags: tags.map((tag) => tag.value),
+        rating: rating === "" ? null : rating,
+        favorite,
+      },
+    });
+    toast.success("Tea updated successfully!");
+    navigate("/dashboard");
+  } catch (error: any) {
+    console.error("Update failed", error);
+    toast.error("Update failed. Please try again.");
+  }
+};
 
   return (
     <div className="d-flex justify-content-center align-items-center min-vh-100" style={{
