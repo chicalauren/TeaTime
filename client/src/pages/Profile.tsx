@@ -99,7 +99,7 @@ function Profile() {
     formData.append("upload_preset", "unsignedProfilePictures");
     formData.append("folder", "user_profile_pictures");
     
-    const uploadUrl = process.env.REACT_APP_CLOUDINARY_URL || "";
+    const uploadUrl = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL || "";
     try {
       const res = await fetch(
         `${uploadUrl}`,
