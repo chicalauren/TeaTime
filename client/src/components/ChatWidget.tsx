@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_ME_WITH_FRIENDS, GET_THREAD_WITH } from "../utils/queries";
+import { GET_ME_WITH_FRIENDS, GET_THREAD_WITH, GET_MY_THREADS } from "../utils/queries";
 import { SEND_MESSAGE, MARK_THREAD_AS_READ } from "../utils/mutations";
 
 function ChatWidget() {
@@ -10,12 +10,15 @@ function ChatWidget() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
 
-  // Get friends list
-  const { data: meData } = useQuery(GET_ME_WITH_FRIENDS, { skip: !open });
+  // Always fetch friends so the widget can show avatars even when closed
+  const { data: meData } = useQuery(GET_ME_WITH_FRIENDS);
   const friends = meData?.me?.friends ?? [];
   const myUserId = meData?.me?._id;
 
-  // Get thread with selected friend
+  // Always fetch threads so unread status is always up-to-date
+  const { data: threadsData, refetch: refetchThreads } = useQuery(GET_MY_THREADS, { skip: !myUserId });
+
+  // Only fetch thread data when a chat is open
   const { data: threadData, refetch: refetchThread } = useQuery(GET_THREAD_WITH, {
     variables: { userId: activeUserId },
     skip: !activeUserId,
@@ -25,6 +28,15 @@ function ChatWidget() {
   const [sendMessage] = useMutation(SEND_MESSAGE);
   const [markAsRead] = useMutation(MARK_THREAD_AS_READ);
 
+  // Detect unread messages (always up-to-date)
+  const hasUnread = threadsData?.myMessageThreads?.some((thread: any) =>
+    thread.messages.some(
+      (msg: any) =>
+        !msg.readBy.some((u: any) => u._id === myUserId) &&
+        msg.sender._id !== myUserId
+    )
+  );
+
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim() || !activeUserId) return;
@@ -33,7 +45,19 @@ function ChatWidget() {
     });
     setMessage("");
     await refetchThread();
+    await refetchThreads();
   };
+
+  // Mark as read and refetch threads when a thread is opened or new messages arrive
+  useEffect(() => {
+    if (threadData?.messageThreadWith?._id) {
+      markAsRead({ variables: { threadId: threadData.messageThreadWith._id } }).then(() => {
+        refetchThreads();
+      });
+    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // eslint-disable-next-line
+  }, [threadData?.messageThreadWith?.messages.length]);
 
   // Close chat when clicking outside
   useEffect(() => {
@@ -61,13 +85,6 @@ function ChatWidget() {
     return () => window.removeEventListener("teatime-logout", handleLogout);
   }, []);
 
-  useEffect(() => {
-    if (threadData?.messageThreadWith?._id) {
-      markAsRead({ variables: { threadId: threadData.messageThreadWith._id } });
-    }
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [threadData?.messageThreadWith?.messages.length]);
-
   return (
     <div>
       {/* Floating Button */}
@@ -82,7 +99,7 @@ function ChatWidget() {
         <button
           onClick={() => setOpen((o) => !o)}
           style={{
-            background: "#72a85a",
+            background: hasUnread ? "#d32f2f" : "#72a85a",
             color: "#fff",
             border: "none",
             borderRadius: "50%",
@@ -91,11 +108,47 @@ function ChatWidget() {
             fontSize: 32,
             boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
             cursor: "pointer",
+            position: "relative",
+            animation: hasUnread ? "pulse 1s infinite" : "none",
+            transition: "background 0.3s",
           }}
           aria-label="Open chat"
         >
           💬
+          {hasUnread && (
+            <span
+              style={{
+                position: "absolute",
+                top: 8,
+                right: 8,
+                width: 18,
+                height: 18,
+                background: "#fff",
+                color: "#d32f2f",
+                borderRadius: "50%",
+                border: "2px solid #d32f2f",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 700,
+                fontSize: 13,
+                boxShadow: "0 0 4px #d32f2f",
+              }}
+            >
+              !
+            </span>
+          )}
         </button>
+        {/* Pulse animation keyframes */}
+        <style>
+          {`
+            @keyframes pulse {
+              0% { box-shadow: 0 0 0 0 #d32f2f66; }
+              70% { box-shadow: 0 0 0 10px #d32f2f00; }
+              100% { box-shadow: 0 0 0 0 #d32f2f00; }
+            }
+          `}
+        </style>
       </div>
 
       {/* Chat Popup */}
