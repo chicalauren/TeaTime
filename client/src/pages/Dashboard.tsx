@@ -31,7 +31,9 @@ interface Tea {
 }
 
 function Dashboard() {
-  const { loading, error, data } = useQuery(GET_TEAS);
+  const { loading, error, data } = useQuery(GET_TEAS, {
+    fetchPolicy: "network-only",
+  });
   const { data: userData } = useQuery(GET_ME);
   const [addToFavorites] = useMutation(ADD_TEA_TO_FAVORITES);
   const [removeFromFavorites] = useMutation(REMOVE_TEA_FROM_FAVORITES);
