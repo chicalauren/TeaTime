@@ -2,11 +2,17 @@ import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_USER_BY_USERNAME, GET_ME_WITH_FRIENDS } from "../utils/queries";
 import { SEND_FRIEND_REQUEST } from "../utils/mutations";
+import { useEffect } from "react";
 
 function UserProfile() {
   const { username } = useParams();
-  const { data: userData, loading, error } = useQuery(GET_USER_BY_USERNAME, { variables: { username } });
-  const { data: meData } = useQuery(GET_ME_WITH_FRIENDS);
+  const {
+    data: userData,
+    loading,
+    error,
+    refetch: refetchUser,
+  } = useQuery(GET_USER_BY_USERNAME, { variables: { username } });
+  const { data: meData, refetch: refetchMe } = useQuery(GET_ME_WITH_FRIENDS);
 
   // Refetch GET_ME_WITH_FRIENDS after sending a request so UI updates immediately
   const [sendRequest, { loading: sending }] = useMutation(SEND_FRIEND_REQUEST, {
@@ -15,6 +21,12 @@ function UserProfile() {
 
   const user = userData?.userByUsername;
   const me = meData?.me;
+
+  // Refetch user data when the username param changes (e.g., after profile update)
+  useEffect(() => {
+    refetchUser();
+    refetchMe();
+  }, [username]);
 
   if (loading) return <p>Loading profile...</p>;
   if (error) return <p>Error loading profile: {error.message}</p>;
@@ -31,7 +43,7 @@ function UserProfile() {
       <div className="card shadow w-100 mb-5" style={{ maxWidth: "500px" }}>
         <div className="ratio ratio-1x1">
           <img
-            src="/teacup.jpg"
+            src={user.profileImage || "/teacup.jpg"}
             alt="User profile"
             className="img-fluid object-fit-cover rounded-top"
           />
@@ -51,7 +63,10 @@ function UserProfile() {
           {!isMe && !isFriend && (
             <button
               className="btn btn-outline-primary mt-3"
-              onClick={() => sendRequest({ variables: { userId: user._id } })}
+              onClick={async () => {
+                await sendRequest({ variables: { userId: user._id } });
+                await refetchMe();
+              }}
               disabled={requestSent || sending}
               style={
                 requestSent || sending
