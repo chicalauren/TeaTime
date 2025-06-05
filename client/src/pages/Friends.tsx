@@ -30,6 +30,15 @@ function Friends() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchUsers, { data: searchData, loading: searchLoading, error: searchError }] = useLazyQuery(SEARCH_USERS);
 
+  // Live search as user types
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    if (value.trim()) {
+      searchUsers({ variables: { username: value.trim() } });
+    }
+  };
+
   const user = data?.me;
 
   return (
@@ -150,7 +159,7 @@ function Friends() {
                       type="text"
                       placeholder="Search by username"
                       value={searchTerm}
-                      onChange={e => setSearchTerm(e.target.value)}
+                      onChange={handleSearchChange}
                     />
                     <Button type="submit" variant="primary" disabled={searchLoading}>
                       Search

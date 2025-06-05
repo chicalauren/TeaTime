@@ -31,9 +31,9 @@ const resolvers = {
       // Case-insensitive partial match
       return User.find({
         username: { $regex: username, $options: "i" }
-      }).limit(10);
+      }).limit(5);
     },
-    
+
     myMessageThreads: async (_: any, __: any, context: any) => {
       if (!context.user) throw new AuthenticationError("You must be logged in");
       return MessageThread.find({ participants: context.user._id })
