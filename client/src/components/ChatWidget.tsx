@@ -28,7 +28,6 @@ function ChatWidget() {
   const [sendMessage] = useMutation(SEND_MESSAGE);
   const [markAsRead] = useMutation(MARK_THREAD_AS_READ);
 
-  // Detect unread messages (always up-to-date)
   const hasUnread = threadsData?.myMessageThreads?.some((thread: any) =>
     thread.messages.some(
       (msg: any) =>
@@ -36,6 +35,20 @@ function ChatWidget() {
         msg.sender._id !== myUserId
     )
   );
+
+  const unreadByFriend: Record<string, boolean> = {};
+  if (threadsData?.myMessageThreads) {
+    threadsData.myMessageThreads.forEach((thread: any) => {
+      const other = thread.participants.find((p: any) => p._id !== myUserId);
+      if (!other) return;
+      const hasUnreadMsg = thread.messages.some(
+        (msg: any) =>
+          !msg.readBy.some((u: any) => u._id === myUserId) &&
+          msg.sender._id !== myUserId
+      );
+      if (hasUnreadMsg) unreadByFriend[other._id] = true;
+    });
+  }
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +61,6 @@ function ChatWidget() {
     await refetchThreads();
   };
 
-  // Mark as read and refetch threads when a thread is opened or new messages arrive
   useEffect(() => {
     if (threadData?.messageThreadWith?._id) {
       markAsRead({ variables: { threadId: threadData.messageThreadWith._id } }).then(() => {
@@ -59,7 +71,6 @@ function ChatWidget() {
     // eslint-disable-next-line
   }, [threadData?.messageThreadWith?.messages.length]);
 
-  // Close chat when clicking outside
   useEffect(() => {
     if (!open) return;
     function handleClickOutside(event: MouseEvent) {
@@ -75,7 +86,6 @@ function ChatWidget() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [open]);
 
-  // Close chat on logout (listen for a custom event)
   useEffect(() => {
     function handleLogout() {
       setOpen(false);
@@ -234,34 +244,52 @@ function ChatWidget() {
                 <p style={{ padding: 16, color: "#888" }}>No friends to message.</p>
               ) : (
                 <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-                  {friends.map((friend: any) => (
-                    <li
-                      key={friend._id}
-                      style={{
-                        padding: "12px 16px",
-                        borderBottom: "1px solid #eee",
-                        cursor: "pointer",
-                        background: "#fff",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 12,
-                      }}
-                      onClick={() => setActiveUserId(friend._id)}
-                    >
-                      <img
-                        src={friend.profileImage || "/teacup.jpg"}
-                        alt={friend.username}
+                  {friends.map((friend: any) => {
+                    const hasUnread = unreadByFriend[friend._id];
+                    return (
+                      <li
+                        key={friend._id}
                         style={{
-                          width: 32,
-                          height: 32,
-                          borderRadius: "50%",
-                          objectFit: "cover",
-                          marginRight: 8,
+                          padding: "12px 16px",
+                          borderBottom: "1px solid #eee",
+                          cursor: "pointer",
+                          background: hasUnread ? "#ffeaea" : "#fff",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
                         }}
-                      />
-                      <div style={{ fontWeight: 600 }}>{friend.username}</div>
-                    </li>
-                  ))}
+                        onClick={() => setActiveUserId(friend._id)}
+                      >
+                        <img
+                          src={friend.profileImage || "/teacup.jpg"}
+                          alt={friend.username}
+                          style={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                            marginRight: 8,
+                          }}
+                        />
+                        <div style={{ fontWeight: 600, flex: 1 }}>{friend.username}</div>
+                        {hasUnread && (
+                          <span
+                            style={{
+                              color: "#d32f2f",
+                              fontWeight: 900,
+                              fontSize: 18,
+                              marginLeft: 8,
+                              verticalAlign: "middle",
+                            }}
+                            aria-label="Unread messages"
+                            title="Unread messages"
+                          >
+                            !!!
+                          </span>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
             </div>
