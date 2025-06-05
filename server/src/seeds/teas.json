@@ -1,5 +1,21 @@
 [
   {
+    "name": "Glitter Unicorn",
+    "type": "Rainbow",
+    "brand": "",
+    "description": "A BOLD magical tea for everyone to enjoy",
+    "caffeineLevel": "Varies, depending on how you're feeling that day and it will pick you up!",
+    "brewTempCelsius": "90",
+    "brewTempFahrenheit": "194",
+    "brewTimeMinutes": "3",
+    "flavorNotes": "Glitter, rainbows and chaos",
+    "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
+    "usage": "focus, energy, and the spice of life",
+    "tags": ["black", "focus-and-energy"],
+    "imageUrl": "/images/unicorn.jpg",
+    "tastingNotes": ""
+  },
+  {
     "name": "Earl Grey",
     "type": "Black",
     "brand": "",
