@@ -166,7 +166,7 @@ function Dashboard() {
             <option value="newest">Newest</option>
             <option value="az">Name A-Z</option>
             <option value="za">Name Z-A</option>
-            <option value="mine">My Teas Only</option>
+            <option value="mine">Custom Tea</option>
           </Form.Select>
 
           <CustomButton onClick={handleClearFilters}>
