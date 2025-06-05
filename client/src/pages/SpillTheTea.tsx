@@ -148,15 +148,35 @@ function SpillTheTea() {
     : spillPosts.filter((post: any) => friendUsernames.includes(post.createdByUsername));
 
   return (
-    <div className="text-light min-vh-100">
-      <div className="container py-4">
-      <h2 className="text-light mb-4">🫖 Spill the Tea</h2>
+    <div
+      className="position-relative min-vh-100"
+      style={{
+        backgroundImage: 'url("/your-image.jpg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {/* White overlay */}
+      <div
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.75)",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
+        }}
+      />
+
+      <div className="container py-4" style={{ position: "relative", zIndex: 1 }}>
+        <h2 className="text-dark mb-4">🫖 Spill the Tea</h2>
         <div className="mb-4">
           <OverlayTrigger overlay={<Tooltip>View public posts</Tooltip>}>
-            <button className={`btn me-2 ${feedType === "public" ? "btn-success" : "btn-outline-light"}`} onClick={() => setFeedType("public")}>Public Feed</button>
+            <button className={`btn me-2 ${feedType === "public" ? "btn-success" : "btn-outline-dark"}`} onClick={() => setFeedType("public")}>Public Feed</button>
           </OverlayTrigger>
           <OverlayTrigger overlay={<Tooltip>View friends' posts</Tooltip>}>
-            <button className={`btn ${feedType === "friends" ? "btn-success" : "btn-outline-light"}`} onClick={() => setFeedType("friends")}>Friends Feed</button>
+            <button className={`btn ${feedType === "friends" ? "btn-success" : "btn-outline-dark"}`} onClick={() => setFeedType("friends")}>Friends Feed</button>
           </OverlayTrigger>
         </div>
 
