@@ -170,27 +170,34 @@ function Friends() {
                   {searchLoading && <div>Searching...</div>}
                   {searchError && <div className="text-danger">Error: {searchError.message}</div>}
                   {searchData?.searchUsers?.length === 0 && <div>No users found.</div>}
-                  {searchData?.searchUsers?.map((u: any) => (
-                    <Card key={u._id} className="mb-2">
-                      <Card.Body className="d-flex align-items-center justify-content-between">
-                        <div className="d-flex align-items-center">
-                          <img
-                            src={u.profileImage || "/teacup.jpg"}
-                            alt={u.username}
-                            style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover", marginRight: 12 }}
-                          />
-                          <span>{u.username}</span>
-                        </div>
-                        <Button
-                          size="sm"
-                          variant="success"
-                          onClick={() => sendRequest({ variables: { userId: u._id } })}
-                        >
-                          Add Friend
-                        </Button>
-                      </Card.Body>
-                    </Card>
-                  ))}
+                  {searchData?.searchUsers?.map((u: any) => {
+                    const isFriend = user?.friends?.some((f: any) => f._id === u._id);
+                    return (
+                      <Card key={u._id} className="mb-2">
+                        <Card.Body className="d-flex align-items-center justify-content-between">
+                          <div className="d-flex align-items-center">
+                            <img
+                              src={u.profileImage || "/teacup.jpg"}
+                              alt={u.username}
+                              style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover", marginRight: 12 }}
+                            />
+                            <span>{u.username}</span>
+                          </div>
+                          {isFriend ? (
+                            <span className="badge bg-success">Already a friend</span>
+                          ) : (
+                            <Button
+                              size="sm"
+                              variant="success"
+                              onClick={() => sendRequest({ variables: { userId: u._id } })}
+                            >
+                              Add Friend
+                            </Button>
+                          )}
+                        </Card.Body>
+                      </Card>
+                    );
+                  })}
                 </div>
               </Card.Body>
             </Card>
