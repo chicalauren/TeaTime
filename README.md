@@ -82,11 +82,14 @@ Cloudinary API is only needed if the site will be deployed to a web server; it i
 ## Features
 
 - User authentication (register/login)
-- Add, edit, and delete teas from your collection
+- Add, edit, view, and delete teas from your collection
 - Upload photos and write tasting notes
-- Mark teas as favorites
+- Mark teas as favorites and get reccomendations
 - Search teas by tags or type
 - Connect with other users by sending friend requests
+- Brew now & tea timer
+- Brew Log
+- & more!
 
 ## Screen Shots
 
