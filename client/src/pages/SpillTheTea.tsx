@@ -32,7 +32,7 @@ function CommentReactions({ comment, postId, currentUsername, reactToComment }: 
   };
 
   return (
-    <div className="d-flex align-items-center gap-2 mt-2">
+    <div className="d-flex align-items-center gap-2 mt-2 flex-wrap">
       <div className="position-relative">
         <OverlayTrigger overlay={<Tooltip>React to comment</Tooltip>}>
           <button
@@ -43,7 +43,26 @@ function CommentReactions({ comment, postId, currentUsername, reactToComment }: 
           </button>
         </OverlayTrigger>
         {showPicker && (
-          <div className="position-absolute bg-white border rounded shadow-sm p-2 d-flex gap-2 z-3">
+          <div
+            className="reaction-picker-popover"
+            style={{
+              background: "#fff",
+              border: "1px solid #ddd",
+              borderRadius: 8,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+              padding: 8,
+              display: "flex",
+              gap: 8,
+              flexWrap: "wrap",
+              zIndex: 10,
+              position: "absolute",
+              top: "110%",
+              left: 0,
+              minWidth: 180,
+              maxWidth: 260,
+              overflowX: "auto",
+            }}
+          >
             {emojiOptions.map((emoji) => (
               <button
                 key={emoji}
@@ -67,26 +86,45 @@ function CommentReactions({ comment, postId, currentUsername, reactToComment }: 
           </div>
         )}
       </div>
-      {emojiOptions.map((emoji) => {
-        const count = emojiCount(emoji);
-        const reacted = userReacted(emoji);
-        if (count === 0) return null;
-        return (
-          <OverlayTrigger key={emoji} overlay={<Tooltip>{`React with ${emoji}`}</Tooltip>}>
-            <button
-              onClick={async () =>
-                await reactToComment({
-                  variables: { spillPostId: postId, commentId: comment._id, emoji },
-                })
-              }
-              className={`btn btn-sm ${reacted ? "btn-warning" : "btn-outline-secondary"}`}
-              aria-label={`React with ${emoji}`}
-            >
-              {emoji} {count}
-            </button>
-          </OverlayTrigger>
-        );
-      })}
+      <div className="d-flex gap-1 flex-wrap" style={{ maxWidth: "100%", overflowX: "auto" }}>
+        {emojiOptions.map((emoji) => {
+          const count = emojiCount(emoji);
+          const reacted = userReacted(emoji);
+          if (count === 0) return null;
+          return (
+            <OverlayTrigger key={emoji} overlay={<Tooltip>{`React with ${emoji}`}</Tooltip>}>
+              <button
+                onClick={async () =>
+                  await reactToComment({
+                    variables: { spillPostId: postId, commentId: comment._id, emoji },
+                  })
+                }
+                className={`btn btn-sm ${reacted ? "btn-warning" : "btn-outline-secondary"}`}
+                aria-label={`React with ${emoji}`}
+                style={{ minWidth: 48 }}
+              >
+                {emoji} {count}
+              </button>
+            </OverlayTrigger>
+          );
+        })}
+      </div>
+      <style>
+        {`
+        @media (max-width: 600px) {
+          .reaction-picker-popover {
+            position: static !important;
+            min-width: 0 !important;
+            max-width: 100vw !important;
+            width: 100% !important;
+            margin-top: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            overflow-x: auto;
+          }
+        }
+        `}
+      </style>
     </div>
   );
 }
@@ -101,7 +139,6 @@ function SpillTheTea() {
   const isFriend = (username: string) =>
     myFriends.some((f: any) => f.username === username);
 
-  // Apply isFriend usage to label comments from friends
   const showFriendLabel = (username: string) =>
     isFriend(username) ? <span className="text-success"> (Friend)</span> : null;
 
