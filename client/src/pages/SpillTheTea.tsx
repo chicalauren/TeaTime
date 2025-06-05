@@ -12,7 +12,7 @@ import {
   REACT_TO_COMMENT,
 } from "../utils/mutations";
 import { useState } from "react";
-import { OverlayTrigger, Tooltip } from "react-bootstrap";
+import { OverlayTrigger, Tooltip, Dropdown } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -234,41 +234,55 @@ function SpillTheTea() {
                   </form>
                 ) : (
                   <>
-                    <h5 className="card-title">
-                      {post.title}
-                      <small className="text-muted d-block">
-                        by{" "}
-                        {post.createdByUsername === currentUsername ? (
-                          <span>{post.createdByUsername}</span>
-                        ) : (
-                          <Link to={`/user/${post.createdByUsername}`}>
-                            {post.createdByUsername}
-                          </Link>
-                        )}
-                        {showFriendLabel(post.createdByUsername)}
-                      </small>
-                    </h5>
+                    <div className="d-flex justify-content-between align-items-start">
+                      <div>
+                        <h5 className="card-title mb-1">
+                          {post.title}
+                          <small className="text-muted d-block">
+                            by{" "}
+                            {post.createdByUsername === currentUsername ? (
+                              <span>{post.createdByUsername}</span>
+                            ) : (
+                              <Link to={`/user/${post.createdByUsername}`}>
+                                {post.createdByUsername}
+                              </Link>
+                            )}
+                            {showFriendLabel(post.createdByUsername)}
+                          </small>
+                        </h5>
+                      </div>
+                      {post.createdByUsername === currentUsername && (
+                        <Dropdown align="end">
+                          <Dropdown.Toggle
+                            variant="link"
+                            bsPrefix="p-0 border-0 bg-transparent"
+                            style={{ boxShadow: "none" }}
+                            id={`dropdown-post-${post._id}`}
+                            aria-label="More options"
+                          >
+                            <i className="bi bi-three-dots-vertical" style={{ fontSize: "1.5rem", color: "#333" }}></i>
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu>
+                            <Dropdown.Item
+                              onClick={() => {
+                                setEditingPostId(post._id);
+                                setEditPostTitle(post.title);
+                                setEditPostContent(post.content);
+                              }}
+                            >
+                              ✏️ Edit Post
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() => deleteSpillPost({ variables: { spillPostId: post._id } })}
+                              className="text-danger"
+                            >
+                              🗑️ Delete Post
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      )}
+                    </div>
                     <p className="card-text">{post.content}</p>
-                    {post.createdByUsername === currentUsername && (
-                      <>
-                        <button
-                          className="btn btn-outline-warning btn-sm me-2"
-                          onClick={() => {
-                            setEditingPostId(post._id);
-                            setEditPostTitle(post.title);
-                            setEditPostContent(post.content);
-                          }}
-                        >
-                          ✏️ Edit Post
-                        </button>
-                        <button
-                          className="btn btn-danger btn-sm"
-                          onClick={() => deleteSpillPost({ variables: { spillPostId: post._id } })}
-                        >
-                          🗑️ Delete Post
-                        </button>
-                      </>
-                    )}
                   </>
                 )}
 
