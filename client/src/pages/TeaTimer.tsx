@@ -21,17 +21,16 @@ const backgroundImageUrl = "/images/tea-background.jpg";
 
 function TeaTimer() {
   const location = useLocation();
+  const details = location.state?.teaDetails;
   const state = location.state as
     | { teaName?: string; teaType?: string }
     | undefined;
 
-  // Use a function for initial state so it only runs once
   const [selectedTea, setSelectedTea] = useState(() => {
     const actualTeaName = state?.teaType + " Tea";
     if (state?.teaType && teaOptions.some((t) => t.type === actualTeaName)) {
       return teaOptions.find((t) => t.type === actualTeaName)!;
     }
-    console.log(state?.teaType);
     return teaOptions[0];
   });
   const [timeLeft, setTimeLeft] = useState(0);
@@ -40,7 +39,6 @@ function TeaTimer() {
   const [progress, setProgress] = useState(0);
   const [customMinutes, setCustomMinutes] = useState("");
 
-  // Sync selectedTea with navigation state on every navigation
   useEffect(() => {
     if (state?.teaType && teaOptions.some((t) => t.type === state.teaType)) {
       setSelectedTea(teaOptions.find((t) => t.type === state.teaType)!);
@@ -73,6 +71,26 @@ function TeaTimer() {
   }, [running, paused, timeLeft]);
 
   const startTimer = () => {
+    // --- Brew Logging ---
+    if (details && details._id) {
+      const brewLog = JSON.parse(localStorage.getItem("brewLog") || "{}");
+      const teaId = details._id;
+      const now = new Date().toISOString();
+
+      if (brewLog[teaId]) {
+        brewLog[teaId].lastBrewed = now;
+        brewLog[teaId].timesBrewed += 1;
+      } else {
+        brewLog[teaId] = {
+          tea: details,
+          lastBrewed: now,
+          timesBrewed: 1,
+        };
+      }
+      localStorage.setItem("brewLog", JSON.stringify(brewLog));
+    }
+    // --- End Brew Logging ---
+
     const minutes =
       selectedTea.type === "Custom" ? parseInt(customMinutes) : null;
     const time =
