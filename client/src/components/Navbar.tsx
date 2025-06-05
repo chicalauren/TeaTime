@@ -79,6 +79,11 @@ function Navbar() {
                   </Link>
                 </li>
                 <li className="nav-item">
+                  <Link className="nav-link" to="/brew-log" onClick={handleNavLinkClick}>
+                    🍵Brew Log
+                  </Link>
+                </li>
+                <li className="nav-item">
                   <button
                     className="btn btn-outline-danger ms-2"
                     onClick={() => {

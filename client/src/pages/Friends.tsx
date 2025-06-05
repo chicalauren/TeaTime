@@ -14,6 +14,7 @@ import {
   OverlayTrigger,
   Tooltip,
 } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 function Friends() {
   const { data, refetch } = useQuery(GET_ME_WITH_FRIENDS);
@@ -52,7 +53,11 @@ function Friends() {
               {(user?.friends ?? []).map((f: any) => (
                 <Col key={f._id} xs={12}>
                   <Card className="bg-light d-flex flex-row justify-content-between align-items-center p-2">
-                    <div className="fw-semibold text-dark">{f.username}</div>
+                    <div className="fw-semibold text-dark">
+                      <Link to={`/user/${f.username}`} className="friend-link">
+                        {f.username}
+                      </Link>
+                    </div>
                     <OverlayTrigger overlay={<Tooltip id={`remove-${f._id}`}>Remove Friend</Tooltip>}>
                       <Button
                         variant="danger"

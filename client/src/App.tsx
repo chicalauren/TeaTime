@@ -23,6 +23,7 @@ import Favorites from "./pages/Favorites";
 import UserProfile from "./pages/UserProfile.tsx";
 import Friends from "./pages/Friends";
 import ChatWidget from "./components/ChatWidget";
+import BrewLog from "./pages/BrewLog";
 
 const httpLink = createHttpLink({
   uri: "/graphql",
@@ -49,54 +50,55 @@ function AppContent() {
   return (
     <>
       <Navbar />
-      <main style={{ paddingTop: "64px" }}>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route
-            path="/add-tea"
-            element={
-              <ProtectedRoute>
-                <AddTeaForm />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/teas/:id" element={<TeaDetail />} />
-          <Route path="/teas" element={<TeaList />} />
-          <Route path="/teas/:id" element={<TeaDetail />} />
-          <Route path="/edit-tea/:id" element={<EditTeaForm />} />
-          <Route path="/spill" element={<SpillTheTea />} />
-          <Route path="/teatimer" element={<TeaTimer />} />
-          <Route path="/favorites" element={<Favorites />} />
-          <Route
-            path="/friends"
-            element={
-              <ProtectedRoute>
-                <Friends />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/user/:username" element={<UserProfile />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </main>
+        <main style={{ paddingTop: "64px" }}>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route
+              path="/add-tea"
+              element={
+                <ProtectedRoute>
+                  <AddTeaForm />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/teas/:id" element={<TeaDetail />} />
+            <Route path="/teas" element={<TeaList />} />
+            <Route path="/teas/:id" element={<TeaDetail />} />
+            <Route path="/edit-tea/:id" element={<EditTeaForm />} />
+            <Route path="/spill" element={<SpillTheTea />} />
+            <Route path="/teatimer" element={<TeaTimer />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route
+              path="/friends"
+              element={
+                <ProtectedRoute>
+                  <Friends />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/brew-log" element={<BrewLog />} />
+            <Route path="/user/:username" element={<UserProfile />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </main>
       {!["/", "/login", "/register"].includes(location.pathname) && <ChatWidget />}
       <Footer />
     </>

@@ -12,7 +12,7 @@ import {
   REACT_TO_COMMENT,
 } from "../utils/mutations";
 import { useState } from "react";
-import { OverlayTrigger, Tooltip } from "react-bootstrap";
+import { OverlayTrigger, Tooltip, Dropdown } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -37,7 +37,7 @@ function CommentReactions({
   };
 
   return (
-    <div className="d-flex align-items-center gap-2 mt-2">
+    <div className="d-flex align-items-center gap-2 mt-2 flex-wrap">
       <div className="position-relative">
         <OverlayTrigger overlay={<Tooltip>React to comment</Tooltip>}>
           <button
@@ -48,7 +48,26 @@ function CommentReactions({
           </button>
         </OverlayTrigger>
         {showPicker && (
-          <div className="position-absolute bg-white border rounded shadow-sm p-2 d-flex gap-2 z-3">
+          <div
+            className="reaction-picker-popover"
+            style={{
+              background: "#fff",
+              border: "1px solid #ddd",
+              borderRadius: 8,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+              padding: 8,
+              display: "flex",
+              gap: 8,
+              flexWrap: "wrap",
+              zIndex: 10,
+              position: "absolute",
+              top: "110%",
+              left: 0,
+              minWidth: 180,
+              maxWidth: 260,
+              overflowX: "auto",
+            }}
+          >
             {emojiOptions.map((emoji) => (
               <button
                 key={emoji}
@@ -72,35 +91,41 @@ function CommentReactions({
           </div>
         )}
       </div>
-      {emojiOptions.map((emoji) => {
-        const count = emojiCount(emoji);
-        const reacted = userReacted(emoji);
-        if (count === 0) return null;
-        return (
-          <OverlayTrigger
-            key={emoji}
-            overlay={<Tooltip>{`React with ${emoji}`}</Tooltip>}
-          >
-            <button
-              onClick={async () =>
-                await reactToComment({
-                  variables: {
-                    spillPostId: postId,
-                    commentId: comment._id,
-                    emoji,
-                  },
-                })
-              }
-              className={`btn btn-sm ${
-                reacted ? "btn-warning" : "btn-outline-secondary"
-              }`}
-              aria-label={`React with ${emoji}`}
+      <div
+        className="d-flex gap-1 flex-wrap"
+        style={{ maxWidth: "100%", overflowX: "hidden" }}
+      >
+        {emojiOptions.map((emoji) => {
+          const count = emojiCount(emoji);
+          const reacted = userReacted(emoji);
+          if (count === 0) return null;
+          return (
+            <OverlayTrigger
+              key={emoji}
+              overlay={<Tooltip>{`React with ${emoji}`}</Tooltip>}
             >
-              {emoji} {count}
-            </button>
-          </OverlayTrigger>
-        );
-      })}
+              <button
+                onClick={async () =>
+                  await reactToComment({
+                    variables: {
+                      spillPostId: postId,
+                      commentId: comment._id,
+                      emoji,
+                    },
+                  })
+                }
+                className={`btn btn-sm ${
+                  reacted ? "btn-warning" : "btn-outline-secondary"
+                }`}
+                aria-label={`React with ${emoji}`}
+                style={{ minWidth: 48 }}
+              >
+                {emoji} {count}
+              </button>
+            </OverlayTrigger>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -115,7 +140,6 @@ function SpillTheTea() {
   const isFriend = (username: string) =>
     myFriends.some((f: any) => f.username === username);
 
-  // Apply isFriend usage to label comments from friends
   const showFriendLabel = (username: string) =>
     isFriend(username) ? <span className="text-success"> (Friend)</span> : null;
 
@@ -181,14 +205,44 @@ function SpillTheTea() {
         );
 
   return (
-    <div className="text-light min-vh-100">
-      <div className="container py-4">
-        <h2 className="text-light mb-4">🫖 Spill the Tea</h2>
+    <div
+      className="position-relative min-vh-100"
+      style={{
+        backgroundImage: 'url("/your-image.jpg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        width: "100%", // This is the key!
+        minWidth: 0,
+        maxWidth: "100%",
+        overflowX: "hidden",
+      }}
+    >
+      {/* White overlay */}
+      <div
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.75)",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
+          width: "100%",
+          minWidth: 0,
+          maxWidth: "100%",
+        }}
+      />
+
+      <div
+        className="container py-4"
+        style={{ position: "relative", zIndex: 1 }}
+      >
+        <h2 className="text-dark mb-4">🫖 Spill the Tea</h2>
         <div className="mb-4">
           <OverlayTrigger overlay={<Tooltip>View public posts</Tooltip>}>
             <button
               className={`btn me-2 ${
-                feedType === "public" ? "btn-success" : "btn-outline-light"
+                feedType === "public" ? "btn-success" : "btn-outline-dark"
               }`}
               onClick={() => setFeedType("public")}
             >
@@ -198,7 +252,7 @@ function SpillTheTea() {
           <OverlayTrigger overlay={<Tooltip>View friends' posts</Tooltip>}>
             <button
               className={`btn ${
-                feedType === "friends" ? "btn-success" : "btn-outline-light"
+                feedType === "friends" ? "btn-success" : "btn-outline-dark"
               }`}
               onClick={() => setFeedType("friends")}
             >
@@ -279,58 +333,62 @@ function SpillTheTea() {
                   </form>
                 ) : (
                   <>
-                    <h5 className="card-title">
-                      {post.title}
-                      <small className="text-muted d-block">
-                        by{" "}
-                        {post.createdByUsername === currentUsername ? (
-                          <span>{post.createdByUsername}</span>
-                        ) : (
-                          <Link to={`/user/${post.createdByUsername}`}>
-                            {post.createdByUsername}
-                          </Link>
-                        )}
-                        {showFriendLabel(post.createdByUsername)}
-                      </small>
-                    </h5>
-                    <p className="card-text">{post.content}</p>
-                    {post.createdByUsername === currentUsername && (
-                      <>
-                        <button
-                          className="btn btn-outline-warning btn-sm me-2"
-                          onClick={() => {
-                            setEditingPostId(post._id);
-                            setEditPostTitle(post.title);
-                            setEditPostContent(post.content);
-                          }}
-                        >
-                          ✏️ Edit Post
-                        </button>
-                        <button
-                          className="btn btn-danger btn-sm"
-                          onClick={() =>
-                            deleteSpillPost({
-                              variables: { spillPostId: post._id },
-                            })
-                          }
-                        >
-                          🗑️ Delete Post
-                        </button>
-                        <h3 style={{ color: "#72a85a", fontWeight: "bold" }}>
+                    <div className="d-flex justify-content-between align-items-start">
+                      <div>
+                        <h5 className="card-title mb-1">
                           {post.title}
-                        </h3>
-                        <p style={{ fontStyle: "italic", color: "#000000" }}>
-                          by{" "}
-                          {post.createdByUsername === currentUsername ? (
-                            post.createdByUsername || "Anonymous"
-                          ) : (
-                            <Link to={`/user/${post.createdByUsername}`}>
-                              {post.createdByUsername || "Anonymous"}
-                            </Link>
-                          )}
-                        </p>
-                      </>
-                    )}
+                          <small className="text-muted d-block">
+                            by{" "}
+                            {post.createdByUsername === currentUsername ? (
+                              <span>{post.createdByUsername}</span>
+                            ) : (
+                              <Link to={`/user/${post.createdByUsername}`}>
+                                {post.createdByUsername}
+                              </Link>
+                            )}
+                            {showFriendLabel(post.createdByUsername)}
+                          </small>
+                        </h5>
+                      </div>
+                      {post.createdByUsername === currentUsername && (
+                        <Dropdown align="end">
+                          <Dropdown.Toggle
+                            variant="link"
+                            bsPrefix="p-0 border-0 bg-transparent"
+                            style={{ boxShadow: "none" }}
+                            id={`dropdown-post-${post._id}`}
+                            aria-label="More options"
+                          >
+                            <i
+                              className="bi bi-three-dots-vertical"
+                              style={{ fontSize: "1.5rem", color: "#333" }}
+                            ></i>
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu>
+                            <Dropdown.Item
+                              onClick={() => {
+                                setEditingPostId(post._id);
+                                setEditPostTitle(post.title);
+                                setEditPostContent(post.content);
+                              }}
+                            >
+                              ✏️ Edit Post
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={() =>
+                                deleteSpillPost({
+                                  variables: { spillPostId: post._id },
+                                })
+                              }
+                              className="text-danger"
+                            >
+                              🗑️ Delete Post
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      )}
+                    </div>
+                    <p className="card-text">{post.content}</p>
                   </>
                 )}
 
@@ -391,48 +449,67 @@ function SpillTheTea() {
                           </form>
                         ) : (
                           <>
-                            <p className="mb-1">
-                              <strong>
-                                {comment.createdByUsername ===
-                                currentUsername ? (
-                                  <span>{comment.createdByUsername}</span>
-                                ) : (
-                                  <Link
-                                    to={`/user/${comment.createdByUsername}`}
+                            <div className="d-flex justify-content-between align-items-start">
+                              <p className="mb-1">
+                                <strong>
+                                  {comment.createdByUsername ===
+                                  currentUsername ? (
+                                    <span>{comment.createdByUsername}</span>
+                                  ) : (
+                                    <Link
+                                      to={`/user/${comment.createdByUsername}`}
+                                    >
+                                      {comment.createdByUsername}
+                                    </Link>
+                                  )}
+                                </strong>
+                                {showFriendLabel(comment.createdByUsername)}:{" "}
+                                {comment.content}
+                              </p>
+                              {comment.createdByUsername ===
+                                currentUsername && (
+                                <Dropdown align="end">
+                                  <Dropdown.Toggle
+                                    variant="link"
+                                    bsPrefix="p-0 border-0 bg-transparent"
+                                    style={{ boxShadow: "none" }}
+                                    id={`dropdown-comment-${comment._id}`}
+                                    aria-label="More options"
                                   >
-                                    {comment.createdByUsername}
-                                  </Link>
-                                )}
-                              </strong>
-                              {showFriendLabel(comment.createdByUsername)}:{" "}
-                              {comment.content}
-                            </p>
-                            {comment.createdByUsername === currentUsername && (
-                              <>
-                                <button
-                                  className="btn btn-outline-warning btn-sm me-2"
-                                  onClick={() => {
-                                    setEditingCommentId(comment._id);
-                                    setEditCommentContent(comment.content);
-                                  }}
-                                >
-                                  ✏️ Edit Comment
-                                </button>
-                                <button
-                                  className="btn btn-danger btn-sm"
-                                  onClick={() =>
-                                    deleteComment({
-                                      variables: {
-                                        spillPostId: post._id,
-                                        commentId: comment._id,
-                                      },
-                                    })
-                                  }
-                                >
-                                  🗑️ Delete Comment
-                                </button>
-                              </>
-                            )}
+                                    <i
+                                      className="bi bi-three-dots-vertical"
+                                      style={{
+                                        fontSize: "1.2rem",
+                                        color: "#333",
+                                      }}
+                                    ></i>
+                                  </Dropdown.Toggle>
+                                  <Dropdown.Menu>
+                                    <Dropdown.Item
+                                      onClick={() => {
+                                        setEditingCommentId(comment._id);
+                                        setEditCommentContent(comment.content);
+                                      }}
+                                    >
+                                      ✏️ Edit Comment
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                      onClick={() =>
+                                        deleteComment({
+                                          variables: {
+                                            spillPostId: post._id,
+                                            commentId: comment._id,
+                                          },
+                                        })
+                                      }
+                                      className="text-danger"
+                                    >
+                                      🗑️ Delete Comment
+                                    </Dropdown.Item>
+                                  </Dropdown.Menu>
+                                </Dropdown>
+                              )}
+                            </div>
                           </>
                         )}
                         <CommentReactions

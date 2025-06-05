@@ -62,7 +62,7 @@ function AddTeaForm() {
       formData.append("file", imageFile);
       formData.append("upload_preset", "tea_uploads");
 
-      const uploadUrl = process.env.REACT_APP_CLOUDINARY_UPLOAD_URL;
+      const uploadUrl = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL;
 
       const response = await axios.post(
         `${uploadUrl}`,

@@ -28,10 +28,13 @@ interface Tea {
   imageUrl?: string;
   createdAt: string;
   tags?: string[];
+  createdBy?: string;
 }
 
 function Dashboard() {
-  const { loading, error, data } = useQuery(GET_TEAS);
+  const { loading, error, data } = useQuery(GET_TEAS, {
+    fetchPolicy: "network-only",
+  });
   const { data: userData } = useQuery(GET_ME);
   const [addToFavorites] = useMutation(ADD_TEA_TO_FAVORITES);
   const [removeFromFavorites] = useMutation(REMOVE_TEA_FROM_FAVORITES);
@@ -54,6 +57,8 @@ function Dashboard() {
     new Set(teas.map((tea) => tea.type))
   ).sort();
 
+  const userId = userData?.me?._id;
+
   const handleDeleteTea = async (id: string) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this tea?"
@@ -73,6 +78,7 @@ function Dashboard() {
     setSortOption("newest");
   };
 
+  // Filtering logic, now includes "mine" option
   const filteredTeas = teas.filter((tea) => {
     const matchesSearch =
       tea.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -84,13 +90,16 @@ function Dashboard() {
       ? tea.type.toLowerCase() === filterType.toLowerCase()
       : true;
 
-    return matchesSearch && matchesType;
+    const matchesMine =
+      sortOption === "mine" ? tea.createdBy === userId : true;
+
+    return matchesSearch && matchesType && matchesMine;
   });
 
   const sortedTeas = [...filteredTeas].sort((a, b) => {
     if (sortOption === "az") return a.name.localeCompare(b.name);
     if (sortOption === "za") return b.name.localeCompare(a.name);
-    if (sortOption === "newest") {
+    if (sortOption === "newest" || sortOption === "mine") {
       return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
     }
     return 0;
@@ -157,6 +166,7 @@ function Dashboard() {
             <option value="newest">Newest</option>
             <option value="az">Name A-Z</option>
             <option value="za">Name Z-A</option>
+            <option value="mine">Custom Tea</option>
           </Form.Select>
 
           <CustomButton onClick={handleClearFilters}>

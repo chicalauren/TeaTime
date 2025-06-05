@@ -39,8 +39,28 @@ function UserProfile() {
   const favoriteTeas = user.favoriteTeas ?? [];
 
   return (
-    <div className="d-flex flex-column align-items-center min-vh-100 py-5 mt-5">
-      <div className="card shadow w-100 mb-5" style={{ maxWidth: "500px" }}>
+    <div
+      className="d-flex flex-column align-items-center min-vh-100 py-5 mt-5 position-relative"
+      style={{
+        backgroundImage: 'url("/your-image.jpg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {/* White overlay */}
+      <div
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.75)",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
+        }}
+      />
+
+      <div className="card shadow w-100 mb-5" style={{ maxWidth: "500px", zIndex: 1 }}>
         <div className="ratio ratio-1x1">
           <img
             src={user.profileImage || "/teacup.jpg"}
@@ -100,10 +120,14 @@ function UserProfile() {
       </div>
 
       {/* Favorite Teas Section */}
-      <div className="w-100 mb-5" style={{ maxWidth: "1000px" }}>
-        <h2 className="text-center mb-4">
-          {isMe ? "Your Favorite Teas ❤️" : `${user.username}'s Favorite Teas ❤️`}
-        </h2>
+      <div className="w-100 mb-5" style={{ maxWidth: "1000px", zIndex: 1 }}>
+        <div className="card bg-light mb-4 shadow-sm">
+          <div className="card-body text-center">
+            <h2 className="display-6 text-dark mb-0">
+              {isMe ? "Your Favorite Teas ❤️" : `${user.username}'s Favorite Teas ❤️`}
+            </h2>
+          </div>
+        </div>
         {favoriteTeas.length === 0 ? (
           <p className="text-center text-muted">
             {isMe ? "You haven't saved any teas yet." : "No favorites yet."}

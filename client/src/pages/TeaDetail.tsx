@@ -215,7 +215,7 @@ function TeaDetail() {
                     }}
                     onClick={() =>
                       navigate("/teatimer", {
-                        state: { teaName: tea.name, teaType: tea.type },
+                        state: { teaName: tea.name, teaType: tea.type, teaDetails: tea },
                       })
                     }
                   >
