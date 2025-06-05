@@ -86,7 +86,7 @@ function CommentReactions({ comment, postId, currentUsername, reactToComment }: 
           </div>
         )}
       </div>
-      <div className="d-flex gap-1 flex-wrap" style={{ maxWidth: "100%", overflowX: "auto" }}>
+      <div className="d-flex gap-1 flex-wrap" style={{ maxWidth: "100%", overflowX: "hidden" }}>
         {emojiOptions.map((emoji) => {
           const count = emojiCount(emoji);
           const reacted = userReacted(emoji);
@@ -109,22 +109,6 @@ function CommentReactions({ comment, postId, currentUsername, reactToComment }: 
           );
         })}
       </div>
-      <style>
-        {`
-        @media (max-width: 600px) {
-          .reaction-picker-popover {
-            position: static !important;
-            min-width: 0 !important;
-            max-width: 100vw !important;
-            width: 100% !important;
-            margin-top: 8px;
-            flex-wrap: wrap;
-            justify-content: flex-start;
-            overflow-x: auto;
-          }
-        }
-        `}
-      </style>
     </div>
   );
 }
@@ -191,6 +175,10 @@ function SpillTheTea() {
         backgroundImage: 'url("/your-image.jpg")',
         backgroundSize: "cover",
         backgroundPosition: "center",
+        width: "100%", // This is the key!
+        minWidth: 0,
+        maxWidth: "100%",
+        overflowX: "hidden",
       }}
     >
       {/* White overlay */}
@@ -203,10 +191,13 @@ function SpillTheTea() {
           right: 0,
           bottom: 0,
           zIndex: 0,
+          width: "100%",
+          minWidth: 0,
+          maxWidth: "100%",
         }}
       />
 
-      <div className="container-fluid py-4" style={{ position: "relative", zIndex: 1 }}>
+      <div className="container py-4" style={{ position: "relative", zIndex: 1 }}>
         <h2 className="text-dark mb-4">🫖 Spill the Tea</h2>
         <div className="mb-4">
           <OverlayTrigger overlay={<Tooltip>View public posts</Tooltip>}>
