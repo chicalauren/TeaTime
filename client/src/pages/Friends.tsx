@@ -173,6 +173,7 @@ function Friends() {
                   {searchData?.searchUsers?.map((u: any) => {
                     if (u._id === user?._id) return null; // Don't show yourself
                     const isFriend = user?.friends?.some((f: any) => f._id === u._id);
+                    const isPending = user?.friendRequestsSent?.some((f: any) => f._id === u._id);
                     return (
                       <Card key={u._id} className="mb-2">
                         <Card.Body className="d-flex align-items-center justify-content-between">
@@ -186,6 +187,8 @@ function Friends() {
                           </div>
                           {isFriend ? (
                             <span className="badge bg-success">Already a friend</span>
+                          ) : isPending ? (
+                            <span className="badge bg-primary">Pending</span>
                           ) : (
                             <Button
                               size="sm"
