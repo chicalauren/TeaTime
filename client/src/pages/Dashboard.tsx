@@ -90,8 +90,7 @@ function Dashboard() {
       ? tea.type.toLowerCase() === filterType.toLowerCase()
       : true;
 
-    const matchesMine =
-      sortOption === "mine" ? tea.createdBy === userId : true;
+    const matchesMine = sortOption === "mine" ? tea.createdBy === userId : true;
 
     return matchesSearch && matchesType && matchesMine;
   });
@@ -175,141 +174,149 @@ function Dashboard() {
         </div>
 
         <div className="d-flex justify-content-center mb-4">
-
-        <div className="w-100 mb-5" style={{ maxWidth: "1000px", zIndex: 1 }}>
-          <div className="card bg-light mb-4 shadow-sm">
-            <div className="card-body text-center">
-              <h2 className="fw-bold mb-0 text-dark">🍵 Your Teas</h2>
-            </div>
-          </div>
-
-          {sortedTeas.length === 0 ? (
-            <div className="text-center text-muted py-5">
-              <div style={{ fontSize: "4rem" }}>🍵</div>
-              <h2>No Teas Found</h2>
-              <p>Try adjusting your search or clearing filters.</p>
-            </div>
-          ) : (
-            <div className="d-flex justify-content-center">
-              <div className="row g-3 d-flex justify-content-center px-3">
-                {sortedTeas.map((tea) => (
-                  <div key={tea._id} className="col-md-4 col-sm-6">
-                    <Card className="h-100 d-flex flex-column shadow-sm">
-                      <Card.Img
-                        variant="top"
-                        className="card-img-top"
-                        src={
-                          tea.imageUrl && tea.imageUrl.trim() !== ""
-                            ? tea.imageUrl
-                            : "/editTea.jpg"
-                        }
-                        onError={(e) => {
-                          e.currentTarget.src = "/editTea.jpg";
-                        }}
-                        alt={tea.name}
-                        style={{ objectFit: "cover", height: "250px" }}
-                      />
-
-                      <Card.Body className="text-center flex-grow-0 p-2">
-                        <Card.Title
-                          className="fs-6 text-truncate mb-0"
-                          title={tea.name}
-                        >
-                          {tea.name}
-                        </Card.Title>
-                        <div className="text-muted small">{tea.type}</div>
-                      </Card.Body>
-
-                      <Card.Footer className="d-flex justify-content-between align-items-center p-2">
-                        <OverlayTrigger
-                          placement="top"
-                          overlay={
-                            <Tooltip id={`tooltip-view-${tea._id}`}>
-                              View Details
-                            </Tooltip>
-                          }
-                        >
-                          <Link to={`/teas/${tea._id}`}>
-                            <Button
-                              variant="outline-secondary"
-                              size="sm"
-                              aria-label="View Details"
-                            >
-                              <Eye />
-                            </Button>
-                          </Link>
-                        </OverlayTrigger>
-
-                        <OverlayTrigger
-                          placement="top"
-                          overlay={
-                            <Tooltip id={`tooltip-edit-${tea._id}`}>
-                              Edit
-                            </Tooltip>
-                          }
-                        >
-                          <Link to={`/edit-tea/${tea._id}`}>
-                            <Button
-                              variant="outline-primary"
-                              size="sm"
-                              aria-label="Edit"
-                            >
-                              <Pencil />
-                            </Button>
-                          </Link>
-                        </OverlayTrigger>
-
-                        <OverlayTrigger
-                          placement="top"
-                          overlay={
-                            <Tooltip id={`tooltip-favorite-${tea._id}`}>
-                              Favorite
-                            </Tooltip>
-                          }
-                        >
-                          <span>
-                            <FavoriteButton
-                              teaId={tea._id}
-                              initialFavorite={userFavorites.includes(tea._id)}
-                              addToFavorites={(id) =>
-                                addToFavorites({ variables: { teaId: id } })
-                              }
-                              removeFromFavorites={(id) =>
-                                removeFromFavorites({ variables: { teaId: id } })
-                              }
-                            />
-                          </span>
-                        </OverlayTrigger>
-
-                        <OverlayTrigger
-                          placement="top"
-                          overlay={
-                            <Tooltip id={`tooltip-delete-${tea._id}`}>
-                              Delete
-                            </Tooltip>
-                          }
-                        >
-                          <Button
-                            variant="outline-danger"
-                            size="sm"
-                            onClick={() => handleDeleteTea(tea._id)}
-                            aria-label="Delete"
-                          >
-                            <Trash />
-                          </Button>
-                        </OverlayTrigger>
-                      </Card.Footer>
-                    </Card>
-                  </div>
-                ))}
+          <div className="w-100 mb-5" style={{ maxWidth: "1000px", zIndex: 1 }}>
+            <div className="card bg-light mb-4 shadow-sm">
+              <div className="card-body text-center">
+                <h2 className="fw-bold mb-0 text-dark">🍵 Your Teas</h2>
               </div>
             </div>
-          )}
+
+            {sortedTeas.length === 0 ? (
+              <div className="text-center text-muted py-5">
+                <div style={{ fontSize: "4rem" }}>🍵</div>
+                <h2>No Teas Found</h2>
+                <p>Try adjusting your search or clearing filters.</p>
+              </div>
+            ) : (
+              <div className=" justify-content-center">
+                <div className="row g-3 px-3">
+                  {sortedTeas.map((tea) => (
+                    <div
+                      key={tea._id}
+                      className="col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center"
+                    >
+                      <Card
+                        className="h-100 shadow-sm"
+                        style={{ width: "100%", maxWidth: "300px" }}
+                      >
+                        <Card.Img
+                          variant="top"
+                          className="card-img-top"
+                          src={
+                            tea.imageUrl && tea.imageUrl.trim() !== ""
+                              ? tea.imageUrl
+                              : "/editTea.jpg"
+                          }
+                          onError={(e) => {
+                            e.currentTarget.src = "/editTea.jpg";
+                          }}
+                          alt={tea.name}
+                          style={{ objectFit: "cover", height: "250px" }}
+                        />
+
+                        <Card.Body className="text-center flex-grow-0 p-2">
+                          <Card.Title
+                            className="fs-6 text-truncate mb-0"
+                            title={tea.name}
+                          >
+                            {tea.name}
+                          </Card.Title>
+                          <div className="text-muted small">{tea.type}</div>
+                        </Card.Body>
+
+                        <Card.Footer className="d-flex justify-content-between align-items-center p-2">
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip id={`tooltip-view-${tea._id}`}>
+                                View Details
+                              </Tooltip>
+                            }
+                          >
+                            <Link to={`/teas/${tea._id}`}>
+                              <Button
+                                variant="outline-secondary"
+                                size="sm"
+                                aria-label="View Details"
+                              >
+                                <Eye />
+                              </Button>
+                            </Link>
+                          </OverlayTrigger>
+
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip id={`tooltip-edit-${tea._id}`}>
+                                Edit
+                              </Tooltip>
+                            }
+                          >
+                            <Link to={`/edit-tea/${tea._id}`}>
+                              <Button
+                                variant="outline-primary"
+                                size="sm"
+                                aria-label="Edit"
+                              >
+                                <Pencil />
+                              </Button>
+                            </Link>
+                          </OverlayTrigger>
+
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip id={`tooltip-favorite-${tea._id}`}>
+                                Favorite
+                              </Tooltip>
+                            }
+                          >
+                            <span>
+                              <FavoriteButton
+                                teaId={tea._id}
+                                initialFavorite={userFavorites.includes(
+                                  tea._id
+                                )}
+                                addToFavorites={(id) =>
+                                  addToFavorites({ variables: { teaId: id } })
+                                }
+                                removeFromFavorites={(id) =>
+                                  removeFromFavorites({
+                                    variables: { teaId: id },
+                                  })
+                                }
+                              />
+                            </span>
+                          </OverlayTrigger>
+
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip id={`tooltip-delete-${tea._id}`}>
+                                Delete
+                              </Tooltip>
+                            }
+                          >
+                            <Button
+                              variant="outline-danger"
+                              size="sm"
+                              onClick={() => handleDeleteTea(tea._id)}
+                              aria-label="Delete"
+                            >
+                              <Trash />
+                            </Button>
+                          </OverlayTrigger>
+                        </Card.Footer>
+                      </Card>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
-      
-      </div>
   );
 }
 
