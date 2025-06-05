@@ -173,6 +173,17 @@ export const GET_SPILL_POSTS = gql`
   }
 `;
 
+export const SEARCH_USERS = gql`
+  query SearchUsers($username: String!) {
+    searchUsers(username: $username) {
+      _id
+      username
+      profileImage
+    }
+  }
+`;
+
+
 export const RECOMMEND_TEAS = gql`
   query RecommendTeas($tags: [String!]!) {
     recommendTeas(tags: $tags) {

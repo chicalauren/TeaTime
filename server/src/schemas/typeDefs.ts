@@ -92,6 +92,7 @@ const typeDefs = gql`
     recommendTeas(tags: [String!]!): [TeaCategory]
     userByUsername(username: String!): User
     myMessageThreads: [MessageThread!]!
+    searchUsers(username: String!): [User]
     messageThreadWith(userId: ID!): MessageThread
   }
 
