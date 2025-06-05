@@ -171,6 +171,7 @@ function Friends() {
                   {searchError && <div className="text-danger">Error: {searchError.message}</div>}
                   {searchData?.searchUsers?.length === 0 && <div>No users found.</div>}
                   {searchData?.searchUsers?.map((u: any) => {
+                    if (u._id === user?._id) return null; // Don't show yourself
                     const isFriend = user?.friends?.some((f: any) => f._id === u._id);
                     return (
                       <Card key={u._id} className="mb-2">
