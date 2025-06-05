@@ -331,38 +331,49 @@ function SpillTheTea() {
                           </form>
                         ) : (
                           <>
-                            <p className="mb-1">
-                              <strong>
-                                {comment.createdByUsername === currentUsername ? (
-                                  <span>{comment.createdByUsername}</span>
-                                ) : (
-                                  <Link to={`/user/${comment.createdByUsername}`}>
-                                    {comment.createdByUsername}
-                                  </Link>
-                                )}
-                              </strong>
-                              {showFriendLabel(comment.createdByUsername)}: {comment.content}
-                            </p>
-
-                            {comment.createdByUsername === currentUsername && (
-                              <>
-                                <button
-                                  className="btn btn-outline-warning btn-sm me-2"
-                                  onClick={() => {
-                                    setEditingCommentId(comment._id);
-                                    setEditCommentContent(comment.content);
-                                  }}
-                                >
-                                  ✏️ Edit Comment
-                                </button>
-                                <button
-                                  className="btn btn-danger btn-sm"
-                                  onClick={() => deleteComment({ variables: { spillPostId: post._id, commentId: comment._id } })}
-                                >
-                                  🗑️ Delete Comment
-                                </button>
-                              </>
-                            )}
+                            <div className="d-flex justify-content-between align-items-start">
+                              <p className="mb-1">
+                                <strong>
+                                  {comment.createdByUsername === currentUsername ? (
+                                    <span>{comment.createdByUsername}</span>
+                                  ) : (
+                                    <Link to={`/user/${comment.createdByUsername}`}>
+                                      {comment.createdByUsername}
+                                    </Link>
+                                  )}
+                                </strong>
+                                {showFriendLabel(comment.createdByUsername)}: {comment.content}
+                              </p>
+                              {comment.createdByUsername === currentUsername && (
+                                <Dropdown align="end">
+                                  <Dropdown.Toggle
+                                    variant="link"
+                                    bsPrefix="p-0 border-0 bg-transparent"
+                                    style={{ boxShadow: "none" }}
+                                    id={`dropdown-comment-${comment._id}`}
+                                    aria-label="More options"
+                                  >
+                                    <i className="bi bi-three-dots-vertical" style={{ fontSize: "1.2rem", color: "#333" }}></i>
+                                  </Dropdown.Toggle>
+                                  <Dropdown.Menu>
+                                    <Dropdown.Item
+                                      onClick={() => {
+                                        setEditingCommentId(comment._id);
+                                        setEditCommentContent(comment.content);
+                                      }}
+                                    >
+                                      ✏️ Edit Comment
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                      onClick={() => deleteComment({ variables: { spillPostId: post._id, commentId: comment._id } })}
+                                      className="text-danger"
+                                    >
+                                      🗑️ Delete Comment
+                                    </Dropdown.Item>
+                                  </Dropdown.Menu>
+                                </Dropdown>
+                              )}
+                            </div>
                           </>
                         )}
                         <CommentReactions comment={comment} postId={post._id} currentUsername={currentUsername} reactToComment={reactToComment} />
