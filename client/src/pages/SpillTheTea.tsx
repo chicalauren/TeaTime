@@ -18,7 +18,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 const emojiOptions = ["🌟", "☕️", "🍵", "🌼", "😍", "😂"];
 
-function CommentReactions({ comment, postId, currentUsername, reactToComment }: any) {
+function CommentReactions({
+  comment,
+  postId,
+  currentUsername,
+  reactToComment,
+}: any) {
   const [showPicker, setShowPicker] = useState(false);
 
   const userReacted = (emoji: string) => {
@@ -86,20 +91,32 @@ function CommentReactions({ comment, postId, currentUsername, reactToComment }: 
           </div>
         )}
       </div>
-      <div className="d-flex gap-1 flex-wrap" style={{ maxWidth: "100%", overflowX: "hidden" }}>
+      <div
+        className="d-flex gap-1 flex-wrap"
+        style={{ maxWidth: "100%", overflowX: "hidden" }}
+      >
         {emojiOptions.map((emoji) => {
           const count = emojiCount(emoji);
           const reacted = userReacted(emoji);
           if (count === 0) return null;
           return (
-            <OverlayTrigger key={emoji} overlay={<Tooltip>{`React with ${emoji}`}</Tooltip>}>
+            <OverlayTrigger
+              key={emoji}
+              overlay={<Tooltip>{`React with ${emoji}`}</Tooltip>}
+            >
               <button
                 onClick={async () =>
                   await reactToComment({
-                    variables: { spillPostId: postId, commentId: comment._id, emoji },
+                    variables: {
+                      spillPostId: postId,
+                      commentId: comment._id,
+                      emoji,
+                    },
                   })
                 }
-                className={`btn btn-sm ${reacted ? "btn-warning" : "btn-outline-secondary"}`}
+                className={`btn btn-sm ${
+                  reacted ? "btn-warning" : "btn-outline-secondary"
+                }`}
                 aria-label={`React with ${emoji}`}
                 style={{ minWidth: 48 }}
               >
@@ -126,14 +143,30 @@ function SpillTheTea() {
   const showFriendLabel = (username: string) =>
     isFriend(username) ? <span className="text-success"> (Friend)</span> : null;
 
-  const [addSpillPost] = useMutation(ADD_SPILL_POST, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
-  const [addComment] = useMutation(ADD_COMMENT, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
-  const [likeSpillPost] = useMutation(LIKE_SPILL_POST, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
-  const [editSpillPost] = useMutation(EDIT_SPILL_POST, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
-  const [editComment] = useMutation(EDIT_COMMENT, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
-  const [deleteComment] = useMutation(DELETE_COMMENT, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
-  const [deleteSpillPost] = useMutation(DELETE_SPILL_POST, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
-  const [reactToComment] = useMutation(REACT_TO_COMMENT, { refetchQueries: [{ query: GET_SPILL_POSTS }] });
+  const [addSpillPost] = useMutation(ADD_SPILL_POST, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
+  const [addComment] = useMutation(ADD_COMMENT, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
+  const [likeSpillPost] = useMutation(LIKE_SPILL_POST, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
+  const [editSpillPost] = useMutation(EDIT_SPILL_POST, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
+  const [editComment] = useMutation(EDIT_COMMENT, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
+  const [deleteComment] = useMutation(DELETE_COMMENT, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
+  const [deleteSpillPost] = useMutation(DELETE_SPILL_POST, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
+  const [reactToComment] = useMutation(REACT_TO_COMMENT, {
+    refetchQueries: [{ query: GET_SPILL_POSTS }],
+  });
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -164,9 +197,12 @@ function SpillTheTea() {
 
   const spillPosts = data?.spillPosts || [];
   const friendUsernames = myFriends.map((f: any) => f.username);
-  const filteredPosts = feedType === "public"
-    ? spillPosts
-    : spillPosts.filter((post: any) => friendUsernames.includes(post.createdByUsername));
+  const filteredPosts =
+    feedType === "public"
+      ? spillPosts
+      : spillPosts.filter((post: any) =>
+          friendUsernames.includes(post.createdByUsername)
+        );
 
   return (
     <div
@@ -197,21 +233,53 @@ function SpillTheTea() {
         }}
       />
 
-      <div className="container py-4" style={{ position: "relative", zIndex: 1 }}>
+      <div
+        className="container py-4"
+        style={{ position: "relative", zIndex: 1 }}
+      >
         <h2 className="text-dark mb-4">🫖 Spill the Tea</h2>
         <div className="mb-4">
           <OverlayTrigger overlay={<Tooltip>View public posts</Tooltip>}>
-            <button className={`btn me-2 ${feedType === "public" ? "btn-success" : "btn-outline-dark"}`} onClick={() => setFeedType("public")}>Public Feed</button>
+            <button
+              className={`btn me-2 ${
+                feedType === "public" ? "btn-success" : "btn-outline-dark"
+              }`}
+              onClick={() => setFeedType("public")}
+            >
+              Public Feed
+            </button>
           </OverlayTrigger>
           <OverlayTrigger overlay={<Tooltip>View friends' posts</Tooltip>}>
-            <button className={`btn ${feedType === "friends" ? "btn-success" : "btn-outline-dark"}`} onClick={() => setFeedType("friends")}>Friends Feed</button>
+            <button
+              className={`btn ${
+                feedType === "friends" ? "btn-success" : "btn-outline-dark"
+              }`}
+              onClick={() => setFeedType("friends")}
+            >
+              Friends Feed
+            </button>
           </OverlayTrigger>
         </div>
 
         <form onSubmit={handlePostSubmit} className="mb-5">
-          <input className="form-control mb-2" placeholder="Title of your post" value={title} onChange={(e) => setTitle(e.target.value)} required />
-          <textarea className="form-control mb-2" placeholder="What's on your mind?" value={content} onChange={(e) => setContent(e.target.value)} required rows={3} />
-          <button type="submit" className="btn btn-success">Post Spill</button>
+          <input
+            className="form-control mb-2"
+            placeholder="Title of your post"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+          <textarea
+            className="form-control mb-2"
+            placeholder="What's on your mind?"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            required
+            rows={3}
+          />
+          <button type="submit" className="btn btn-success">
+            Post Spill
+          </button>
         </form>
 
         {filteredPosts.map((post: any) => {
@@ -249,7 +317,10 @@ function SpillTheTea() {
                       required
                       rows={3}
                     />
-                    <button type="submit" className="btn btn-success btn-sm me-2">
+                    <button
+                      type="submit"
+                      className="btn btn-success btn-sm me-2"
+                    >
                       Save
                     </button>
                     <button
@@ -288,7 +359,10 @@ function SpillTheTea() {
                             id={`dropdown-post-${post._id}`}
                             aria-label="More options"
                           >
-                            <i className="bi bi-three-dots-vertical" style={{ fontSize: "1.5rem", color: "#333" }}></i>
+                            <i
+                              className="bi bi-three-dots-vertical"
+                              style={{ fontSize: "1.5rem", color: "#333" }}
+                            ></i>
                           </Dropdown.Toggle>
                           <Dropdown.Menu>
                             <Dropdown.Item
@@ -301,7 +375,11 @@ function SpillTheTea() {
                               ✏️ Edit Post
                             </Dropdown.Item>
                             <Dropdown.Item
-                              onClick={() => deleteSpillPost({ variables: { spillPostId: post._id } })}
+                              onClick={() =>
+                                deleteSpillPost({
+                                  variables: { spillPostId: post._id },
+                                })
+                              }
                               className="text-danger"
                             >
                               🗑️ Delete Post
@@ -315,9 +393,16 @@ function SpillTheTea() {
                 )}
 
                 <div className="mt-2">
-                  <button className="btn btn-outline-danger btn-sm" disabled={hasUserLiked} onClick={() => {
-                    if (!hasUserLiked) likeSpillPost({ variables: { spillPostId: post._id } });
-                  }}>❤️ {post.likes || 0} {hasUserLiked ? "Liked" : "Like"}</button>
+                  <button
+                    className="btn btn-outline-danger btn-sm"
+                    disabled={hasUserLiked}
+                    onClick={() => {
+                      if (!hasUserLiked)
+                        likeSpillPost({ variables: { spillPostId: post._id } });
+                    }}
+                  >
+                    ❤️ {post.likes || 0} {hasUserLiked ? "Liked" : "Like"}
+                  </button>
                 </div>
 
                 <div className="mt-4">
@@ -343,10 +428,15 @@ function SpillTheTea() {
                             <input
                               className="form-control mb-2"
                               value={editCommentContent}
-                              onChange={(e) => setEditCommentContent(e.target.value)}
+                              onChange={(e) =>
+                                setEditCommentContent(e.target.value)
+                              }
                               required
                             />
-                            <button type="submit" className="btn btn-success btn-sm me-2">
+                            <button
+                              type="submit"
+                              className="btn btn-success btn-sm me-2"
+                            >
                               Save
                             </button>
                             <button
@@ -362,17 +452,22 @@ function SpillTheTea() {
                             <div className="d-flex justify-content-between align-items-start">
                               <p className="mb-1">
                                 <strong>
-                                  {comment.createdByUsername === currentUsername ? (
+                                  {comment.createdByUsername ===
+                                  currentUsername ? (
                                     <span>{comment.createdByUsername}</span>
                                   ) : (
-                                    <Link to={`/user/${comment.createdByUsername}`}>
+                                    <Link
+                                      to={`/user/${comment.createdByUsername}`}
+                                    >
                                       {comment.createdByUsername}
                                     </Link>
                                   )}
                                 </strong>
-                                {showFriendLabel(comment.createdByUsername)}: {comment.content}
+                                {showFriendLabel(comment.createdByUsername)}:{" "}
+                                {comment.content}
                               </p>
-                              {comment.createdByUsername === currentUsername && (
+                              {comment.createdByUsername ===
+                                currentUsername && (
                                 <Dropdown align="end">
                                   <Dropdown.Toggle
                                     variant="link"
@@ -381,7 +476,13 @@ function SpillTheTea() {
                                     id={`dropdown-comment-${comment._id}`}
                                     aria-label="More options"
                                   >
-                                    <i className="bi bi-three-dots-vertical" style={{ fontSize: "1.2rem", color: "#333" }}></i>
+                                    <i
+                                      className="bi bi-three-dots-vertical"
+                                      style={{
+                                        fontSize: "1.2rem",
+                                        color: "#333",
+                                      }}
+                                    ></i>
                                   </Dropdown.Toggle>
                                   <Dropdown.Menu>
                                     <Dropdown.Item
@@ -393,7 +494,14 @@ function SpillTheTea() {
                                       ✏️ Edit Comment
                                     </Dropdown.Item>
                                     <Dropdown.Item
-                                      onClick={() => deleteComment({ variables: { spillPostId: post._id, commentId: comment._id } })}
+                                      onClick={() =>
+                                        deleteComment({
+                                          variables: {
+                                            spillPostId: post._id,
+                                            commentId: comment._id,
+                                          },
+                                        })
+                                      }
                                       className="text-danger"
                                     >
                                       🗑️ Delete Comment
@@ -404,23 +512,49 @@ function SpillTheTea() {
                             </div>
                           </>
                         )}
-                        <CommentReactions comment={comment} postId={post._id} currentUsername={currentUsername} reactToComment={reactToComment} />
+                        <CommentReactions
+                          comment={comment}
+                          postId={post._id}
+                          currentUsername={currentUsername}
+                          reactToComment={reactToComment}
+                        />
                       </div>
                     </div>
                   ))}
 
                   {commentingOn === post._id ? (
-                    <form onSubmit={async (e) => {
-                      e.preventDefault();
-                      await addComment({ variables: { spillPostId: post._id, content: commentContent } });
-                      setCommentContent("");
-                      setCommentingOn(null);
-                    }}>
-                      <input type="text" className="form-control mb-2" placeholder="Write a comment..." value={commentContent} onChange={(e) => setCommentContent(e.target.value)} required />
-                      <button type="submit" className="btn btn-primary btn-sm">Post Comment</button>
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        await addComment({
+                          variables: {
+                            spillPostId: post._id,
+                            content: commentContent,
+                          },
+                        });
+                        setCommentContent("");
+                        setCommentingOn(null);
+                      }}
+                    >
+                      <input
+                        type="text"
+                        className="form-control mb-2"
+                        placeholder="Write a comment..."
+                        value={commentContent}
+                        onChange={(e) => setCommentContent(e.target.value)}
+                        required
+                      />
+                      <button type="submit" className="btn btn-primary btn-sm">
+                        Post Comment
+                      </button>
                     </form>
                   ) : (
-                    <button className="btn btn-outline-primary btn-sm" onClick={() => setCommentingOn(post._id)}>🗣 Add Comment</button>
+                    <button
+                      className="btn btn-outline-primary btn-sm"
+                      onClick={() => setCommentingOn(post._id)}
+                    >
+                      🗣 Add Comment
+                    </button>
                   )}
                 </div>
               </div>

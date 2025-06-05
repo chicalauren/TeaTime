@@ -348,6 +348,10 @@ export const REMOVE_TEA_FROM_FAVORITES = gql`
     }
   }
 `;
+
+
+
+
 export const UPDATE_USER = gql`
   mutation updateUser($bio: String, $favoriteTeaSource: String, $profileImage: String) {
     updateUser(bio: $bio, favoriteTeaSource: $favoriteTeaSource, profileImage: $profileImage) {
