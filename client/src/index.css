@@ -78,3 +78,16 @@ button:focus-visible {
     transform: translateY(0);
   }
 }
+
+@media (max-width: 600px) {
+  .reaction-picker-popover {
+    position: static !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    width: 100% !important;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+}
