@@ -206,7 +206,7 @@ function SpillTheTea() {
         }}
       />
 
-      <div className="container py-4" style={{ position: "relative", zIndex: 1 }}>
+      <div className="container-fluid py-4" style={{ position: "relative", zIndex: 1 }}>
         <h2 className="text-dark mb-4">🫖 Spill the Tea</h2>
         <div className="mb-4">
           <OverlayTrigger overlay={<Tooltip>View public posts</Tooltip>}>
