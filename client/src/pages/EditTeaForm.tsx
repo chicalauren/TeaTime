@@ -1,6 +1,10 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_TEA, GET_TEAS, GET_ME } from "../utils/queries";
-import { UPDATE_TEA, ADD_TEA_TO_FAVORITES, REMOVE_TEA_FROM_FAVORITES } from "../utils/mutations";
+import {
+  UPDATE_TEA,
+  ADD_TEA_TO_FAVORITES,
+  REMOVE_TEA_FROM_FAVORITES,
+} from "../utils/mutations";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
@@ -15,7 +19,8 @@ function EditTeaForm() {
   const { data: userData } = useQuery(GET_ME);
   const [addToFavorites] = useMutation(ADD_TEA_TO_FAVORITES);
   const [removeFromFavorites] = useMutation(REMOVE_TEA_FROM_FAVORITES);
-  const userFavorites = userData?.me?.favorites?.map((fav: any) => fav._id) || [];
+  const userFavorites =
+    userData?.me?.favorites?.map((fav: any) => fav._id) || [];
 
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("");
@@ -29,8 +34,18 @@ function EditTeaForm() {
   const [uploading, setUploading] = useState(false);
 
   const teaTypes = [
-    "Black", "Green", "White", "Oolong", "Pu-erh", "Herbal",
-    "Rooibos", "Mate", "Yellow", "Chai", "Blooming", "Blend"
+    "Black",
+    "Green",
+    "White",
+    "Oolong",
+    "Pu-erh",
+    "Herbal",
+    "Rooibos",
+    "Mate",
+    "Yellow",
+    "Chai",
+    "Blooming",
+    "Blend",
   ];
 
   const tagOptions = [
@@ -98,10 +113,7 @@ function EditTeaForm() {
       formData.append("upload_preset", "tea_uploads");
 
       const uploadUrl = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL;
-      const response = await axios.post(
-        `${uploadUrl}`,
-        formData
-      );
+      const response = await axios.post(`${uploadUrl}`, formData);
 
       setImagePreview(response.data.secure_url);
 
@@ -130,7 +142,9 @@ function EditTeaForm() {
       setRating(tea.rating ?? "");
       setFavorite(tea.favorite || false);
       setTastingNotes(tea.tastingNotes ?? "");
-      setTags((tea.tags ?? []).map((tag: string) => ({ value: tag, label: tag })));
+      setTags(
+        (tea.tags ?? []).map((tag: string) => ({ value: tag, label: tag }))
+      );
       if (tea.imageUrl) setImagePreview(tea.imageUrl);
     }
   }, [tea]);
@@ -171,108 +185,198 @@ function EditTeaForm() {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100" style={{
-      backgroundImage: 'url("/your-image.jpg")',
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      position: "relative",
-    }}>
-      <div style={{
-        backgroundColor: "rgba(255, 255, 255, 0.75)",
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        zIndex: 0,
-      }} />
+    <div
+      className="d-flex justify-content-center align-items-center min-vh-100"
+      style={{
+        backgroundImage: 'url("/your-image.jpg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        position: "relative",
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.75)",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
+        }}
+      />
 
-      <div className="card shadow w-100" style={{ maxWidth: "600px", zIndex: 1 }}>
-        <div className="d-flex flex-column justify-content-center text-white p-4" style={{ backgroundColor: "#222", borderRadius: "0.5rem" }}>
-          <h1 className="card-title text-center mb-4">Edit Tea 🍵</h1>
-          <form onSubmit={handleSubmit} className="d-flex flex-column gap-3 text-white">
-            <input type="text" className="form-control" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
-            <input type="text" className="form-control" placeholder="Brand (optional)" value={brand} onChange={(e) => setBrand(e.target.value)} />
-            <select className="form-select" value={type} onChange={(e) => setType(e.target.value)} required>
-              <option value="">Select Tea Type</option>
-              {teaTypes.map((teaType) => (
-                <option key={teaType} value={teaType}>{teaType}</option>
-              ))}
-            </select>
-            <textarea className="form-control" placeholder="Tasting Notes" value={tastingNotes} onChange={(e) => setTastingNotes(e.target.value)} />
-            <div className="text-dark">
-              <label htmlFor="tag-select" className="form-label">Tags</label>
-              <Select
-                inputId="tag-select"
-                isMulti
-                options={tagOptions}
-                value={tags}
-                onChange={(selected) => setTags(selected as { value: string; label: string }[])}
-                className="basic-multi-select"
-                classNamePrefix="select"
-                placeholder="Select or type tags..."
+      <div
+        className="card shadow w-100"
+        style={{ maxWidth: "600px", zIndex: 1 }}
+      >
+        <div
+          className="d-flex flex-column justify-content-center text-white p-4"
+          style={{ backgroundColor: "#222", borderRadius: "0.5rem" }}
+        >
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => navigate("/dashboard")}
+              aria-label="Close edit form"
+              style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                border: "none",
+                background: "transparent",
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+                color: "white",
+                cursor: "pointer",
+                padding: "0.25rem 0.5rem",
+                lineHeight: 1,
+                zIndex: 2,
+              }}
+            >
+              &times;
+            </button>
+            <h1 className="card-title text-center mb-4">Edit Tea 🍵</h1>
+            <form
+              onSubmit={handleSubmit}
+              className="d-flex flex-column gap-3 text-white"
+            >
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
               />
-            </div>
-            <div>
-              <label htmlFor="rating" className="form-label">Rating (1–5 Stars)</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Brand (optional)"
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+              />
               <select
-                id="rating"
                 className="form-select"
-                value={rating}
-                onChange={(e) => setRating(e.target.value === "" ? "" : Number(e.target.value))}
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                required
               >
-                <option value="">Select Rating</option>
-                {[5, 4, 3, 2, 1].map((num) => (
-                  <option key={num} value={num}>{"⭐".repeat(num)}</option>
+                <option value="">Select Tea Type</option>
+                {teaTypes.map((teaType) => (
+                  <option key={teaType} value={teaType}>
+                    {teaType}
+                  </option>
                 ))}
               </select>
-            </div>
-            <div className="d-flex align-items-center gap-2">
-              <span>Mark as Favorite:</span>
-              <FavoriteButton
-                teaId={tea._id}
-                initialFavorite={userFavorites.includes(tea._id)}
-                addToFavorites={(id) => addToFavorites({ variables: { teaId: id } })}
-                removeFromFavorites={(id) =>
-                  removeFromFavorites({ variables: { teaId: id } })
-                }
-              />
-            </div>
-
-            <div>
-              <label htmlFor="imageUpload" className="form-label">
-                Upload a photo of your tea (optional)
-              </label>
-              <input
-                id="imageUpload"
-                type="file"
+              <textarea
                 className="form-control"
-                accept="image/*"
-                onChange={handleImageChange}
+                placeholder="Tasting Notes"
+                value={tastingNotes}
+                onChange={(e) => setTastingNotes(e.target.value)}
               />
-              <small className="text-white-50">Accepted formats: JPG, PNG, GIF</small>
-            </div>
-            {imagePreview && (
-              <div className="text-center">
-                <p><strong>Image Preview:</strong></p>
-                <img src={imagePreview} alt="Selected" className="img-fluid rounded" style={{ maxHeight: "250px" }} />
+              <div className="text-dark">
+                <label htmlFor="tag-select" className="form-label">
+                  Tags
+                </label>
+                <Select
+                  inputId="tag-select"
+                  isMulti
+                  options={tagOptions}
+                  value={tags}
+                  onChange={(selected) =>
+                    setTags(selected as { value: string; label: string }[])
+                  }
+                  className="basic-multi-select"
+                  classNamePrefix="select"
+                  placeholder="Select or type tags..."
+                />
               </div>
-            )}
-            {uploading && <p className="text-primary">Uploading image, please wait...</p>}
-            <button
-              type="submit"
-              className="btn btn-light w-100"
-              disabled={uploading || !name || !type}
-            >
-              {uploading ? (
-                <div className="spinner-border spinner-border-sm" role="status">
-                  <span className="visually-hidden">Uploading...</span>
+
+              <div>
+                <label htmlFor="rating" className="form-label">
+                  Rating (1–5 Stars)
+                </label>
+                <select
+                  id="rating"
+                  className="form-select"
+                  value={rating}
+                  onChange={(e) =>
+                    setRating(
+                      e.target.value === "" ? "" : Number(e.target.value)
+                    )
+                  }
+                >
+                  <option value="">Select Rating</option>
+                  {[5, 4, 3, 2, 1].map((num) => (
+                    <option key={num} value={num}>
+                      {"⭐".repeat(num)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="d-flex align-items-center gap-2">
+                <span>Mark as Favorite:</span>
+                <FavoriteButton
+                  teaId={tea._id}
+                  initialFavorite={userFavorites.includes(tea._id)}
+                  addToFavorites={(id) =>
+                    addToFavorites({ variables: { teaId: id } })
+                  }
+                  removeFromFavorites={(id) =>
+                    removeFromFavorites({ variables: { teaId: id } })
+                  }
+                />
+              </div>
+
+              <div>
+                <label htmlFor="imageUpload" className="form-label">
+                  Upload a photo of your tea (optional)
+                </label>
+                <input
+                  id="imageUpload"
+                  type="file"
+                  className="form-control"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+                <small className="text-white-50">
+                  Accepted formats: JPG, PNG, GIF
+                </small>
+              </div>
+              {imagePreview && (
+                <div className="text-center">
+                  <p>
+                    <strong>Image Preview:</strong>
+                  </p>
+                  <img
+                    src={imagePreview}
+                    alt="Selected"
+                    className="img-fluid rounded"
+                    style={{ maxHeight: "250px" }}
+                  />
                 </div>
-              ) : (
-                "✅ Update Tea"
               )}
-            </button>
-          </form>
+              {uploading && (
+                <p className="text-primary">Uploading image, please wait...</p>
+              )}
+              <button
+                type="submit"
+                className="btn btn-light w-100"
+                disabled={uploading || !name || !type}
+              >
+                {uploading ? (
+                  <div
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                  >
+                    <span className="visually-hidden">Uploading...</span>
+                  </div>
+                ) : (
+                  "✅ Update Tea"
+                )}
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
