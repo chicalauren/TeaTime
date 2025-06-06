@@ -8,6 +8,7 @@ import {
 } from "../utils/mutations";
 import { useState, useEffect } from "react";
 import FavoriteButton from "../components/FavoriteButton";
+import { X } from "react-bootstrap-icons";
 import {
   Container,
   Row,
@@ -67,7 +68,9 @@ function TeaDetail() {
   };
 
   const handleDelete = async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this tea?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this tea?"
+    );
     if (!confirmDelete) return;
     try {
       await deleteTea({ variables: { id: tea._id } });
@@ -107,11 +110,36 @@ function TeaDetail() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
+              <div
+                onClick={() => navigate("/dashboard")}
+                style={{
+                  position: "absolute",
+                  top: 20,
+                  right: 20,
+                  cursor: "pointer",
+                  zIndex: 10,
+                  backgroundColor: "white",
+                  borderRadius: "50%",
+                  padding: "6px",
+                  boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
+                  width: "32px",
+                  height: "32px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                aria-label="Close tea details"
+              >
+                <X size={18} color="black" />
+              </div>
+
               <Card className="h-100 d-flex flex-column shadow-sm">
                 <Card.Img
                   variant="top"
                   className="card-img-top"
-                  src={tea.imageUrl?.trim() !== "" ? tea.imageUrl : "/editTea.jpg"}
+                  src={
+                    tea.imageUrl?.trim() !== "" ? tea.imageUrl : "/editTea.jpg"
+                  }
                   onError={(e) => {
                     e.currentTarget.src = "/editTea.jpg";
                   }}
@@ -132,7 +160,10 @@ function TeaDetail() {
                   )}
                   {tea.tastingNotes && (
                     <Card.Text>
-                      <strong>Tasting Notes:</strong> {tea.tastingNotes || <span className="text-muted">None</span>}
+                      <strong>Tasting Notes:</strong>{" "}
+                      {tea.tastingNotes || (
+                        <span className="text-muted">None</span>
+                      )}
                     </Card.Text>
                   )}
                   {tea.tags?.length > 0 && (
@@ -150,7 +181,9 @@ function TeaDetail() {
                 <Card.Footer className="d-flex justify-content-between align-items-center p-2 flex-wrap gap-2">
                   <OverlayTrigger
                     placement="top"
-                    overlay={<Tooltip id={`tooltip-edit-${tea._id}`}>Edit</Tooltip>}
+                    overlay={
+                      <Tooltip id={`tooltip-edit-${tea._id}`}>Edit</Tooltip>
+                    }
                   >
                     <Link to={`/edit-tea/${tea._id}`}>
                       <Button variant="outline-primary" size="sm">
@@ -163,7 +196,9 @@ function TeaDetail() {
                     placement="top"
                     overlay={
                       <Tooltip id={`tooltip-fav-${tea._id}`}>
-                        {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+                        {isFavorite
+                          ? "Remove from Favorites"
+                          : "Add to Favorites"}
                       </Tooltip>
                     }
                   >
@@ -180,7 +215,9 @@ function TeaDetail() {
 
                   <OverlayTrigger
                     placement="top"
-                    overlay={<Tooltip id={`tooltip-delete-${tea._id}`}>Delete</Tooltip>}
+                    overlay={
+                      <Tooltip id={`tooltip-delete-${tea._id}`}>Delete</Tooltip>
+                    }
                   >
                     <Button
                       variant="outline-danger"
@@ -193,7 +230,11 @@ function TeaDetail() {
 
                   <OverlayTrigger
                     placement="top"
-                    overlay={<Tooltip id={`tooltip-back-${tea._id}`}>Return to Dashboard</Tooltip>}
+                    overlay={
+                      <Tooltip id={`tooltip-back-${tea._id}`}>
+                        Return to Dashboard
+                      </Tooltip>
+                    }
                   >
                     <Link to="/dashboard">
                       <Button variant="outline-secondary" size="sm">
@@ -215,7 +256,11 @@ function TeaDetail() {
                     }}
                     onClick={() =>
                       navigate("/teatimer", {
-                        state: { teaName: tea.name, teaType: tea.type, teaDetails: tea },
+                        state: {
+                          teaName: tea.name,
+                          teaType: tea.type,
+                          teaDetails: tea,
+                        },
                       })
                     }
                   >
