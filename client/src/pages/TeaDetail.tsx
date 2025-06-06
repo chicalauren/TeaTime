@@ -132,7 +132,7 @@ function TeaDetail() {
                   )}
                   {tea.tastingNotes && (
                     <Card.Text>
-                      <strong>Tasting Notes:</strong> {tea.tastingNotes}
+                      <strong>Tasting Notes:</strong> {tea.tastingNotes || <span className="text-muted">None</span>}
                     </Card.Text>
                   )}
                   {tea.tags?.length > 0 && (
