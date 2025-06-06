@@ -1,5 +1,21 @@
 [
   {
+    "name": "Glitter Unicorn",
+    "type": "Rainbow",
+    "brand": "",
+    "description": "A BOLD magical tea for everyone to enjoy",
+    "caffeineLevel": "Varies, depending on how you're feeling that day and it will pick you up!",
+    "brewTempCelsius": "90",
+    "brewTempFahrenheit": "194",
+    "brewTimeMinutes": "3",
+    "flavorNotes": "Glitter, rainbows and chaos",
+    "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
+    "usage": "focus, energy, and the spice of life",
+    "tags": ["black", "focus-and-energy"],
+    "imageUrl": "/images/unicorn.jpg",
+    "tastingNotes": ""
+  },
+  {
     "name": "Earl Grey",
     "type": "Black",
     "brand": "",
@@ -12,7 +28,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "focus and energy",
     "tags": ["black", "focus-and-energy"],
-    "imageUrl": "",
+    "imageUrl": "/images/earl-grey.jpg",
     "tastingNotes": ""
   },
   {
@@ -28,7 +44,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "morning wake-up",
     "tags": ["black", "morning-wake-up"],
-    "imageUrl": "",
+    "imageUrl": "/images/assam.jpg",
     "tastingNotes": ""
   },
   {
@@ -44,7 +60,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "afternoon tea",
     "tags": ["black", "afternoon-tea"],
-    "imageUrl": "",
+    "imageUrl": "/images/darjeeling.jpg",
     "tastingNotes": ""
   },
   {
@@ -60,7 +76,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "refreshment",
     "tags": ["black", "refreshment"],
-    "imageUrl": "",
+    "imageUrl": "/images/ceylon.jpg",
     "tastingNotes": ""
   },
   {
@@ -76,7 +92,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "relaxation",
     "tags": ["black", "relaxation"],
-    "imageUrl": "",
+    "imageUrl": "/images/keenum.jpg",
     "tastingNotes": ""
   },
   {
@@ -92,7 +108,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "adventure",
     "tags": ["black", "adventure"],
-    "imageUrl": "",
+    "imageUrl": "/images/Lapsang-Souchong.jpg",
     "tastingNotes": ""
   },
   {
@@ -108,7 +124,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "breakfast",
     "tags": ["black", "breakfast"],
-    "imageUrl": "",
+    "imageUrl": "/images/English-Breakfast.jpg",
     "tastingNotes": ""
   },
   {
@@ -124,7 +140,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "strong start",
     "tags": ["black", "strong-start"],
-    "imageUrl": "",
+    "imageUrl": "/images/Irish-Breakfast.jpg",
     "tastingNotes": ""
   },
   {
@@ -140,7 +156,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "invigoration",
     "tags": ["black", "invigoration"],
-    "imageUrl": "",
+    "imageUrl": "/images/yunnan.jpg",
     "tastingNotes": ""
   },
   {
@@ -156,7 +172,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "afternoon sip",
     "tags": ["black", "afternoon-sip"],
-    "imageUrl": "",
+    "imageUrl": "/images/nilgiri.jpg",
     "tastingNotes": ""
   },
   {
@@ -172,7 +188,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "daily wellness",
     "tags": ["green", "daily-wellness"],
-    "imageUrl": "",
+    "imageUrl": "/images/sencha.jpg",
     "tastingNotes": ""
   },
   {
@@ -188,7 +204,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "alertness",
     "tags": ["green", "alertness"],
-    "imageUrl": "",
+    "imageUrl": "/images/matcha.jpg",
     "tastingNotes": ""
   },
   {
@@ -204,7 +220,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "mindfulness",
     "tags": ["green", "mindfulness"],
-    "imageUrl": "",
+    "imageUrl": "/images/dragon-well.jpg",
     "tastingNotes": ""
   },
   {
@@ -220,7 +236,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "focus",
     "tags": ["green", "focus"],
-    "imageUrl": "",
+    "imageUrl": "/images/gyokuro.jpg",
     "tastingNotes": ""
   },
   {
@@ -236,7 +252,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "comfort",
     "tags": ["green", "comfort"],
-    "imageUrl": "",
+    "imageUrl": "/images/genmaicha.jpg",
     "tastingNotes": ""
   },
   {
@@ -252,7 +268,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "evening drink",
     "tags": ["green", "evening-drink"],
-    "imageUrl": "",
+    "imageUrl": "/images/hojicha.jpg",
     "tastingNotes": ""
   },
   {
@@ -268,7 +284,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "gentle wake-up",
     "tags": ["green", "gentle-wake-up"],
-    "imageUrl": "",
+    "imageUrl": "/images/biluochun.jpg",
     "tastingNotes": ""
   },
   {
@@ -284,7 +300,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "hydration",
     "tags": ["green", "hydration"],
-    "imageUrl": "",
+    "imageUrl": "/images/bancha.jpg",
     "tastingNotes": ""
   },
   {
@@ -332,7 +348,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "afternoon relaxation",
     "tags": ["oolong", "afternoon-relaxation"],
-    "imageUrl": "",
+    "imageUrl": "images/oolong.jpg",
     "tastingNotes": ""
   },
   {
@@ -348,7 +364,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "reflection",
     "tags": ["oolong", "reflection"],
-    "imageUrl": "",
+    "imageUrl": "images/oolong.jpg",
     "tastingNotes": ""
   },
   {
@@ -364,7 +380,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "dessert substitute",
     "tags": ["oolong", "dessert-substitute"],
-    "imageUrl": "",
+    "imageUrl": "images/oolong.jpg",
     "tastingNotes": ""
   },
   {
@@ -380,7 +396,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "indulgence",
     "tags": ["oolong", "indulgence"],
-    "imageUrl": "",
+    "imageUrl": "images/oolong.jpg",
     "tastingNotes": ""
   },
   {
@@ -412,7 +428,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "celebration",
     "tags": ["oolong", "celebration"],
-    "imageUrl": "",
+    "imageUrl": "images/oolong.jpg",
     "tastingNotes": ""
   },
   {
@@ -428,7 +444,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "gentle energy",
     "tags": ["oolong", "gentle-energy"],
-    "imageUrl": "",
+    "imageUrl": "images/oolong.jpg",
     "tastingNotes": ""
   },
   {
@@ -476,7 +492,7 @@
     "looseLeafRecipe": "Use 1 teaspoon per 8 oz. Steep at 90°C (194°F) for 3-5 minutes.",
     "usage": "spice and warmth",
     "tags": ["oolong", "spice-and-warmth"],
-    "imageUrl": "",
+    "imageUrl": "images/oolong.jpg",
     "tastingNotes": ""
   },
   {

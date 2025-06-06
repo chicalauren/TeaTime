@@ -1,7 +1,21 @@
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_ME, RECOMMEND_TEAS } from "../utils/queries";
-import { UPDATE_USER } from "../utils/mutations";
-import { useState, useEffect } from "react";
+import {
+  UPDATE_USER,
+  ADD_TEA_TO_FAVORITES,
+  REMOVE_TEA_FROM_FAVORITES,
+} from "../utils/mutations";
+import { useState, useEffect, ChangeEvent } from "react";
+import FavoriteButton from "../components/FavoriteButton";
+
+interface Tea {
+  _id: string;
+  name: string;
+  type: string;
+  brand?: string;
+  tags?: string[];
+  imageUrl?: string;
+}
 
 function Profile() {
   const {
@@ -10,11 +24,17 @@ function Profile() {
     data: userData,
     refetch,
   } = useQuery(GET_ME);
+
   const [updateUser] = useMutation(UPDATE_USER);
-  console.log("User from GET_ME:", userData?.me);
+  const [addToFavoritesMutation] = useMutation(ADD_TEA_TO_FAVORITES, {
+    refetchQueries: [{ query: GET_ME }],
+  });
+  const [removeFromFavoritesMutation] = useMutation(REMOVE_TEA_FROM_FAVORITES, {
+    refetchQueries: [{ query: GET_ME }],
+  });
 
   const user = userData?.me;
-  const favoriteTeas = user?.favoriteTeas ?? [];
+  const favoriteTeas: Tea[] = user?.favoriteTeas ?? [];
 
   const [bio, setBio] = useState("");
   const [favoriteTeaSource, setFavoriteTeaSource] = useState("");
@@ -28,10 +48,8 @@ function Profile() {
   }, [user]);
 
   const allTags = Array.from(
-    new Set(favoriteTeas.flatMap((tea: any) => tea.tags || []))
+    new Set(favoriteTeas.flatMap((tea) => tea.tags || []))
   );
-
-  console.log("Tags to send:", allTags);
 
   const {
     data: recData,
@@ -41,35 +59,140 @@ function Profile() {
     variables: { tags: allTags },
   });
 
-  if (loadingUser) return <p>Loading profile...</p>;
-  if (errorUser) return <p>Error loading profile: {errorUser.message}</p>;
-  if (!user) return <p>User not found.</p>;
+  const handleAddToFavorites = async (teaId: string) => {
+    try {
+      await addToFavoritesMutation({ variables: { teaId } });
+      await refetch();
+    } catch (e) {
+      console.error("Error adding to favorites:", e);
+    }
+  };
+
+  const handleRemoveFromFavorites = async (teaId: string) => {
+    try {
+      await removeFromFavoritesMutation({ variables: { teaId } });
+      await refetch();
+    } catch (e) {
+      console.error("Error removing from favorites:", e);
+    }
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("handleSave triggered");
-    console.log("Saving profile with:", { bio, favoriteTeaSource });
-
     try {
-      const { data } = await updateUser({
+      await updateUser({
         variables: { bio, favoriteTeaSource },
       });
-
-      console.log("UpdateUser mutation response:", data);
-
       await refetch();
       setIsEditing(false);
     } catch (err) {
       console.error("Error updating profile:", err);
     }
   };
+
+  const handleProfileImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "unsignedProfilePictures");
+    formData.append("folder", "user_profile_pictures");
+    
+    const uploadUrl = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL || "";
+    try {
+      const res = await fetch(
+        `${uploadUrl}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await res.json();
+      const imageUrl = data.secure_url;
+
+      await updateUser({
+        variables: { profileImage: imageUrl },
+      });
+
+      await refetch();
+    } catch (err) {
+      console.error("Error uploading profile image:", err);
+    }
+  };
+
+  function TeaCardWithFavorite({ tea }: { tea: Tea }) {
+    const isFavorite = favoriteTeas.some((favTea) => favTea._id === tea._id);
+
+    return (
+      <div className="card shadow-sm h-100 position-relative">
+        <div
+          className="ratio ratio-1x1 rounded-top overflow-hidden"
+          style={{
+            backgroundImage: `url(${tea.imageUrl || "/default-tea.jpg"})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        ></div>
+        <div className="card-body">
+          <h5 className="card-title">{tea.name}</h5>
+          <p className="card-text">
+            <strong>Type:</strong> {tea.type}
+            <br />
+            <strong>Brand:</strong> {tea.brand || "N/A"}
+          </p>
+          {tea.tags && (
+            <p className="small text-muted">{tea.tags.join(", ")}</p>
+          )}
+          <div className="d-flex justify-content-end">
+            <FavoriteButton
+              teaId={tea._id}
+              initialFavorite={isFavorite}
+              addToFavorites={handleAddToFavorites}
+              removeFromFavorites={handleRemoveFromFavorites}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (loadingUser) return <p>Loading profile...</p>;
+  if (errorUser) return <p>Error loading profile: {errorUser.message}</p>;
+  if (!user) return <p>User not found.</p>;
+
   return (
-    <div className="d-flex flex-column align-items-center min-vh-100 py-5 mt-5">
+    <div
+      className="d-flex flex-column align-items-center min-vh-100 py-5"
+      style={{
+        backgroundImage: 'url("/your-image.jpg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        position: "relative",
+      }}
+    >
+      {/* Overlay */}
+      <div
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.75)",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
+        }}
+      />
+
       {/* 🔹 Profile Info Card */}
-      <div className="card shadow w-100 mb-5" style={{ maxWidth: "500px" }}>
+      <div
+        className="card shadow w-100 mb-5"
+        style={{ maxWidth: "500px", zIndex: 1 }}
+      >
         <div className="ratio ratio-1x1">
           <img
-            src="/teacup.jpg"
+            src={user.profileImage || "/teacup.jpg"}
             alt="User profile"
             className="img-fluid object-fit-cover rounded-top"
           />
@@ -79,6 +202,21 @@ function Profile() {
           <p>
             <strong>Email:</strong> {user.email}
           </p>
+
+          {isEditing && (
+            <div className="mb-3 text-start">
+              <label htmlFor="profileImage" className="form-label">
+                <strong>Upload a Profile Photo</strong>
+              </label>
+              <input
+                type="file"
+                id="profileImage"
+                accept="image/*"
+                className="form-control"
+                onChange={handleProfileImageChange}
+              />
+            </div>
+          )}
 
           {!isEditing ? (
             <>
@@ -139,37 +277,23 @@ function Profile() {
       </div>
 
       {/* ❤️ Favorite Teas */}
-      <div className="w-100 mb-5" style={{ maxWidth: "1000px" }}>
-        <h2 className="text-center mb-4">Favorite Teas ❤️</h2>
+      <div className="w-100 mb-5" style={{ maxWidth: "1000px", zIndex: 1 }}>
+        <div className="card bg-light mb-4 shadow-sm">
+          <div className="card-body text-center">
+            <h2 className="fw-bold mb-0 text-dark">❤️ Favorite Teas</h2>
+          </div>
+        </div>
+
         {favoriteTeas.length === 0 ? (
           <p className="text-center text-muted">
             You haven't saved any teas yet.
           </p>
         ) : (
           <>
-            <div className="row g-3">
-              {favoriteTeas.slice(0, 3).map((tea: any) => (
+            <div className="row g-3 d-flex justify-content-center">
+              {favoriteTeas.slice(0, 3).map((tea) => (
                 <div key={tea._id} className="col-md-4 col-sm-6">
-                  <div className="card shadow-sm h-100">
-                    <div
-                      className="ratio ratio-1x1 rounded-top overflow-hidden"
-                      style={{
-                        backgroundImage: `url(${
-                          tea.imageUrl || "/default-tea.jpg"
-                        })`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                      }}
-                    ></div>
-                    <div className="card-body">
-                      <h5 className="card-title">{tea.name}</h5>
-                      <p className="card-text">
-                        <strong>Type:</strong> {tea.type}
-                        <br />
-                        <strong>Brand:</strong> {tea.brand || "N/A"}
-                      </p>
-                    </div>
-                  </div>
+                  <TeaCardWithFavorite tea={tea} />
                 </div>
               ))}
             </div>
@@ -185,37 +309,22 @@ function Profile() {
       </div>
 
       {/* 🍃 Recommended Teas */}
-      <div className="w-100" style={{ maxWidth: "1000px" }}>
-        <h2 className="text-center mb-4">Recommended Teas 🍃</h2>
+      <div className="w-100" style={{ maxWidth: "1000px", zIndex: 1 }}>
+        <div className="card bg-light mb-4 shadow-sm">
+          <div className="card-body text-center">
+            <h2 className="fw-bold mb-0 text-dark">🍃 Recommended Teas</h2>
+          </div>
+        </div>
+
         {loadingRecs ? (
           <p className="text-center">Loading recommendations...</p>
         ) : errorRecs ? (
           <p className="text-center text-danger">Error: {errorRecs.message}</p>
         ) : recData?.recommendTeas?.length > 0 ? (
-          <div className="row g-3">
-            {recData.recommendTeas.map((tea: any) => (
+          <div className="row g-3 d-flex justify-content-center">
+            {recData.recommendTeas.map((tea: Tea) => (
               <div key={tea._id} className="col-md-4 col-sm-6">
-                <div className="card shadow-sm h-100">
-                  <div
-                    className="ratio ratio-1x1 rounded-top overflow-hidden"
-                    style={{
-                      backgroundImage: `url(${
-                        tea.imageUrl || "/default-tea.jpg"
-                      })`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  ></div>
-                  <div className="card-body">
-                    <h5 className="card-title">{tea.name}</h5>
-                    <p className="card-text">
-                      <strong>Type:</strong> {tea.type}
-                      <br />
-                      <strong>Brand:</strong> {tea.brand || "N/A"}
-                    </p>
-                    <p className="small text-muted">{tea.tags?.join(", ")}</p>
-                  </div>
-                </div>
+                <TeaCardWithFavorite tea={tea} />
               </div>
             ))}
           </div>

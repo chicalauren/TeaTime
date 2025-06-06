@@ -5,8 +5,7 @@ import {
   createHttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -21,6 +20,10 @@ import EditTeaForm from "./pages/EditTeaForm";
 import SpillTheTea from "./pages/SpillTheTea";
 import TeaTimer from "./pages/TeaTimer";
 import Favorites from "./pages/Favorites";
+import UserProfile from "./pages/UserProfile.tsx";
+import Friends from "./pages/Friends";
+import ChatWidget from "./components/ChatWidget";
+import BrewLog from "./pages/BrewLog";
 
 const httpLink = createHttpLink({
   uri: "/graphql",
@@ -41,14 +44,15 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+
   return (
-    <ApolloProvider client={client}>
-      <Router>
-        <Navbar />
+    <>
+      <Navbar />
         <main style={{ paddingTop: "64px" }}>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Login />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/favorites" element={<Favorites />} />
@@ -67,7 +71,16 @@ function App() {
             <Route path="/spill" element={<SpillTheTea />} />
             <Route path="/teatimer" element={<TeaTimer />} />
             <Route path="/favorites" element={<Favorites />} />
-
+            <Route
+              path="/friends"
+              element={
+                <ProtectedRoute>
+                  <Friends />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/brew-log" element={<BrewLog />} />
+            <Route path="/user/:username" element={<UserProfile />} />
             <Route
               path="/dashboard"
               element={
@@ -86,7 +99,17 @@ function App() {
             />
           </Routes>
         </main>
-        <Footer />
+      {!["/", "/login", "/register"].includes(location.pathname) && <ChatWidget />}
+      <Footer />
+    </>
+  );
+}
+
+function App() {
+  return (
+    <ApolloProvider client={client}>
+      <Router>
+        <AppContent />
       </Router>
     </ApolloProvider>
   );

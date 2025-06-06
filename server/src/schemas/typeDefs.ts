@@ -5,9 +5,28 @@ const typeDefs = gql`
     _id: ID!
     username: String!
     email: String!
+    profileImage: String
     favoriteTeas: [TeaCategory]
+    friends: [User]
+    friendRequestsSent: [User]
+    friendRequestsReceived: [User]
     bio: String
     favoriteTeaSource: String
+  }
+
+  type Message {
+    _id: ID!
+    sender: User!
+    content: String!
+    timestamp: String!
+    readBy: [User!]!
+  }
+
+  type MessageThread {
+    _id: ID!
+    participants: [User!]!
+    messages: [Message!]!
+    updatedAt: String!
   }
 
   type TeaCategory {
@@ -28,11 +47,17 @@ const typeDefs = gql`
     favorite: Boolean
   }
 
+  type Reaction {
+    emoji: String!
+    users: [String!]!
+  }
+
   type Comment {
     _id: ID!
     content: String!
     createdByUsername: String!
     createdAt: String!
+    reactions: [Reaction]
   }
 
   type SpillPost {
@@ -52,6 +77,12 @@ const typeDefs = gql`
     user: User
   }
 
+  # Added this in - not sure if Auth is needed
+  type AuthPayload {
+    token: String!
+    user: User!
+  }
+
   # Queries
   type Query {
     me: User
@@ -59,13 +90,30 @@ const typeDefs = gql`
     tea(id: ID!): TeaCategory
     spillPosts: [SpillPost]
     recommendTeas(tags: [String!]!): [TeaCategory]
+    userByUsername(username: String!): User
+    myMessageThreads: [MessageThread!]!
+    searchUsers(username: String!): [User]
+    messageThreadWith(userId: ID!): MessageThread
   }
 
   # Mutations
   type Mutation {
-    login(email: String!, password: String!): Auth
+    login(login: String!, password: String!): AuthPayload!
+    sendFriendRequest(userId: ID!): User
+    acceptFriendRequest(userId: ID!): User
+    declineFriendRequest(userId: ID!): User
+    removeFriend(userId: ID!): User
     register(username: String!, email: String!, password: String!): Auth
-    updateUser(bio: String, favoriteTeaSource: String): User
+    editSpillPost(spillPostId: ID!, title: String, content: String): SpillPost
+    editComment(spillPostId: ID!, commentId: ID!, content: String!): SpillPost
+    sendMessage(toUserId: ID!, content: String!): MessageThread!
+    markThreadAsRead(threadId: ID!): MessageThread!
+    reactToComment(spillPostId: ID!, commentId: ID!, emoji: String!): SpillPost
+    updateUser(
+      bio: String
+      favoriteTeaSource: String
+      profileImage: String
+    ): User
 
     addTea(
       name: String!
@@ -87,7 +135,7 @@ const typeDefs = gql`
     updateTeaDescription(teaId: ID!, description: String!): TeaCategory
 
     updateTea(
-      id: ID!
+      teaId: ID!
       name: String
       brand: String
       type: String

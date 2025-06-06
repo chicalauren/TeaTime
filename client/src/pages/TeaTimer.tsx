@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useLocation } from "react-router-dom";
 
 const beepSound = new Audio(
   "https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
@@ -19,7 +20,19 @@ const teaOptions = [
 const backgroundImageUrl = "/images/tea-background.jpg";
 
 function TeaTimer() {
-  const [selectedTea, setSelectedTea] = useState(teaOptions[0]);
+  const location = useLocation();
+  const details = location.state?.teaDetails;
+  const state = location.state as
+    | { teaName?: string; teaType?: string; teaDetails?: any }
+    | undefined;
+
+  const [selectedTea, setSelectedTea] = useState(() => {
+    const actualTeaName = state?.teaType + " Tea";
+    if (state?.teaType && teaOptions.some((t) => t.type === actualTeaName)) {
+      return teaOptions.find((t) => t.type === actualTeaName)!;
+    }
+    return teaOptions[0];
+  });
   const [timeLeft, setTimeLeft] = useState(0);
   const [running, setRunning] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -27,7 +40,7 @@ function TeaTimer() {
   const [customMinutes, setCustomMinutes] = useState("");
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: ReturnType<typeof setTimeout>;
     if (running && !paused && timeLeft > 0) {
       timer = setTimeout(() => {
         setTimeLeft((prev) => prev - 1);
@@ -44,13 +57,38 @@ function TeaTimer() {
       setProgress(100);
     }
     return () => clearTimeout(timer);
+    // eslint-disable-next-line
   }, [running, paused, timeLeft]);
 
   const startTimer = () => {
+    // --- Brew Logging ---
+    if (details && details._id) {
+      const brewLog = JSON.parse(localStorage.getItem("brewLog") || "{}");
+      const teaId = details._id;
+      const now = new Date().toISOString();
+
+      if (brewLog[teaId]) {
+        brewLog[teaId].lastBrewed = now;
+        brewLog[teaId].timesBrewed += 1;
+      } else {
+        brewLog[teaId] = {
+          tea: details,
+          lastBrewed: now,
+          timesBrewed: 1,
+        };
+      }
+      localStorage.setItem("brewLog", JSON.stringify(brewLog));
+    } else if (details && !details._id) {
+      alert("Cannot log brew: invalid tea ID.");
+    }
+    // --- End Brew Logging ---
+
     const minutes =
       selectedTea.type === "Custom" ? parseInt(customMinutes) : null;
     const time =
-      selectedTea.type === "Custom" && typeof minutes === "number" && !isNaN(minutes)
+      selectedTea.type === "Custom" &&
+      typeof minutes === "number" &&
+      !isNaN(minutes)
         ? minutes * 60
         : selectedTea.time;
 
@@ -80,24 +118,38 @@ function TeaTimer() {
 
   return (
     <div
-      className="d-flex justify-content-center align-items-start"
+      className="position-relative min-vh-100 d-flex justify-content-center align-items-start"
       style={{
-        minHeight: "100vh",
         backgroundImage: `url(${backgroundImageUrl})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         paddingTop: "5rem",
       }}
     >
+      {/* Overlay */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(255, 255, 255, 0.75)",
+          zIndex: 0,
+        }}
+      />
+
       <div
         className="card shadow p-4 text-center"
         style={{
           maxWidth: "500px",
           width: "100%",
           backgroundColor: "rgba(255,255,255,0.9)",
+          zIndex: 1,
         }}
       >
         <h2 className="mb-4">Tea Timer ⏱️</h2>
+        {state?.teaName && <h4 className="mb-3">Brewing: {state.teaName}</h4>}
 
         <div className="mb-3">
           <select
@@ -120,7 +172,9 @@ function TeaTimer() {
               type="number"
               className="form-control"
               value={customMinutes}
-              onChange={(e) => setCustomMinutes(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setCustomMinutes(e.target.value)
+              }
               min="1"
             />
           </div>

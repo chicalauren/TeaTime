@@ -21,6 +21,8 @@
     "@vitejs/plugin-react": "^4.4.1",
     "apollo-server": "^3.13.0",
     "axios": "^1.9.0",
+    "bootstrap": "^5.3.6",
+    "bootstrap-icons": "^1.13.1",
     "dotenv": "^16.5.0",
     "react-circular-progressbar": "^2.2.0",
     "react-confetti": "^6.4.0",
@@ -29,6 +31,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/bootstrap": "^5.2.10",
     "@types/graphql": "^14.2.3",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/react": "^19.1.2",

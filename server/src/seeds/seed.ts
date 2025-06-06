@@ -18,13 +18,16 @@ mongoose.connect(process.env.MONGODB_URI);
 const teaData = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "../../src/seeds/teas.json"), "utf-8")
 );
+const testUser = {
+  username: "test",
+  email: "test@example.com",
+  password: "password123",
+};
 
 const seedDatabase = async () => {
   try {
     // Connect to DB
     await connectDB();
-    await TeaCategory.deleteMany();
-    console.log("🧹 Cleared old tea data");
 
     // Insert the tea data into the database
     const insertedTeas = await TeaCategory.insertMany(teaData);

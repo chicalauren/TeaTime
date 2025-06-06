@@ -83,14 +83,79 @@ export const DELETE_SPILL_POST = gql`
     }
   }
 `;
+
+export const EDIT_SPILL_POST = gql`
+  mutation EditSpillPost($spillPostId: ID!, $title: String, $content: String) {
+    editSpillPost(spillPostId: $spillPostId, title: $title, content: $content) {
+      _id
+      title
+      content
+    }
+  }
+`;
+
+export const EDIT_COMMENT = gql`
+  mutation EditComment($spillPostId: ID!, $commentId: ID!, $content: String!) {
+    editComment(spillPostId: $spillPostId, commentId: $commentId, content: $content) {
+      _id
+      comments {
+        _id
+        content
+        createdByUsername
+        createdAt
+      }
+    }
+  }
+`;
+
 export const LOGIN = gql`
-  mutation login($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
+  mutation login($login: String!, $password: String!) {
+    login(login: $login, password: $password) {
       token
       user {
         _id
         username
         email
+      }
+    }
+  }
+`;
+
+export const SEND_MESSAGE = gql`
+  mutation SendMessage($toUserId: ID!, $content: String!) {
+    sendMessage(toUserId: $toUserId, content: $content) {
+      _id
+      participants {
+        _id
+        username
+        profileImage
+      }
+      messages {
+        _id
+        sender {
+          _id
+          username
+        }
+        content
+        timestamp
+        readBy {
+          _id
+        }
+      }
+      updatedAt
+    }
+  }
+`;
+
+export const MARK_THREAD_AS_READ = gql`
+  mutation MarkThreadAsRead($threadId: ID!) {
+    markThreadAsRead(threadId: $threadId) {
+      _id
+      messages {
+        _id
+        readBy {
+          _id
+        }
       }
     }
   }
@@ -144,13 +209,15 @@ export const UPDATE_TEA = gql`
     $teaId: ID!
     $brand: String
     $type: String
+    $imageUrl: String
     $rating: Int
     $favorite: Boolean
     $name: String
   ) {
     updateTea(
-      id: $teaId
+      teaId: $teaId
       brand: $brand
+      imageUrl: $imageUrl
       type: $type
       rating: $rating
       favorite: $favorite
@@ -160,6 +227,7 @@ export const UPDATE_TEA = gql`
       rating
       type
       brand
+      imageUrl
       favorite
     }
   }
@@ -183,6 +251,7 @@ export const GET_ME = gql`
     me {
       _id
       username
+      profileImageUrl
       favoriteTeas {
         _id
         name
@@ -212,6 +281,58 @@ export const ADD_TEA_TO_FAVORITES = gql`
   }
 `;
 
+export const REACT_TO_COMMENT = gql`
+  mutation ReactToComment($spillPostId: ID!, $commentId: ID!, $emoji: String!) {
+    reactToComment(spillPostId: $spillPostId, commentId: $commentId, emoji: $emoji) {
+      _id
+      comments {
+        _id
+        reactions {
+          emoji
+          users
+        }
+      }
+    }
+  }
+`;
+
+export const SEND_FRIEND_REQUEST = gql`
+  mutation SendFriendRequest($userId: ID!) {
+    sendFriendRequest(userId: $userId) {
+      _id
+      username
+    }
+  }
+`;
+
+export const ACCEPT_FRIEND_REQUEST = gql`
+  mutation AcceptFriendRequest($userId: ID!) {
+    acceptFriendRequest(userId: $userId) {
+      _id
+      username
+      friends { _id username }
+    }
+  }
+`;
+
+export const DECLINE_FRIEND_REQUEST = gql`
+  mutation DeclineFriendRequest($userId: ID!) {
+    declineFriendRequest(userId: $userId) {
+      _id
+      username
+    }
+  }
+`;
+
+export const REMOVE_FRIEND = gql`
+  mutation RemoveFriend($userId: ID!) {
+    removeFriend(userId: $userId) {
+      _id
+      username
+    }
+  }
+`;
+
 export const REMOVE_TEA_FROM_FAVORITES = gql`
   mutation removeTeaFromFavorites($teaId: ID!) {
     removeTeaFromFavorites(teaId: $teaId) {
@@ -227,13 +348,19 @@ export const REMOVE_TEA_FROM_FAVORITES = gql`
     }
   }
 `;
+
+
+
+
 export const UPDATE_USER = gql`
-  mutation UpdateUser($bio: String, $favoriteTeaSource: String) {
-    updateUser(bio: $bio, favoriteTeaSource: $favoriteTeaSource) {
+  mutation updateUser($bio: String, $favoriteTeaSource: String, $profileImage: String) {
+    updateUser(bio: $bio, favoriteTeaSource: $favoriteTeaSource, profileImage: $profileImage) {
       _id
       username
+      email
       bio
       favoriteTeaSource
+      profileImage
     }
   }
 `;
