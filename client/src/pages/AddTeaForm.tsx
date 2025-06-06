@@ -40,7 +40,6 @@ function AddTeaForm() {
     "Blend",
   ];
 
-
   useEffect(() => {
     nameInputRef.current?.focus();
   }, []);
@@ -64,10 +63,7 @@ function AddTeaForm() {
 
       const uploadUrl = import.meta.env.VITE_CLOUDINARY_UPLOAD_URL;
 
-      const response = await axios.post(
-        `${uploadUrl}`,
-        formData
-      );
+      const response = await axios.post(`${uploadUrl}`, formData);
 
       return response.data.secure_url;
     } catch (error) {
@@ -213,179 +209,207 @@ function AddTeaForm() {
 
       <div className="card shadow w-100" style={{ maxWidth: "600px" }}>
         <div className="rounded">
-          <div
-            className="d-flex flex-column justify-content-center text-white"
-            style={{
-              backgroundColor: "#222",
-              padding: "2rem",
-              borderRadius: "0.5rem",
-            }}
-          >
-            <h1 className="card-title text-center mb-4 text-white">
-              Add New Tea 🍵
-            </h1>
-
-            <form
-              onSubmit={handleSubmit}
-              className="d-flex flex-column gap-3 text-white"
+          <div className="rounded position-relative">
+            <button
+              onClick={() => navigate("/dashboard")}
+              aria-label="Close Add Tea Form"
+              title="Close"
+              style={{
+                position: "absolute",
+                top: "10px",
+                right: "10px",
+                background: "transparent",
+                border: "none",
+                fontSize: "1.5rem",
+                fontWeight: "bold",
+                color: "#fff",
+                cursor: "pointer",
+                zIndex: 10,
+              }}
             >
-              <input
-                ref={nameInputRef}
-                type="text"
-                className="form-control"
-                placeholder="Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
+              &times;
+            </button>
+            <div
+              className="d-flex flex-column justify-content-center text-white"
+              style={{
+                backgroundColor: "#222",
+                padding: "2rem",
+                borderRadius: "0.5rem",
+              }}
+            >
+              <h1 className="card-title text-center mb-4 text-white">
+                Add New Tea 🍵
+              </h1>
 
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Brand"
-                value={brand}
-                onChange={(e) => setBrand(e.target.value)}
-                required
-              />
-
-              <select
-                className="form-select"
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-                required
+              <form
+                onSubmit={handleSubmit}
+                className="d-flex flex-column gap-3 text-white"
               >
-                <option value="">Select Tea Type</option>
-                {teaTypes.map((teaType) => (
-                  <option key={teaType} value={teaType}>
-                    {teaType}
-                  </option>
-                ))}
-                <option value="custom">Other (input)</option>
-              </select>
-              {type === "custom" && (
+                <input
+                  ref={nameInputRef}
+                  type="text"
+                  className="form-control"
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+
                 <input
                   type="text"
-                  className="form-control mt-2"
-                  placeholder="Enter custom tea type"
-                  value={customType}
-                  onChange={(e) => setCustomType(e.target.value)}
+                  className="form-control"
+                  placeholder="Brand"
+                  value={brand}
+                  onChange={(e) => setBrand(e.target.value)}
                   required
                 />
-              )}
 
-              <textarea
-                className="form-control"
-                placeholder="Tasting Notes"
-                value={tastingNotes}
-                onChange={(e) => setTastingNotes(e.target.value)}
-              />
-
-              <div className="text-dark">
-                <label htmlFor="tag-select" className="form-label">
-                  Tags
-                </label>
-                <Select
-                  inputId="tag-select"
-                  isMulti
-                  options={tagOptions}
-                  value={tags}
-                  onChange={(selected) =>
-                    setTags(selected as { value: string; label: string }[])
-                  }
-                  className="basic-multi-select"
-                  classNamePrefix="select"
-                  placeholder="Select or type tags..."
-                />
-              </div>
-
-              <div>
-                <label className="form-label">Rating (1–5 Stars)</label>
                 <select
                   className="form-select"
-                  value={rating}
-                  onChange={(e) => setRating(parseInt(e.target.value))}
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
                   required
                 >
-                  <option value="">Select Rating</option>
-                  {[5, 4, 3, 2, 1].map((num) => (
-                    <option key={num} value={num}>
-                      {"⭐".repeat(num)}
+                  <option value="">Select Tea Type</option>
+                  {teaTypes.map((teaType) => (
+                    <option key={teaType} value={teaType}>
+                      {teaType}
                     </option>
                   ))}
+                  <option value="custom">Other (input)</option>
                 </select>
-              </div>
+                {type === "custom" && (
+                  <input
+                    type="text"
+                    className="form-control mt-2"
+                    placeholder="Enter custom tea type"
+                    value={customType}
+                    onChange={(e) => setCustomType(e.target.value)}
+                    required
+                  />
+                )}
 
-              <div className="d-flex align-items-center gap-2">
-                <span>Mark as Favorite:</span>
-                <button
-                  type="button"
-                  onClick={() => setFavorite(!favorite)}
-                  aria-label={favorite ? "Unmark favorite" : "Mark as favorite"}
-                  title={favorite ? "Unmark favorite" : "Mark as favorite"}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    fontSize: "1.8rem",
-                    color: favorite ? "red" : "gray",
-                    padding: 0,
-                    lineHeight: 1,
-                  }}
-                >
-                  {favorite ? "❤️" : "🤍"}
-                </button>
-              </div>
-
-              <div>
-                <label htmlFor="imageUpload" className="form-label">
-                  Upload a photo of your tea (optional)
-                </label>
-                <input
-                  id="imageUpload"
-                  type="file"
+                <textarea
                   className="form-control"
-                  accept="image/*"
-                  onChange={handleImageChange}
+                  placeholder="Tasting Notes"
+                  value={tastingNotes}
+                  onChange={(e) => setTastingNotes(e.target.value)}
                 />
-                <small className="text-white-50">Accepted formats: JPG, PNG, GIF</small>
-              </div>
 
-              {imagePreview && (
-                <div className="text-center">
-                  <p>
-                    <strong>Image Preview:</strong>
-                  </p>
-                  <img
-                    src={imagePreview}
-                    alt="Selected"
-                    className="img-fluid rounded"
-                    style={{ maxHeight: "250px" }}
+                <div className="text-dark">
+                  <label htmlFor="tag-select" className="form-label">
+                    Tags
+                  </label>
+                  <Select
+                    inputId="tag-select"
+                    isMulti
+                    options={tagOptions}
+                    value={tags}
+                    onChange={(selected) =>
+                      setTags(selected as { value: string; label: string }[])
+                    }
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    placeholder="Select or type tags..."
                   />
                 </div>
-              )}
 
-
-              {uploading && (
-                <p className="text-primary">Uploading image, please wait...</p>
-              )}
-
-              <button
-                type="submit"
-                className="btn btn-light w-100"
-                disabled={uploading || !name || !brand || !type || rating === 0}
-              >
-                {uploading ? (
-                  <div
-                    className="spinner-border spinner-border-sm"
-                    role="status"
+                <div>
+                  <label className="form-label">Rating (1–5 Stars)</label>
+                  <select
+                    className="form-select"
+                    value={rating}
+                    onChange={(e) => setRating(parseInt(e.target.value))}
+                    required
                   >
-                    <span className="visually-hidden">Uploading...</span>
+                    <option value="">Select Rating</option>
+                    {[5, 4, 3, 2, 1].map((num) => (
+                      <option key={num} value={num}>
+                        {"⭐".repeat(num)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="d-flex align-items-center gap-2">
+                  <span>Mark as Favorite:</span>
+                  <button
+                    type="button"
+                    onClick={() => setFavorite(!favorite)}
+                    aria-label={
+                      favorite ? "Unmark favorite" : "Mark as favorite"
+                    }
+                    title={favorite ? "Unmark favorite" : "Mark as favorite"}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      fontSize: "1.8rem",
+                      color: favorite ? "red" : "gray",
+                      padding: 0,
+                      lineHeight: 1,
+                    }}
+                  >
+                    {favorite ? "❤️" : "🤍"}
+                  </button>
+                </div>
+
+                <div>
+                  <label htmlFor="imageUpload" className="form-label">
+                    Upload a photo of your tea (optional)
+                  </label>
+                  <input
+                    id="imageUpload"
+                    type="file"
+                    className="form-control"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                  <small className="text-white-50">
+                    Accepted formats: JPG, PNG, GIF
+                  </small>
+                </div>
+
+                {imagePreview && (
+                  <div className="text-center">
+                    <p>
+                      <strong>Image Preview:</strong>
+                    </p>
+                    <img
+                      src={imagePreview}
+                      alt="Selected"
+                      className="img-fluid rounded"
+                      style={{ maxHeight: "250px" }}
+                    />
                   </div>
-                ) : (
-                  "➕ Add Tea"
                 )}
-              </button>
-            </form>
+
+                {uploading && (
+                  <p className="text-primary">
+                    Uploading image, please wait...
+                  </p>
+                )}
+
+                <button
+                  type="submit"
+                  className="btn btn-light w-100"
+                  disabled={
+                    uploading || !name || !brand || !type || rating === 0
+                  }
+                >
+                  {uploading ? (
+                    <div
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                    >
+                      <span className="visually-hidden">Uploading...</span>
+                    </div>
+                  ) : (
+                    "➕ Add Tea"
+                  )}
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
