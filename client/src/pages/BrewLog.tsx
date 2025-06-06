@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { Card } from "react-bootstrap";
+import { Card, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { Eye } from "react-bootstrap-icons";
 
 interface BrewLogEntry {
   tea: any;
@@ -97,6 +99,27 @@ function BrewLog() {
                       <div className="text-muted small">
                         <strong>Times Brewed:</strong> {entry.timesBrewed ?? 1}
                       </div>
+                      {entry.tea.tastingNotes && (
+                        <div className="text-muted small mt-2">
+                          <strong>Tasting Notes:</strong> {entry.tea.tastingNotes}
+                        </div>
+                      )}
+                    </div>
+                    <div className="card-footer d-flex justify-content-center align-items-center p-2">
+                      <OverlayTrigger
+                        placement="top"
+                        overlay={<Tooltip id={`tooltip-view-${entry.tea._id}`}>Tea Details</Tooltip>}
+                      >
+                        <Link to={`/teas/${entry.tea._id}`}>
+                          <Button
+                            variant="outline-secondary"
+                            size="sm"
+                            aria-label="View Details"
+                          >
+                            <Eye />
+                          </Button>
+                        </Link>
+                      </OverlayTrigger>
                     </div>
                   </div>
                 </div>
