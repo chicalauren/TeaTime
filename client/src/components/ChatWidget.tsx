@@ -16,13 +16,17 @@ function ChatWidget() {
   const myUserId = meData?.me?._id;
 
   // Always fetch threads so unread status is always up-to-date
-  const { data: threadsData, refetch: refetchThreads } = useQuery(GET_MY_THREADS, { skip: !myUserId });
+  const { data: threadsData, refetch: refetchThreads } = useQuery(GET_MY_THREADS, { 
+    skip: !myUserId,
+    pollInterval: 3000, 
+  });
 
   // Only fetch thread data when a chat is open
   const { data: threadData, refetch: refetchThread } = useQuery(GET_THREAD_WITH, {
     variables: { userId: activeUserId },
     skip: !activeUserId,
     fetchPolicy: "network-only",
+    pollInterval: activeUserId ? 3000 : undefined,
   });
 
   const [sendMessage] = useMutation(SEND_MESSAGE);

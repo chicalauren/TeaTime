@@ -23,7 +23,7 @@ function TeaTimer() {
   const location = useLocation();
   const details = location.state?.teaDetails;
   const state = location.state as
-    | { teaName?: string; teaType?: string }
+    | { teaName?: string; teaType?: string; teaDetails?: any }
     | undefined;
 
   const [selectedTea, setSelectedTea] = useState(() => {
@@ -38,16 +38,6 @@ function TeaTimer() {
   const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState(0);
   const [customMinutes, setCustomMinutes] = useState("");
-
-  useEffect(() => {
-    if (state?.teaType && teaOptions.some((t) => t.type === state.teaType)) {
-      setSelectedTea(teaOptions.find((t) => t.type === state.teaType)!);
-      setRunning(false);
-      setProgress(0);
-      setTimeLeft(0);
-    }
-    // eslint-disable-next-line
-  }, [location.key, state?.teaType]);
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
@@ -88,6 +78,8 @@ function TeaTimer() {
         };
       }
       localStorage.setItem("brewLog", JSON.stringify(brewLog));
+    } else if (details && !details._id) {
+      alert("Cannot log brew: invalid tea ID.");
     }
     // --- End Brew Logging ---
 

@@ -18,6 +18,7 @@ import {
   InputGroup,
 } from "react-bootstrap";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Friends() {
   const { data, refetch } = useQuery(GET_ME_WITH_FRIENDS);
@@ -83,7 +84,9 @@ function Friends() {
                     <Col key={f._id} xs={12}>
                       <Card className="bg-light d-flex flex-row justify-content-between align-items-center p-2">
                         <div className="fw-semibold text-dark">
-                          {f.username}
+                          <Link to={`/user/${f.username}`} className="friend-link">
+                            {f.username}
+                          </Link>
                         </div>
                         <OverlayTrigger
                           overlay={
