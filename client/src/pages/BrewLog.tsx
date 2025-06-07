@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Card, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Card, Button, OverlayTrigger, Tooltip, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { Eye } from "react-bootstrap-icons";
+import { gql, useApolloClient } from "@apollo/client";
 
 interface BrewLogEntry {
   tea: any;
@@ -9,12 +10,49 @@ interface BrewLogEntry {
   timesBrewed: number;
 }
 
+const GET_TEA = gql`
+  query getTea($id: ID!) {
+    tea(id: $id) {
+      _id
+      name
+      brand
+      type
+      tags
+      imageUrl
+      tastingNotes
+      rating
+    }
+  }
+`;
+
 function BrewLog() {
   const [brewLog, setBrewLog] = useState<BrewLogEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const client = useApolloClient();
+
+  // Helper to fetch latest tea data by ID using Apollo Client
+  const fetchTeaById = async (id: string) => {
+    try {
+      const { data } = await client.query({
+        query: GET_TEA,
+        variables: { id },
+        fetchPolicy: "network-only",
+      });
+      return data?.tea;
+    } catch {
+      return null;
+    }
+  };
 
   useEffect(() => {
-    const stored = localStorage.getItem("brewLog");
-    if (stored) {
+    const syncBrewLog = async () => {
+      const stored = localStorage.getItem("brewLog");
+      if (!stored) {
+        setBrewLog([]);
+        setLoading(false);
+        return;
+      }
+
       let logObj: Record<string, BrewLogEntry>;
       try {
         const parsed = JSON.parse(stored);
@@ -36,13 +74,42 @@ function BrewLog() {
       } catch {
         logObj = {};
       }
-      Object.values(logObj).forEach((entry: any) => {
-        if (entry.timesBrewed === undefined) entry.timesBrewed = 1;
-        if (!entry.lastBrewed && entry.brewedAt) entry.lastBrewed = entry.brewedAt;
+
+      // Sync each tea with latest data
+      const updatedEntries = await Promise.all(
+        Object.values(logObj).map(async (entry) => {
+          const teaId = entry.tea?._id;
+          if (!teaId) return entry;
+          try {
+            const latestTea = await fetchTeaById(teaId);
+            if (latestTea) {
+              return {
+                ...entry,
+                tea: { ...latestTea },
+              };
+            }
+          } catch {
+            // If fetch fails, keep old entry
+          }
+          return entry;
+        })
+      );
+
+      // Save updated log to localStorage and state
+      const updatedLogObj: Record<string, BrewLogEntry> = {};
+      updatedEntries.forEach((entry) => {
+        if (entry.tea && entry.tea._id) {
+          updatedLogObj[entry.tea._id] = entry;
+        }
       });
-      setBrewLog(Object.values(logObj));
-    }
-  }, []);
+      localStorage.setItem("brewLog", JSON.stringify(updatedLogObj));
+      setBrewLog(updatedEntries);
+      setLoading(false);
+    };
+
+    syncBrewLog();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [client]);
 
   return (
     <div
@@ -72,7 +139,11 @@ function BrewLog() {
             <h2 className="display-6 text-dark mb-0">Your Brew Log 🫖</h2>
           </Card.Body>
         </Card>
-        {brewLog.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-5">
+            <Spinner animation="border" variant="secondary" />
+          </div>
+        ) : brewLog.length === 0 ? (
           <p className="text-muted">No brews logged yet.</p>
         ) : (
           <div className="row g-3 d-flex justify-content-center px-3">
