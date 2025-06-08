@@ -15,6 +15,7 @@ import { useState } from "react";
 import { OverlayTrigger, Tooltip, Dropdown } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import ReactMarkdown from "react-markdown";
 
 const emojiOptions = ["🌟", "☕️", "🍵", "🌼", "😍", "😂"];
 
@@ -211,7 +212,7 @@ function SpillTheTea() {
         backgroundImage: 'url("/your-image.jpg")',
         backgroundSize: "cover",
         backgroundPosition: "center",
-        width: "100%", // This is the key!
+        width: "100%",
         minWidth: 0,
         maxWidth: "100%",
         overflowX: "hidden",
@@ -336,7 +337,13 @@ function SpillTheTea() {
                     <div className="d-flex justify-content-between align-items-start">
                       <div>
                         <h5 className="card-title mb-1">
-                          {post.title}
+                          <ReactMarkdown
+                            components={{
+                              p: ({ node, ...props }) => <span {...props} />,
+                            }}
+                          >
+                            {post.title}
+                          </ReactMarkdown>
                           <small className="text-muted d-block">
                             by{" "}
                             {post.createdByUsername === currentUsername ? (
@@ -388,7 +395,9 @@ function SpillTheTea() {
                         </Dropdown>
                       )}
                     </div>
-                    <p className="card-text">{post.content}</p>
+                    <div className="card-text">
+                      <ReactMarkdown>{post.content}</ReactMarkdown>
+                    </div>
                   </>
                 )}
 
@@ -450,7 +459,7 @@ function SpillTheTea() {
                         ) : (
                           <>
                             <div className="d-flex justify-content-between align-items-start">
-                              <p className="mb-1">
+                              <div className="mb-1" style={{ flex: 1 }}>
                                 <strong>
                                   {comment.createdByUsername ===
                                   currentUsername ? (
@@ -464,10 +473,17 @@ function SpillTheTea() {
                                   )}
                                 </strong>
                                 {showFriendLabel(comment.createdByUsername)}:{" "}
-                                {comment.content}
-                              </p>
-                              {comment.createdByUsername ===
-                                currentUsername && (
+                                <span>
+                                  <ReactMarkdown
+                                    components={{
+                                      p: ({ node, ...props }) => <span {...props} />,
+                                    }}
+                                  >
+                                    {comment.content}
+                                  </ReactMarkdown>
+                                </span>
+                              </div>
+                              {comment.createdByUsername === currentUsername && (
                                 <Dropdown align="end">
                                   <Dropdown.Toggle
                                     variant="link"
