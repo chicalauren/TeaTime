@@ -101,7 +101,7 @@ Cloudinary API is only needed if the site will be deployed to a web server; it i
 
 - Favorite posts
 - Add profile image to the comments and the post on the social page
-- Being able to add hyperlinks in the comments
+- Forget/Reset Password
 
 ## Resources
 
